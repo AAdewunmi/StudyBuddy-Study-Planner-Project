@@ -1,0 +1,25 @@
+[project]
+name = "studybuddy-django-app"
+version = "0.1.0"
+description = "A production-minded Django SaaS MVP for study productivity."
+readme = "README.md"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.local"
+pythonpath = ["."]
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
+addopts = "-ra --strict-markers"
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+src = ["apps", "config", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = []
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
