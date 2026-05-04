@@ -8,19 +8,18 @@ import environ
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 
-env = environ.Env(
-    DEBUG=(bool, False),
-    DJANGO_SECRET_KEY=(str, "unsafe-local-development-secret-key"),
-    DJANGO_ALLOWED_HOSTS=(list, ["localhost", "127.0.0.1"]),
-)
+env = environ.Env()
 
 env_file = BASE_DIR / ".env"
 if env_file.exists():
     environ.Env.read_env(env_file)
 
-SECRET_KEY = env("DJANGO_SECRET_KEY")
-DEBUG = env("DEBUG")
-ALLOWED_HOSTS = env("DJANGO_ALLOWED_HOSTS")
+SECRET_KEY = env("DJANGO_SECRET_KEY", default="unsafe-local-development-secret-key")
+DEBUG = False
+ALLOWED_HOSTS = env.list(
+    "DJANGO_ALLOWED_HOSTS",
+    default=["localhost", "127.0.0.1"],
+)
 
 INSTALLED_APPS = [
     "apps.roles",
@@ -87,7 +86,10 @@ AUTH_USER_MODEL = "users.CustomUser"
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "UserAttributeSimilarityValidator"
+        ),
     },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",

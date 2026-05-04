@@ -29,6 +29,7 @@ studybuddy-django-app/
         settings/
             base.py
             local.py
+            test.py
             production.py
         urls.py
         wsgi.py
@@ -42,3 +43,13 @@ studybuddy-django-app/
     templates/
     static/
     docs/
+```
+
+## Environment boundaries
+
+Settings are split by runtime responsibility:
+
+- `base.py` contains shared Django configuration.
+- `local.py` contains Docker-backed development defaults.
+- `test.py` contains PostgreSQL-backed test and CI behaviour.
+- `production.py` contains deployment-only security and required environment configuration.

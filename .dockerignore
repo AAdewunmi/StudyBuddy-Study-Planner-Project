@@ -1,0 +1,14 @@
+.env
+.envrc
+.git
+.gitignore
+.pytest_cache
+.ruff_cache
+.venv
+.coverage
+coverage.xml
+__pycache__
+*.py[cod]
+*.sqlite3
+db.sqlite3
+staticfiles
