@@ -114,7 +114,7 @@ docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytes
 The Sprint 1 Day 1 runbook wraps the main setup checks into one executable script.
 
 ```bash
-./docs/sprint-runbook/sprint-1/sprint-1-day-1
+./docs/sprint-runbook/sprint-1/sprint-1-day-1.sh
 ```
 
 ## Stop The Stack
