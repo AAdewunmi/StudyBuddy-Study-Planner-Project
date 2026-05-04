@@ -8,7 +8,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   test:
@@ -81,4 +80,4 @@ jobs:
         with:
           files: ./coverage.xml
           fail_ci_if_error: false
-          use_oidc: true
+          token: ${{ secrets.CODECOV_TOKEN }}

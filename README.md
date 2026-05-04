@@ -99,3 +99,7 @@ StudyBuddy isolates environment behaviour with explicit settings modules:
 - `config.settings.production` is for deployment and requires production environment variables.
 
 Docker Compose runs the app with `config.settings.local`. CI runs checks and tests with `config.settings.test`.
+
+## CI coverage
+
+CI generates `coverage.xml` with `pytest-cov` and uploads it to Codecov with the `CODECOV_TOKEN` GitHub Actions secret.
