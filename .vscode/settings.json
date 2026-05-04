@@ -10,6 +10,10 @@
   "python.linting.enabled": false,
   "ruff.enable": true,
   "ruff.nativeServer": "on",
+  "isort.importStrategy": "fromEnvironment",
+  "isort.interpreter": [
+    "${workspaceFolder}/.venv/bin/python"
+  ],
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter",
     "editor.codeActionsOnSave": {
