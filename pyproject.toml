@@ -33,7 +33,7 @@ dev = [
 packages = ["apps", "config"]
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "config.settings.local"
+DJANGO_SETTINGS_MODULE = "config.settings.test"
 pythonpath = ["."]
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
 addopts = "-ra --strict-markers"
