@@ -103,3 +103,4 @@ Docker Compose runs the app with `config.settings.local`. CI runs checks and tes
 ## CI coverage
 
 CI generates `coverage.xml` with `pytest-cov` and uploads it to Codecov with the `CODECOV_TOKEN` GitHub Actions secret.
+The Codecov repository must be active in Codecov before uploads will be accepted.
