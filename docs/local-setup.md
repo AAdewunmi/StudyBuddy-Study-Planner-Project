@@ -71,6 +71,22 @@ docker compose exec -T web python manage.py migrate --noinput
 docker compose exec -T web python manage.py makemigrations --check --dry-run --settings=config.settings.test
 ```
 
+Expected output for an already-initialized local database:
+
+```text
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, roles, sessions, users
+Running migrations:
+  No migrations to apply.
+No changes detected
+```
+
+On a fresh PostgreSQL volume, `migrate` should apply Django and StudyBuddy migrations and exit successfully. After that, `makemigrations --check --dry-run` should still return:
+
+```text
+No changes detected
+```
+
 ## Run Formatting And Linting
 
 ```bash
