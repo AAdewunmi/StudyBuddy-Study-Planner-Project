@@ -11,6 +11,8 @@ This guide describes the Docker-backed local setup for StudyBuddy-Django-App.
 
 Python and PostgreSQL are provided by Docker. You do not need to create a local virtual environment to run the app.
 
+Manual local setup is not the supported path because the current setup has Docker provide Python and PostgreSQL.
+
 ## Environment File
 
 Create a local `.env` file from the example.
