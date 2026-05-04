@@ -6,6 +6,10 @@ on:
       - main
   pull_request:
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   test:
     name: Test
@@ -66,13 +70,15 @@ jobs:
       - name: Check import sorting
         run: python -m isort . --check-only
 
+      - name: Build Docker image
+        run: docker build -t studybuddy-ci .
+
       - name: Run tests
-        run: |
-          set +e
-          python -m pytest
-          status=$?
-          if [ "$status" -eq 5 ]; then
-            echo "No tests collected."
-            exit 0
-          fi
-          exit "$status"
+        run: python -m pytest --cov=apps --cov=config --cov-report=xml -q
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./coverage.xml
+          fail_ci_if_error: false
+          use_oidc: true

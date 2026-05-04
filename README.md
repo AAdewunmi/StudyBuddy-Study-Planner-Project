@@ -1,13 +1,13 @@
 # StudyBuddy-Django-App
 
-![CI Pipeline](https://img.shields.io/badge/CI-configured-blue)
-![Python](https://img.shields.io/badge/Python-3.11%2B-blue)
-![Django](https://img.shields.io/badge/Django-5.x-green)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-required-blue)
-![Tests](https://img.shields.io/badge/tests-pytest-blue)
-![Code Style](https://img.shields.io/badge/code%20style-ruff%20%2B%20black-black)
-![Docker](https://img.shields.io/badge/Docker-ready-blue)
-![License](https://img.shields.io/badge/license-MIT-lightgrey)
+[![CI](https://github.com/AAdewunmi/StudyBuddy-Study-Planner-Project/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/AAdewunmi/StudyBuddy-Study-Planner-Project/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/AAdewunmi/StudyBuddy-Study-Planner-Project/branch/main/graph/badge.svg)](https://codecov.io/gh/AAdewunmi/StudyBuddy-Study-Planner-Project)
+[![Python](https://img.shields.io/badge/python-3.13-blue?logo=python&logoColor=white)](https://github.com/AAdewunmi/StudyBuddy-Study-Planner-Project/blob/main/Dockerfile)
+[![Django](https://img.shields.io/badge/django-5.x-092E20?logo=django&logoColor=white)](https://github.com/AAdewunmi/StudyBuddy-Study-Planner-Project/blob/main/requirements.txt)
+[![PostgreSQL](https://img.shields.io/badge/postgresql-16-4169E1?logo=postgresql&logoColor=white)](https://github.com/AAdewunmi/StudyBuddy-Study-Planner-Project/blob/main/docker-compose.yml)
+[![Docker](https://img.shields.io/badge/docker-compose-2496ED?logo=docker&logoColor=white)](https://github.com/AAdewunmi/StudyBuddy-Study-Planner-Project/blob/main/docker-compose.yml)
+[![Code style: Black, Ruff, isort](https://img.shields.io/badge/code%20style-black%20%7C%20ruff%20%7C%20isort-black)](https://github.com/AAdewunmi/StudyBuddy-Study-Planner-Project/blob/main/pyproject.toml)
+[![License](https://img.shields.io/github/license/AAdewunmi/StudyBuddy-Study-Planner-Project)](https://github.com/AAdewunmi/StudyBuddy-Study-Planner-Project/blob/main/LICENSE)
 
 StudyBuddy-Django-App is a production-minded SaaS MVP for study productivity.
 

@@ -17,7 +17,8 @@ RUN pip install --no-cache-dir --upgrade pip \
 
 COPY . .
 
-RUN chown -R django:django /app
+RUN mkdir -p /app/staticfiles \
+    && chown -R django:django /app
 
 USER django
 
