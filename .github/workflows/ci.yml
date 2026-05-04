@@ -77,10 +77,12 @@ jobs:
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
+        env:
+          CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}"
         with:
           files: ./coverage.xml
           flags: pytest
           name: studybuddy-pytest
           fail_ci_if_error: true
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: "${{ env.CODECOV_TOKEN }}"
           verbose: true
