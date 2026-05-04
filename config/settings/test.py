@@ -14,24 +14,11 @@ ALLOWED_HOSTS = base_settings.env.list(
     default=["localhost", "127.0.0.1", "testserver"],
 )
 
-if base_settings.env("DATABASE_URL", default=None):
-    DATABASES = {
-        "default": base_settings.env.db("DATABASE_URL"),
-    }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": base_settings.env("POSTGRES_DB", default="studybuddy_test"),
-            "USER": base_settings.env("POSTGRES_USER", default="studybuddy"),
-            "PASSWORD": base_settings.env(
-                "POSTGRES_PASSWORD",
-                default="studybuddy",
-            ),
-            "HOST": base_settings.env("POSTGRES_HOST", default="localhost"),
-            "PORT": base_settings.env("POSTGRES_PORT", default="5432"),
-        }
-    }
+if not base_settings.env("DATABASE_URL", default=None):
+    DATABASES["default"]["NAME"] = base_settings.env(  # noqa: F405
+        "POSTGRES_DB",
+        default="studybuddy_test",
+    )
 
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.MD5PasswordHasher",
