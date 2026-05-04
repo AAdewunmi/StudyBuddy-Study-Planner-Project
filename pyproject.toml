@@ -45,6 +45,14 @@ ignore = []
 [tool.ruff.lint.per-file-ignores]
 "*/migrations/*.py" = ["E501"]
 
+[tool.ruff.lint.isort]
+known-first-party = ["apps", "config", "tests"]
+
 [tool.black]
 line-length = 88
 target-version = ["py311"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+known_first_party = ["apps", "config", "tests"]

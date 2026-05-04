@@ -27,7 +27,7 @@ jobs:
           --health-retries 5
 
     env:
-      DJANGO_SETTINGS_MODULE: config.settings.local
+      DJANGO_SETTINGS_MODULE: config.settings.test
       DJANGO_SECRET_KEY: ci-secret-key
       DJANGO_DEBUG: "False"
       DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
@@ -62,6 +62,9 @@ jobs:
 
       - name: Check formatting
         run: python -m black . --check
+
+      - name: Check import sorting
+        run: python -m isort . --check-only
 
       - name: Run tests
         run: |

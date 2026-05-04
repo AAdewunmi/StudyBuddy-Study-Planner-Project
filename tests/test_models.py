@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import pytest
-from apps.roles.models import Role
 from django.contrib.auth import get_user_model
+
+from apps.roles.models import Role
 
 
 @pytest.mark.django_db
