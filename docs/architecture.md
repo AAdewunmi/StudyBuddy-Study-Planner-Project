@@ -43,6 +43,7 @@ studybuddy-django-app/
     templates/
     static/
     docs/
+```
 
 ## Environment boundaries
 

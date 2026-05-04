@@ -13,6 +13,8 @@ StudyBuddy-Django-App is a production-minded SaaS MVP for study productivity.
 
 The product helps users register, manage study sessions, capture notes, review personal progress, and generate lightweight deterministic AI/NLP insights from their own study material.
 
+StudyBuddy is not a learning management system, a classroom administration platform, a course marketplace, or a general-purpose AI chatbot. The repository is focused on a small, maintainable Django product foundation that can grow into study planning, notes, progress tracking, and lightweight insight features.
+
 Sprint 1 establishes the product foundation, Django architecture, PostgreSQL configuration, custom user model, roles foundation, authentication workflow, protected dashboard shell, and first test suite.
 
 ## Sprint 1 scope
@@ -43,6 +45,31 @@ Sprint 1 does not yet implement study sessions, notes, dashboard metrics, AI/NLP
 - factory_boy
 - Bootstrap 5
 - django-environ
+
+## Repository Structure
+
+```text
+StudyBuddy-Study-Planner-Project/
+    apps/
+        dashboard/       Authenticated dashboard shell.
+        roles/           Role model and user-role relationships.
+        users/           Custom user model, auth forms, profile, and user URLs.
+    config/
+        settings/        Environment-specific Django settings.
+        urls.py          Project URL routing.
+        asgi.py          ASGI application entrypoint.
+        wsgi.py          WSGI application entrypoint.
+    docs/                Architecture and project documentation.
+    static/              Project static assets.
+    templates/           Shared and app-level Django templates.
+    tests/               Pytest model and view tests.
+    Dockerfile           Container image definition.
+    docker-compose.yml   Local PostgreSQL-backed development stack.
+    manage.py            Django management command entrypoint.
+    pyproject.toml       Project metadata and tool configuration.
+    pytest.ini           Pytest and Django test configuration.
+    requirements.txt     Python dependency list.
+```
 
 ## Local setup
 
