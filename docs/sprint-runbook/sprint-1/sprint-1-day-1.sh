@@ -10,11 +10,11 @@
 # Execution instructions:
 #   1. Run this file from anywhere inside the repository:
 #
-#        ./docs/sprint-runbook/sprint-1/sprint-1-day-1
+#        ./docs/sprint-runbook/sprint-1/sprint-1-day-1.sh
 #
 #   2. If the file is not executable, run:
 #
-#        chmod +x docs/sprint-runbook/sprint-1/sprint-1-day-1
+#        chmod +x docs/sprint-runbook/sprint-1/sprint-1-day-1.sh
 #
 #   3. Docker Desktop or a compatible Docker daemon must be running.
 #   4. The script builds/recreates the Docker Compose web container so checks
