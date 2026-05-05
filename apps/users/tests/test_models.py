@@ -6,7 +6,7 @@ import pytest
 from django.contrib.auth import get_user_model
 
 from apps.roles.factories import RoleFactory
-from apps.users.factories import CustomUserFactory
+from apps.users.factories import CustomUserFactory, UserWithRoleFactory
 
 CustomUser = get_user_model()
 
@@ -34,3 +34,12 @@ def test_user_can_be_assigned_roles():
     user.studybuddy_roles.add(role)
 
     assert user.studybuddy_roles.filter(slug="learner").exists()
+
+
+@pytest.mark.django_db
+def test_user_with_role_factory_accepts_common_role_traits():
+    """User factories can model common role assignments."""
+    role = RoleFactory(tutor=True)
+    user = UserWithRoleFactory(role=role)
+
+    assert user.studybuddy_roles.filter(slug="tutor").exists()

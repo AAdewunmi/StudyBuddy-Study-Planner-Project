@@ -16,6 +16,7 @@ class CustomUserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = CustomUser
         django_get_or_create = ("email",)
+        skip_postgeneration_save = True
 
     email = factory.Sequence(lambda number: f"user{number}@example.com")
     username = factory.Sequence(lambda number: f"user{number}")

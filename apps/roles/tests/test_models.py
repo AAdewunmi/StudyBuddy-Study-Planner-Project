@@ -25,3 +25,20 @@ def test_role_slug_must_be_unique():
     with pytest.raises(IntegrityError):
         with transaction.atomic():
             Role.objects.create(slug="learner", display_name="Learner Duplicate")
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    ("trait", "slug", "display_name"),
+    [
+        ("student", "student", "Student"),
+        ("tutor", "tutor", "Tutor"),
+        ("admin", "admin", "Admin"),
+    ],
+)
+def test_role_factory_common_role_traits(trait, slug, display_name):
+    """Common role traits provide stable slugs for access-control tests."""
+    role = RoleFactory(**{trait: True})
+
+    assert role.slug == slug
+    assert role.display_name == display_name
