@@ -43,3 +43,11 @@ def test_user_with_role_factory_accepts_common_role_traits():
     user = UserWithRoleFactory(role=role)
 
     assert user.studybuddy_roles.filter(slug="tutor").exists()
+
+
+@pytest.mark.django_db
+def test_user_with_role_factory_creates_default_role():
+    """User role factories create a learner role when none is provided."""
+    user = UserWithRoleFactory()
+
+    assert user.studybuddy_roles.filter(slug="learner").exists()
