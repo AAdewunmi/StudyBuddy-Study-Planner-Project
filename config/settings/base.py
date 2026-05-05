@@ -8,18 +8,19 @@ import environ
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 
-env = environ.Env()
+env = environ.Env(
+    DJANGO_DEBUG=(bool, False),
+    DJANGO_SECRET_KEY=(str, "unsafe-local-development-secret-key"),
+    DJANGO_ALLOWED_HOSTS=(list, ["localhost", "127.0.0.1"]),
+)
 
 env_file = BASE_DIR / ".env"
 if env_file.exists():
     environ.Env.read_env(env_file)
 
-SECRET_KEY = env("DJANGO_SECRET_KEY", default="unsafe-local-development-secret-key")
-DEBUG = False
-ALLOWED_HOSTS = env.list(
-    "DJANGO_ALLOWED_HOSTS",
-    default=["localhost", "127.0.0.1"],
-)
+SECRET_KEY = env("DJANGO_SECRET_KEY")
+DEBUG = env("DJANGO_DEBUG")
+ALLOWED_HOSTS = env("DJANGO_ALLOWED_HOSTS")
 
 INSTALLED_APPS = [
     "apps.roles",
