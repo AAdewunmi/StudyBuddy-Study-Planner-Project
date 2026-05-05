@@ -1,4 +1,4 @@
-"""Role application configuration."""
+"""Application configuration for the roles app."""
 
 from __future__ import annotations
 
@@ -10,3 +10,4 @@ class RolesConfig(AppConfig):
 
     default_auto_field = "django.db.models.BigAutoField"
     name = "apps.roles"
+    label = "roles"
