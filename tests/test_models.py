@@ -108,7 +108,7 @@ def test_custom_user_display_name_falls_back_to_email() -> None:
 @pytest.mark.django_db
 def test_role_string_uses_name() -> None:
     """Roles display with their human-readable name."""
-    role = Role.objects.create(name="Student", slug="student")
+    role = Role.objects.create(display_name="Student", slug="student")
 
     assert str(role) == "Student"
 
@@ -121,7 +121,7 @@ def test_role_can_be_assigned_to_user() -> None:
         email="grace@example.com",
         password="password123",
     )
-    role = Role.objects.create(name="Tutor", slug="tutor")
+    role = Role.objects.create(display_name="Tutor", slug="tutor")
 
     role.users.add(user)
 
