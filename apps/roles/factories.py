@@ -12,6 +12,7 @@ class RoleFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Role
+        django_get_or_create = ("slug",)
 
     slug = factory.Sequence(lambda number: f"role-{number}")
     display_name = factory.Sequence(lambda number: f"Role {number}")

@@ -31,6 +31,6 @@ def test_user_can_be_assigned_roles():
     role = RoleFactory(slug="learner", display_name="Learner")
     user = CustomUserFactory()
 
-    user.roles.add(role)
+    user.studybuddy_roles.add(role)
 
-    assert user.roles.filter(slug="learner").exists()
+    assert user.studybuddy_roles.filter(slug="learner").exists()
