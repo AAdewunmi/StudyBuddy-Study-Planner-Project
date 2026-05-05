@@ -1,4 +1,4 @@
-"""Role models for StudyBuddy users."""
+"""Role models for StudyBuddy access control."""
 
 from __future__ import annotations
 
@@ -7,11 +7,13 @@ from django.db import models
 
 
 class Role(models.Model):
-    """Named role that can be assigned to users."""
+    """Named role used to support role-aware behaviour in the product."""
 
-    name = models.CharField(max_length=80, unique=True)
-    slug = models.SlugField(max_length=100, unique=True)
+    slug = models.SlugField(unique=True)
+    display_name = models.CharField(max_length=120, unique=True)
     description = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     users = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         blank=True,
@@ -19,7 +21,10 @@ class Role(models.Model):
     )
 
     class Meta:
-        ordering = ["name"]
+        """Model metadata for roles."""
+
+        ordering = ("display_name",)
 
     def __str__(self) -> str:
-        return self.name
+        """Return the human-readable role name."""
+        return self.display_name
