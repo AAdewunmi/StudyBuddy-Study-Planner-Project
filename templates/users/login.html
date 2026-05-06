@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Log In | StudyBuddy{% endblock %}
+
+{% block content %}
+  <div class="container-ui">
+    <div class="page-stack">
+      <header class="hero-content">
+        <span class="eyebrow">Welcome back</span>
+        <h1 class="page-title">Log In</h1>
+        <p class="page-subtitle">Use the email address and password linked to your StudyBuddy account.</p>
+      </header>
+
+      <section class="section-tight">
+        <article class="card-ui form-card">
+          <h2 class="card-title-ui">Account Access</h2>
+
+          <form class="form-ui" method="post" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+              <div class="form-errors">
+                {{ form.non_field_errors }}
+              </div>
+            {% endif %}
+
+            <p>
+              <label for="{{ form.username.id_for_label }}">Email address</label>
+              {{ form.username }}
+              {% if form.username.errors %}
+                <span class="form-errors">{{ form.username.errors }}</span>
+              {% endif %}
+            </p>
+
+            <p>
+              <label for="{{ form.password.id_for_label }}">Password</label>
+              {{ form.password }}
+              {% if form.password.errors %}
+                <span class="form-errors">{{ form.password.errors }}</span>
+              {% endif %}
+            </p>
+
+            <input type="hidden" name="next" value="{{ next }}">
+
+            <div class="card-actions">
+              <button class="btn-ui btn-ui-primary" type="submit">Log In</button>
+              <a class="btn-ui" href="{% url 'users:signup' %}">Create Account</a>
+            </div>
+          </form>
+        </article>
+      </section>
+    </div>
+  </div>
+{% endblock %}
