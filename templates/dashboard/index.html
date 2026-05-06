@@ -3,5 +3,106 @@
 {% block title %}Dashboard | StudyBuddy{% endblock %}
 
 {% block content %}
-  <h1>Dashboard</h1>
+  <div class="container-ui">
+    <div class="page-stack">
+      <header class="page-header">
+        <div>
+          <span class="eyebrow">Studytracking 2026</span>
+          <h1 class="page-title">Dashboard</h1>
+          <p class="page-subtitle">A motivating snapshot of study time, goals, streaks, and the next session to start.</p>
+        </div>
+        <div class="card-actions">
+          <a class="btn-ui btn-ui-primary" href="#">+ Session</a>
+        </div>
+      </header>
+
+      <section class="section-tight">
+        <div class="card-grid">
+          <article class="card-ui">
+            <span class="metric-value">0h</span>
+            <span class="metric-label">Today</span>
+            <div class="progress-line"><span></span></div>
+          </article>
+          <article class="card-ui">
+            <span class="metric-value">0%</span>
+            <span class="metric-label">Weekly goal</span>
+            <div class="progress-line"><span></span></div>
+          </article>
+          <article class="card-ui">
+            <span class="metric-value">0</span>
+            <span class="metric-label">Sessions tracked</span>
+            <div class="progress-line"><span></span></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-tight">
+        <div class="mock-grid">
+          <article class="mock-panel tall">
+            <div class="mock-panel-title"><span>Streaks</span><span>Start today</span></div>
+            <div class="streak-row">
+              <span class="streak-day">M</span><span class="streak-day">T</span><span class="streak-day">W</span><span class="streak-day">T</span><span class="streak-day">F</span>
+            </div>
+            <div class="mock-panel-title"><span>Study Trend</span><span>This week</span></div>
+            <div class="chart-line"></div>
+            <div class="mock-panel-title"><span>Medals</span><span>Coming soon</span></div>
+            <div class="medal-row">
+              <span class="medal">0</span>
+              <span class="medal">0</span>
+              <span class="medal">0</span>
+            </div>
+          </article>
+
+          <article class="mock-panel">
+            <div class="mock-panel-title"><span>Goals</span><span>Daily</span></div>
+            <span class="metric-value">2h 0m</span>
+            <span class="metric-label">Suggested study goal</span>
+            <div class="progress-line"><span></span></div>
+          </article>
+
+          <article class="mock-panel">
+            <div class="mock-panel-title"><span>Study Days</span><span>0/365</span></div>
+            <span class="metric-value">0%</span>
+            <span class="metric-label">Year progress</span>
+            <div class="progress-line"><span></span></div>
+          </article>
+
+          <article class="mock-panel">
+            <div class="mock-panel-title"><span>Courses</span><span>Next</span></div>
+            <div class="table-list">
+              <div class="table-row"><span>Create first course</span><div class="progress-line"><span></span></div></div>
+              <div class="table-row"><span>Add a study goal</span><div class="progress-line"><span></span></div></div>
+              <div class="table-row"><span>Track session</span><div class="progress-line"><span></span></div></div>
+            </div>
+          </article>
+
+          <article class="mock-panel">
+            <div class="mock-panel-title"><span>Activities</span><span>Planned</span></div>
+            <div class="donut"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-tight">
+        <div class="card-grid card-grid-2">
+          <article class="card-ui feature-card">
+            <span class="feature-icon">01</span>
+            <h2 class="card-title-ui">Build your first study plan</h2>
+            <p>Add a subject, target study time, and the first session you want to complete.</p>
+            <div class="card-actions">
+              <a class="btn-ui btn-ui-blue" href="#">Add Session</a>
+            </div>
+          </article>
+          <article class="card-ui feature-card">
+            <span class="feature-icon">02</span>
+            <h2 class="card-title-ui">Review account settings</h2>
+            <p>Confirm your StudyBuddy profile before personal planning preferences are added.</p>
+            <div class="card-actions">
+              <a class="btn-ui" href="{% url 'users:profile' %}">Open Profile</a>
+            </div>
+          </article>
+        </div>
+      </section>
+    </div>
+  </div>
 {% endblock %}

@@ -1,0 +1,174 @@
+# StudyBuddy UI Design System
+
+Source inspiration: https://athenify.io/
+
+This document is the canonical UI contract for StudyBuddy templates. The goal is not to copy Athenify verbatim. The goal is to give StudyBuddy the same category feel: a polished study-product website with a bright marketing shell, a blue brand accent, dark rounded calls to action, and dashboard visuals that make study tracking feel motivating.
+
+## Visual Direction
+
+StudyBuddy should feel like:
+
+- A student-focused study tracker and planner.
+- Clean, white, spacious, and product-led.
+- More like a refined landing/product app than a generic admin panel.
+- Built around visual dashboard previews, compact metric cards, progress pills, streaks, and study-session controls.
+
+Avoid a plain left-sidebar SaaS layout for the public shell. Athenify's first viewport uses a top navigation bar, centered hero content, large product imagery, soft shadows, and very little background color.
+
+## Layout Model
+
+All templates must extend `/templates/base.html`.
+
+The base template provides:
+
+- White top navigation.
+- Brand lockup on the left.
+- Product/category navigation in the center.
+- Authentication actions on the right.
+- A constrained main content area.
+
+Page content follows:
+
+`Page shell -> Hero or Page Header -> Section -> Card -> Action`
+
+Use the dashboard-app visual language inside cards and previews, not as the global frame.
+
+## Color System
+
+Use CSS variables from `/static/css/theme.css`.
+
+Primary colors:
+
+| Token | Purpose |
+| --- | --- |
+| `--color-page` | Overall page background |
+| `--color-surface` | Cards, nav, panels |
+| `--color-ink` | Main text |
+| `--color-muted` | Supporting text |
+| `--color-line` | Borders |
+| `--color-blue` | Brand blue |
+| `--color-dark` | Dark CTA and app sidebar |
+| `--color-green` | Progress and success indicators |
+
+Rules:
+
+- Use white as the dominant page color.
+- Use blue mainly for brand and small highlights.
+- Use dark navy/black for primary CTAs.
+- Use green only for progress, streaks, and positive study metrics.
+- Do not use purple-first palettes or generic Bootstrap button colors.
+
+## Typography
+
+Use the system UI stack.
+
+Hierarchy:
+
+| Element | Style |
+| --- | --- |
+| Brand | Bold, blue, compact |
+| Hero headline | Large, black, tight line-height |
+| Page title | Strong, dashboard-like |
+| Section eyebrow | Small, uppercase, muted blue/grey |
+| Section title | Bold, medium-large |
+| Card title | Small, bold |
+| Metadata | Small, muted |
+
+Hero copy should be direct and product-specific. Avoid generic filler.
+
+## Spacing
+
+Use the 8px scale only:
+
+| Token | Value |
+| --- | --- |
+| xs | 4px |
+| sm | 8px |
+| md | 16px |
+| lg | 24px |
+| xl | 32px |
+| xxl | 48px |
+| xxxl | 72px |
+
+Sections need generous vertical space. Cards stay compact and information dense.
+
+## Components
+
+### Header
+
+- White background.
+- Logo/brand left.
+- Horizontal nav.
+- Right-aligned login and dark pill CTA.
+- Sticky positioning is allowed when it does not obscure content.
+
+### Buttons
+
+- `btn-ui`: white button with soft border.
+- `btn-ui-primary`: dark navy pill, used for primary action.
+- `btn-ui-blue`: brand-blue secondary action.
+
+Buttons should be rounded pills, not rectangular admin buttons.
+
+### Cards
+
+- White surface.
+- Soft grey border.
+- 18-24px radius.
+- Subtle shadow only for hero/product preview cards.
+- Compact typography.
+
+### Product Mockups
+
+Athenify relies heavily on dashboard screenshots. StudyBuddy templates should use reusable HTML/CSS product mockups until real screenshots exist:
+
+- Browser/device frame.
+- Dark app sidebar inside the mockup.
+- Dashboard heading.
+- Metric strip.
+- Study streak row.
+- Progress bars.
+- Chart-like panels.
+
+This is a required visual pattern for public-facing pages.
+
+### Sections
+
+Every major section must have either:
+
+- An eyebrow plus title, or
+- A clear section title.
+
+Sections should not be floating cards. Cards belong inside sections.
+
+## Template Rules
+
+Must:
+
+- Extend `base.html`.
+- Use shared classes from `theme.css`.
+- Use semantic HTML.
+- Use card, section, button, metric, and mockup utilities.
+- Keep all styling out of templates.
+
+Must not:
+
+- Reintroduce a global sidebar shell.
+- Use inline styles.
+- Use arbitrary spacing.
+- Use Bootstrap visual classes as the main design system.
+- Use placeholder admin UI that lacks product context.
+
+## Canonical Prompt
+
+When creating or refactoring StudyBuddy templates:
+
+Use Athenify.io as visual inspiration: white marketing shell, blue brand, dark rounded CTA, generous whitespace, large dashboard preview, compact metric cards, green progress indicators, and student-focused study tracking content.
+
+Follow:
+
+- `/docs/design-system.md`
+- `/templates/base.html`
+- `/static/css/theme.css`
+
+Output production-ready Django templates that extend the base template and use only shared design-system classes.

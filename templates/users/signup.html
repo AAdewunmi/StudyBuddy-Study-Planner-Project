@@ -14,9 +14,29 @@
       <section class="section-tight">
         <article class="card-ui form-card">
           <h2 class="card-title-ui">New Account</h2>
-          <form class="form-ui" method="post">
+
+          <form class="form-ui" method="post" novalidate>
             {% csrf_token %}
-            {{ form.as_p }}
+
+            {% if form.non_field_errors %}
+              <div class="form-errors">
+                {{ form.non_field_errors }}
+              </div>
+            {% endif %}
+
+            {% for field in form %}
+              <p>
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                  <span class="helptext">{{ field.help_text }}</span>
+                {% endif %}
+                {% if field.errors %}
+                  <span class="form-errors">{{ field.errors }}</span>
+                {% endif %}
+              </p>
+            {% endfor %}
+
             <div class="card-actions">
               <button class="btn-ui btn-ui-primary" type="submit">Create Account</button>
               <a class="btn-ui" href="{% url 'users:login' %}">Log In</a>

@@ -1,7 +1,184 @@
 {% extends "base.html" %}
 
-{% block title %}StudyBuddy{% endblock %}
+{% block title %}StudyBuddy | Study Tracker and Planner{% endblock %}
 
 {% block content %}
-  <h1>StudyBuddy</h1>
+  <section class="hero">
+    <div class="container-ui">
+      <div class="hero-content">
+        <span class="eyebrow">The study tracker and planner for students</span>
+        <h1 class="hero-title">Build momentum with a <span class="text-blue">beautiful study dashboard</span></h1>
+        <p class="hero-subtitle">Track study sessions, plan goals, review streaks, and keep your coursework visible across one focused StudyBuddy workspace.</p>
+        <div class="card-actions">
+          <a class="btn-ui btn-ui-primary" href="{% url 'users:signup' %}">Create Account</a>
+          <a class="btn-ui" href="{% url 'users:login' %}">Log In</a>
+        </div>
+        <p class="microcopy">No credit card required. Works for courses, exams, and independent study.</p>
+      </div>
+
+      <div class="hero-visual" aria-label="StudyBuddy dashboard preview">
+        <div class="product-frame">
+          <div class="browser-bar">
+            <div class="browser-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+            <span>app.studybuddy.local</span>
+            <span>Dashboard</span>
+          </div>
+          <div class="mock-app">
+            <aside class="mock-sidebar">
+              <div class="mock-brand">StudyBuddy</div>
+              <div class="mock-menu">
+                <span class="active">Dashboard</span>
+                <span>Sessions</span>
+                <span>Calendar</span>
+                <span>Courses</span>
+                <span>Achievements</span>
+                <span>Settings</span>
+              </div>
+            </aside>
+            <div class="mock-dashboard">
+              <div class="mock-topline">
+                <div>
+                  <div class="mock-date">06.05.26 - Week 19 - Studytracking</div>
+                  <h2>Dashboard</h2>
+                  <div class="mock-pill-row">
+                    <span class="mock-pill">12h 40m studied</span>
+                    <span class="mock-pill">68% weekly goal</span>
+                    <span class="mock-pill">14 day streak</span>
+                  </div>
+                </div>
+                <span class="mock-pill dark">+ Session</span>
+              </div>
+
+              <div class="mock-grid">
+                <section class="mock-panel tall">
+                  <div class="mock-panel-title"><span>Streaks</span><span>14 days</span></div>
+                  <div class="streak-row">
+                    <span class="streak-day">M</span><span class="streak-day">T</span><span class="streak-day">W</span><span class="streak-day">T</span><span class="streak-day">F</span>
+                  </div>
+                  <div class="mock-panel-title"><span>Share Price</span><span>+2h 18m</span></div>
+                  <div class="chart-line"></div>
+                  <div class="mock-panel-title"><span>Medals</span><span>This month</span></div>
+                  <div class="medal-row">
+                    <span class="medal">61</span>
+                    <span class="medal">29</span>
+                    <span class="medal">10</span>
+                  </div>
+                </section>
+
+                <section class="mock-panel">
+                  <div class="mock-panel-title"><span>Goals</span><span>Today</span></div>
+                  <span class="metric-value">2h 0m</span>
+                  <span class="metric-label">Daily study goal</span>
+                  <div class="progress-line"><span></span></div>
+                </section>
+
+                <section class="mock-panel">
+                  <div class="mock-panel-title"><span>Study Days</span><span>112/365</span></div>
+                  <span class="metric-value">31%</span>
+                  <span class="metric-label">Year progress</span>
+                  <div class="progress-line"><span></span></div>
+                </section>
+
+                <section class="mock-panel">
+                  <div class="mock-panel-title"><span>Courses</span><span>6</span></div>
+                  <div class="table-list">
+                    <div class="table-row"><span>Biology</span><div class="progress-line"><span></span></div></div>
+                    <div class="table-row"><span>Statistics</span><div class="progress-line"><span></span></div></div>
+                    <div class="table-row"><span>Writing</span><div class="progress-line"><span></span></div></div>
+                  </div>
+                </section>
+
+                <section class="mock-panel">
+                  <div class="mock-panel-title"><span>Activities</span><span>15</span></div>
+                  <div class="donut"></div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="phone-frame" aria-hidden="true">
+          <div class="phone-content">
+            <div class="phone-notch"></div>
+            <h3>Dashboard</h3>
+            <div class="streak-row">
+              <span class="streak-day">M</span><span class="streak-day">T</span><span class="streak-day">W</span>
+            </div>
+            <div class="chart-line"></div>
+            <div class="mini-bars"><span></span><span></span><span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="trust-row">
+        <span>Built for focused students</span>
+        <span class="logo-pill">Courses</span>
+        <span class="logo-pill">Exams</span>
+        <span class="logo-pill">Study Habits</span>
+        <span class="logo-pill">Progress</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-tight" id="about">
+    <div class="container-ui split-section">
+      <div class="section-header">
+        <span class="eyebrow">What is StudyBuddy?</span>
+        <h2 class="section-title">Study planning, tracking, and motivation in one place.</h2>
+        <p class="section-copy">StudyBuddy gives students a clear picture of what they planned, what they completed, and where their next focused session should go.</p>
+      </div>
+      <div class="card-grid card-grid-2">
+        <article class="card-ui feature-card">
+          <span class="feature-icon">01</span>
+          <h3 class="card-title-ui">Track Sessions</h3>
+          <p>Log study time and keep a visible record of steady work.</p>
+        </article>
+        <article class="card-ui feature-card">
+          <span class="feature-icon">02</span>
+          <h3 class="card-title-ui">Plan Goals</h3>
+          <p>Turn courses, exams, and deadlines into achievable study targets.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="guides">
+    <div class="container-ui">
+      <div class="section-header">
+        <span class="eyebrow">Study Guides</span>
+        <h2 class="section-title">From scattered effort to visible progress.</h2>
+      </div>
+      <div class="card-grid">
+        <article class="card-ui feature-card">
+          <span class="feature-icon">T</span>
+          <h3 class="card-title-ui">Focus Timer</h3>
+          <p>Use session blocks to stay in the zone and avoid vague study days.</p>
+        </article>
+        <article class="card-ui feature-card">
+          <span class="feature-icon">S</span>
+          <h3 class="card-title-ui">Streaks</h3>
+          <p>Build consistency with daily signals that make momentum obvious.</p>
+        </article>
+        <article class="card-ui feature-card">
+          <span class="feature-icon">G</span>
+          <h3 class="card-title-ui">Goal Progress</h3>
+          <p>See how each course is moving against the study target you set.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-tight" id="pricing">
+    <div class="container-ui">
+      <div class="quote-card">
+        <span class="eyebrow">Get started</span>
+        <h2 class="section-title">Start building your study dashboard today.</h2>
+        <p>StudyBuddy is ready for account creation, authentication, and the first dashboard foundation. More planning features can build on this visual system.</p>
+        <div class="card-actions">
+          <a class="btn-ui btn-ui-blue" href="{% url 'users:signup' %}">Create Account</a>
+          <a class="btn-ui" href="{% url 'users:login' %}">Log In</a>
+        </div>
+      </div>
+    </div>
+  </section>
 {% endblock %}

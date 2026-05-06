@@ -1,29 +1,31 @@
-"""Views for StudyBuddy user accounts."""
+"""Views for StudyBuddy account workflows."""
 
 from __future__ import annotations
 
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 
-from apps.users.forms import CustomUserCreationForm
+from apps.users.forms import UserSignUpForm
 
 
-def signup(request):
-    """Register a new StudyBuddy user."""
+def signup(request: HttpRequest) -> HttpResponse:
+    """Register a new user and send them to the dashboard."""
     if request.method == "POST":
-        form = CustomUserCreationForm(request.POST)
+        form = UserSignUpForm(request.POST)
+
         if form.is_valid():
             user = form.save()
-            login(request, user)
+            login(request, user, backend="django.contrib.auth.backends.ModelBackend")
             return redirect("dashboard:index")
     else:
-        form = CustomUserCreationForm()
+        form = UserSignUpForm()
 
-    return render(request, "registration/signup.html", {"form": form})
+    return render(request, "users/signup.html", {"form": form})
 
 
 @login_required
-def profile(request):
-    """Render the signed-in user's profile page."""
+def profile(request: HttpRequest) -> HttpResponse:
+    """Render the authenticated user's profile."""
     return render(request, "users/profile.html")
