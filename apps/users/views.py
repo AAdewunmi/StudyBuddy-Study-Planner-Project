@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
@@ -19,7 +18,6 @@ def signup(request: HttpRequest) -> HttpResponse:
         if form.is_valid():
             user = form.save()
             login(request, user, backend="django.contrib.auth.backends.ModelBackend")
-            messages.success(request, "Your StudyBuddy account is ready.")
             return redirect("dashboard:index")
     else:
         form = UserSignUpForm()

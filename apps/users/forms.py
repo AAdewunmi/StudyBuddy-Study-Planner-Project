@@ -25,7 +25,14 @@ class UserSignUpForm(UserCreationForm):
         """Form metadata for user signup."""
 
         model = CustomUser
-        fields = ("email", "username", "first_name", "last_name", "password1", "password2")
+        fields = (
+            "email",
+            "username",
+            "first_name",
+            "last_name",
+            "password1",
+            "password2",
+        )
 
     def clean_email(self) -> str:
         """Validate that the submitted email is unique."""

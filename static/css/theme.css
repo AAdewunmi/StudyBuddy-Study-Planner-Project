@@ -464,6 +464,17 @@ p {
     padding-left: var(--space-lg);
 }
 
+.form-errors {
+    color: #b42318;
+    font-size: 0.88rem;
+    font-weight: 700;
+}
+
+.form-errors ul {
+    margin: 0;
+    padding-left: var(--space-lg);
+}
+
 .text-muted-ui {
     color: var(--color-muted);
 }
