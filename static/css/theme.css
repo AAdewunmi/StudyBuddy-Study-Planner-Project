@@ -407,6 +407,13 @@ p {
     text-align: right;
 }
 
+.profile-pill-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--space-sm);
+}
+
 .form-card {
     max-width: 560px;
     margin: 0 auto;

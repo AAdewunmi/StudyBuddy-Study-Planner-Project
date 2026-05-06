@@ -33,6 +33,18 @@
                 <dt>Username</dt>
                 <dd>{{ request.user.username }}</dd>
               </div>
+              <div class="detail-row">
+                <dt>Roles</dt>
+                <dd>
+                  <span class="profile-pill-list">
+                    {% for role in request.user.studybuddy_roles.all %}
+                      <span class="mock-pill">{{ role.display_name }}</span>
+                    {% empty %}
+                      <span class="text-muted-ui">No roles assigned yet.</span>
+                    {% endfor %}
+                  </span>
+                </dd>
+              </div>
             </dl>
           </article>
 
