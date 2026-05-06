@@ -1,180 +1,174 @@
-# StudyBuddy UI Design System (Athenify-Inspired)
-# Athenify URL: https://athenify.io/
+# StudyBuddy UI Design System
 
-## Purpose
+Source inspiration: https://athenify.io/
 
-This document defines the canonical UI/UX system for the StudyBuddy application.
+This document is the canonical UI contract for StudyBuddy templates. The goal is not to copy Athenify verbatim. The goal is to give StudyBuddy the same category feel: a polished study-product website with a bright marketing shell, a blue brand accent, dark rounded calls to action, and dashboard visuals that make study tracking feel motivating.
 
-All templates, components, and pages MUST follow this system to ensure:
-- Visual consistency
-- Predictable structure
-- Reusable components
-- Scalable frontend development
+## Visual Direction
 
-Codex or any code generation tool MUST treat this document as a contract.
+StudyBuddy should feel like:
 
----
+- A student-focused study tracker and planner.
+- Clean, white, spacious, and product-led.
+- More like a refined landing/product app than a generic admin panel.
+- Built around visual dashboard previews, compact metric cards, progress pills, streaks, and study-session controls.
 
-## Core Design Principles
+Avoid a plain left-sidebar SaaS layout for the public shell. Athenify's first viewport uses a top navigation bar, centered hero content, large product imagery, soft shadows, and very little background color.
 
-### 1. Layout Philosophy
+## Layout Model
 
-- Use a **dashboard-first SaaS layout**
-- Structure:
-  - Sidebar (navigation)
-  - Topbar (context/actions)
-  - Main content area
-- Content is always organised as:
-  **Page → Section → Card → Action**
+All templates must extend `/templates/base.html`.
 
----
+The base template provides:
 
-### 2. Spacing System
+- White top navigation.
+- Brand lockup on the left.
+- Product/category navigation in the center.
+- Authentication actions on the right.
+- A constrained main content area.
 
-Use a consistent **8px spacing scale**:
+Page content follows:
 
-| Token | Value |
-|------|------|
-| xs   | 4px  |
-| sm   | 8px  |
-| md   | 16px |
-| lg   | 24px |
-| xl   | 32px |
-| xxl  | 48px |
+`Page shell -> Hero or Page Header -> Section -> Card -> Action`
+
+Use the dashboard-app visual language inside cards and previews, not as the global frame.
+
+## Color System
+
+Use CSS variables from `/static/css/theme.css`.
+
+Primary colors:
+
+| Token | Purpose |
+| --- | --- |
+| `--color-page` | Overall page background |
+| `--color-surface` | Cards, nav, panels |
+| `--color-ink` | Main text |
+| `--color-muted` | Supporting text |
+| `--color-line` | Borders |
+| `--color-blue` | Brand blue |
+| `--color-dark` | Dark CTA and app sidebar |
+| `--color-green` | Progress and success indicators |
 
 Rules:
-- Never use arbitrary spacing
-- Always apply spacing via CSS classes
-- Prefer padding over margin for internal layout
 
----
+- Use white as the dominant page color.
+- Use blue mainly for brand and small highlights.
+- Use dark navy/black for primary CTAs.
+- Use green only for progress, streaks, and positive study metrics.
+- Do not use purple-first palettes or generic Bootstrap button colors.
 
-### 3. Typography
+## Typography
 
-- Font: system-ui stack (fast, neutral, modern)
-- Hierarchy:
+Use the system UI stack.
+
+Hierarchy:
 
 | Element | Style |
-|--------|------|
-| Page Title | Large, bold |
-| Section Title | Medium, semi-bold |
-| Card Title | Small, bold |
-| Body Text | Regular |
+| --- | --- |
+| Brand | Bold, blue, compact |
+| Hero headline | Large, black, tight line-height |
+| Page title | Strong, dashboard-like |
+| Section eyebrow | Small, uppercase, muted blue/grey |
+| Section title | Bold, medium-large |
+| Card title | Small, bold |
 | Metadata | Small, muted |
 
-Rules:
-- Maintain strong visual hierarchy
-- Avoid excessive font sizes
-- Use weight instead of colour for emphasis
+Hero copy should be direct and product-specific. Avoid generic filler.
 
----
+## Spacing
 
-### 4. Colour System
+Use the 8px scale only:
 
-Neutral-first palette:
+| Token | Value |
+| --- | --- |
+| xs | 4px |
+| sm | 8px |
+| md | 16px |
+| lg | 24px |
+| xl | 32px |
+| xxl | 48px |
+| xxxl | 72px |
 
-- Background: very light grey
-- Surface (cards): white
-- Border: soft grey
-- Text: near-black
-- Accent: subtle (blue or indigo)
+Sections need generous vertical space. Cards stay compact and information dense.
 
-Rules:
-- Avoid high saturation
-- Use colour sparingly for actions and highlights
-- Maintain high readability
+## Components
 
----
+### Header
 
-### 5. Components
+- White background.
+- Logo/brand left.
+- Horizontal nav.
+- Right-aligned login and dark pill CTA.
+- Sticky positioning is allowed when it does not obscure content.
 
-#### Cards
-- Rounded corners
-- Soft border
-- Internal padding (md or lg)
-- Used for ALL grouped content
+### Buttons
 
-#### Buttons
-- Rounded
-- Minimal styling
-- Clear hover states
+- `btn-ui`: white button with soft border.
+- `btn-ui-primary`: dark navy pill, used for primary action.
+- `btn-ui-blue`: brand-blue secondary action.
 
-#### Sidebar
-- Fixed width
-- Vertical navigation
-- Active item clearly highlighted
+Buttons should be rounded pills, not rectangular admin buttons.
 
-#### Sections
-- Always have a title
-- Contain 1+ cards
-- Maintain vertical rhythm
+### Cards
 
----
+- White surface.
+- Soft grey border.
+- 18-24px radius.
+- Subtle shadow only for hero/product preview cards.
+- Compact typography.
 
-### 6. Layout Rules
+### Product Mockups
 
-- Use grid or flex layouts
-- Avoid deeply nested structures
-- Maximum content width should be constrained
-- Maintain whitespace around sections
+Athenify relies heavily on dashboard screenshots. StudyBuddy templates should use reusable HTML/CSS product mockups until real screenshots exist:
 
----
+- Browser/device frame.
+- Dark app sidebar inside the mockup.
+- Dashboard heading.
+- Metric strip.
+- Study streak row.
+- Progress bars.
+- Chart-like panels.
 
-### 7. Reusability Requirements
+This is a required visual pattern for public-facing pages.
 
-All UI must:
-- Extend `/templates/base.html`
-- Use shared styles from `/static/css/theme.css`
-- Avoid duplication
-- Be component-friendly
+### Sections
 
----
+Every major section must have either:
 
-## Codex Usage Contract
+- An eyebrow plus title, or
+- A clear section title.
 
-When generating UI:
+Sections should not be floating cards. Cards belong inside sections.
 
-### MUST
+## Template Rules
 
-- Follow this design system strictly
-- Extend base template
-- Use predefined spacing and component styles
-- Produce semantic HTML
+Must:
 
-### MUST NOT
+- Extend `base.html`.
+- Use shared classes from `theme.css`.
+- Use semantic HTML.
+- Use card, section, button, metric, and mockup utilities.
+- Keep all styling out of templates.
 
-- Use inline styles
-- Introduce new spacing scales
-- Break layout hierarchy
-- Invent new design patterns
+Must not:
 
----
+- Reintroduce a global sidebar shell.
+- Use inline styles.
+- Use arbitrary spacing.
+- Use Bootstrap visual classes as the main design system.
+- Use placeholder admin UI that lacks product context.
 
-## Canonical Prompt (Use This for All UI Generation)
+## Canonical Prompt
 
-Use Athenify.io as UI/UX inspiration.
+When creating or refactoring StudyBuddy templates:
 
-Design requirements:
-- Clean, minimal dashboard aesthetic
-- Soft neutral colour palette (light greys, subtle accent colour)
-- Generous whitespace and padding
-- Rounded components (cards, buttons)
-- Clear hierarchy (title → section → card → action)
-- Modern SaaS layout (sidebar + main content)
-- Consistent spacing scale (8px grid)
+Use Athenify.io as visual inspiration: white marketing shell, blue brand, dark rounded CTA, generous whitespace, large dashboard preview, compact metric cards, green progress indicators, and student-focused study tracking content.
 
-Tech constraints:
-- Django templates + HTMX
-- No inline styles
-- Reusable components where possible
+Follow:
 
-Follow the project design system defined in:
-- /docs/design-system.md
-- /templates/base.html
-- /static/css/theme.css
+- `/docs/design-system.md`
+- `/templates/base.html`
+- `/static/css/theme.css`
 
-Use Athenify-inspired design principles already defined there.
-
-Output:
-- Production-ready template
-- Semantic HTML structure
+Output production-ready Django templates that extend the base template and use only shared design-system classes.
