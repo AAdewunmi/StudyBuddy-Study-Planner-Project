@@ -1,0 +1,137 @@
+/* File: /static/css/theme.css */
+
+/* =========================
+   Root Variables
+========================= */
+:root {
+    --color-bg: #f7f8fa;
+    --color-surface: #ffffff;
+    --color-border: #e5e7eb;
+    --color-text: #111827;
+    --color-muted: #6b7280;
+    --color-accent: #4f46e5;
+
+    --radius: 12px;
+
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+}
+
+/* =========================
+   Base
+========================= */
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}
+
+/* =========================
+   Layout
+========================= */
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 240px;
+    background: var(--color-surface);
+    border-right: 1px solid var(--color-border);
+    padding: var(--space-lg);
+}
+
+.sidebar-header {
+    margin-bottom: var(--space-lg);
+}
+
+.sidebar-nav .nav-item {
+    display: block;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--color-text);
+    margin-bottom: var(--space-sm);
+}
+
+.sidebar-nav .nav-item:hover {
+    background: var(--color-bg);
+}
+
+.sidebar-nav .nav-item.active {
+    background: var(--color-accent);
+    color: white;
+}
+
+/* Main */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Topbar */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-md) var(--space-lg);
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.topbar-title {
+    font-weight: 600;
+}
+
+/* Content */
+.content-area {
+    padding: var(--space-lg);
+}
+
+/* =========================
+   Components
+========================= */
+
+/* Card */
+.card-ui {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+/* Section */
+.section {
+    margin-bottom: var(--space-xl);
+}
+
+.section-title {
+    font-weight: 600;
+    margin-bottom: var(--space-md);
+}
+
+/* Buttons */
+.btn-ui {
+    border-radius: var(--radius);
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+}
+
+.btn-ui-primary {
+    background: var(--color-accent);
+    color: white;
+    border: none;
+}
+
+/* Muted text */
+.text-muted-ui {
+    color: var(--color-muted);
+}
