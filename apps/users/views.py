@@ -12,6 +12,9 @@ from apps.users.forms import UserSignUpForm
 
 def signup(request: HttpRequest) -> HttpResponse:
     """Register a new user and send them to the dashboard."""
+    if request.user.is_authenticated:
+        return redirect("dashboard:index")
+
     if request.method == "POST":
         form = UserSignUpForm(request.POST)
 

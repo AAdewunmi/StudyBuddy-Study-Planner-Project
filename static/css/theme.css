@@ -122,6 +122,10 @@ p {
     gap: var(--space-md);
 }
 
+.nav-logout-form {
+    margin: 0;
+}
+
 .nav-links {
     flex: 1;
 }

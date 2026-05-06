@@ -23,6 +23,18 @@ def test_signup_page_renders(client):
 
 
 @pytest.mark.django_db
+def test_authenticated_signup_redirects_to_dashboard(client):
+    """Signed-in users do not need the public signup page."""
+    user = CustomUserFactory(email="signed-in@example.com")
+    client.force_login(user)
+
+    response = client.get(reverse("users:signup"))
+
+    assert response.status_code == 302
+    assert response["Location"] == reverse("dashboard:index")
+
+
+@pytest.mark.django_db
 def test_signup_creates_user_and_redirects_to_dashboard(client):
     """A valid signup creates a user and sends them to the dashboard."""
     response = client.post(
@@ -147,6 +159,30 @@ def test_login_with_email_redirects_to_dashboard(client):
 
     assert response.status_code == 302
     assert response["Location"] == reverse("dashboard:index")
+
+
+@pytest.mark.django_db
+def test_authenticated_login_redirects_to_dashboard(client):
+    """Signed-in users are sent to the post-login product surface."""
+    user = CustomUserFactory(email="already@example.com")
+    client.force_login(user)
+
+    response = client.get(reverse("users:login"))
+
+    assert response.status_code == 302
+    assert response["Location"] == reverse("dashboard:index")
+
+
+@pytest.mark.django_db
+def test_logout_redirects_to_home(client):
+    """Logout returns users to the public landing page."""
+    user = CustomUserFactory(email="logout@example.com")
+    client.force_login(user)
+
+    response = client.post(reverse("users:logout"))
+
+    assert response.status_code == 302
+    assert response["Location"] == reverse("home")
 
 
 @pytest.mark.django_db
