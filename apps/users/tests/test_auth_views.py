@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from apps.users.factories import CustomUserFactory
+from apps.users.forms import UserSignUpForm
 
 CustomUser = get_user_model()
 
@@ -60,6 +61,75 @@ def test_signup_rejects_duplicate_email(client):
 
     assert response.status_code == 200
     assert b"A user with this email already exists." in response.content
+
+
+@pytest.mark.django_db
+def test_signup_rejects_duplicate_username(client):
+    """Signup rejects explicitly supplied usernames already in use."""
+    CustomUserFactory(username="existing-user")
+
+    response = client.post(
+        reverse("users:signup"),
+        {
+            "email": "unique@example.com",
+            "username": "existing-user",
+            "first_name": "Unique",
+            "last_name": "User",
+            "password1": "StrongPassword123!",
+            "password2": "StrongPassword123!",
+        },
+    )
+
+    assert response.status_code == 200
+    assert b"A user with this username already exists." in response.content
+
+
+@pytest.mark.django_db
+def test_signup_generates_unique_username_when_email_local_part_exists(client):
+    """Blank usernames are derived from email and made unique."""
+    CustomUserFactory(email="learner@example.com", username="learner")
+
+    response = client.post(
+        reverse("users:signup"),
+        {
+            "email": "learner@studybuddy.test",
+            "username": "",
+            "first_name": "New",
+            "last_name": "Learner",
+            "password1": "StrongPassword123!",
+            "password2": "StrongPassword123!",
+        },
+    )
+
+    assert response.status_code == 302
+    user = CustomUser.objects.get(email="learner@studybuddy.test")
+
+    assert user.username == "learner-2"
+
+
+@pytest.mark.django_db
+def test_signup_form_save_commit_false_builds_unsaved_user():
+    """Signup form can build a valid custom user without persisting it."""
+    form = UserSignUpForm(
+        data={
+            "email": "draft@example.com",
+            "username": "",
+            "first_name": "Draft",
+            "last_name": "User",
+            "password1": "StrongPassword123!",
+            "password2": "StrongPassword123!",
+        }
+    )
+
+    assert form.is_valid()
+
+    user = form.save(commit=False)
+
+    assert user.pk is None
+    assert user.email == "draft@example.com"
+    assert user.username == "draft"
+    assert user.check_password("StrongPassword123!")
+    assert not CustomUser.objects.filter(email="draft@example.com").exists()
 
 
 @pytest.mark.django_db
