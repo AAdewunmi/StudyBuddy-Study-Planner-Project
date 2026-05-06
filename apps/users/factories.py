@@ -16,13 +16,12 @@ class CustomUserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = CustomUser
         django_get_or_create = ("email",)
-        skip_postgeneration_save = True
 
     email = factory.Sequence(lambda number: f"user{number}@example.com")
     username = factory.Sequence(lambda number: f"user{number}")
     first_name = "Study"
     last_name = "Buddy"
-    password = factory.django.Password("password123")
+    password = factory.PostGenerationMethodCall("set_password", "password123")
 
 
 class UserWithRoleFactory(CustomUserFactory):
@@ -35,4 +34,4 @@ class UserWithRoleFactory(CustomUserFactory):
             return
 
         role = extracted or RoleFactory(slug="learner", display_name="Learner")
-        self.studybuddy_roles.add(role)
+        self.roles.add(role)
