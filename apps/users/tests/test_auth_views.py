@@ -18,6 +18,7 @@ def test_signup_page_renders(client):
     response = client.get(reverse("users:signup"))
 
     assert response.status_code == 200
+    assert b"Create your StudyBuddy account" in response.content
     assert b"Create Account" in response.content
     assert b"New Account" in response.content
 
