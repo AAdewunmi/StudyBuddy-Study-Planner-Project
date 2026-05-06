@@ -1,7 +1,37 @@
 {% extends "base.html" %}
 
 {% block title %}StudyBuddy{% endblock %}
+{% block page_title %}Study Plan{% endblock %}
 
 {% block content %}
-  <h1>StudyBuddy</h1>
+  <div class="page-stack">
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">StudyBuddy</h1>
+        <p class="page-subtitle">A focused planning workspace for organizing study sessions, tracking progress, and keeping coursework moving.</p>
+      </div>
+      <div class="card-actions">
+        <a class="btn-ui btn-ui-primary" href="{% url 'users:signup' %}">Create account</a>
+        <a class="btn-ui" href="{% url 'users:login' %}">Log in</a>
+      </div>
+    </header>
+
+    <section class="section">
+      <h2 class="section-title">Planning Overview</h2>
+      <div class="card-grid">
+        <article class="card-ui">
+          <h3 class="card-title-ui">Sessions</h3>
+          <p class="text-muted-ui">Plan study blocks around a clear workload, priority, and review rhythm.</p>
+        </article>
+        <article class="card-ui">
+          <h3 class="card-title-ui">Notes</h3>
+          <p class="text-muted-ui">Keep the supporting material for each study goal close to the work.</p>
+        </article>
+        <article class="card-ui">
+          <h3 class="card-title-ui">Progress</h3>
+          <p class="text-muted-ui">Review what is complete, what is blocked, and what needs attention next.</p>
+        </article>
+      </div>
+    </section>
+  </div>
 {% endblock %}

@@ -1,7 +1,46 @@
 {% extends "base.html" %}
 
 {% block title %}Profile | StudyBuddy{% endblock %}
+{% block page_title %}Profile{% endblock %}
 
 {% block content %}
-  <h1>Profile</h1>
+  <div class="page-stack">
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">Profile</h1>
+        <p class="page-subtitle">Manage the account identity StudyBuddy uses across your planning workspace.</p>
+      </div>
+    </header>
+
+    <section class="section">
+      <h2 class="section-title">Account Details</h2>
+      <article class="card-ui">
+        <dl class="detail-list">
+          <div class="detail-row">
+            <dt class="text-muted-ui">Display name</dt>
+            <dd>{{ request.user.display_name }}</dd>
+          </div>
+          <div class="detail-row">
+            <dt class="text-muted-ui">Email</dt>
+            <dd>{{ request.user.email }}</dd>
+          </div>
+          <div class="detail-row">
+            <dt class="text-muted-ui">Username</dt>
+            <dd>{{ request.user.username }}</dd>
+          </div>
+        </dl>
+      </article>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Workspace</h2>
+      <article class="card-ui">
+        <h3 class="card-title-ui">Study preferences</h3>
+        <p class="text-muted-ui">Personal scheduling and notification preferences will appear here as planning features are added.</p>
+        <div class="card-actions">
+          <a class="btn-ui btn-ui-primary" href="{% url 'dashboard:index' %}">Back to dashboard</a>
+        </div>
+      </article>
+    </section>
+  </div>
 {% endblock %}

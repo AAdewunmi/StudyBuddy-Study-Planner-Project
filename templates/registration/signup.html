@@ -1,12 +1,29 @@
 {% extends "base.html" %}
 
 {% block title %}Sign up | StudyBuddy{% endblock %}
+{% block page_title %}Sign up{% endblock %}
 
 {% block content %}
-  <h1>Sign up</h1>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Create account</button>
-  </form>
+  <div class="page-stack">
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">Sign up</h1>
+        <p class="page-subtitle">Create a StudyBuddy account to start organizing sessions, notes, and progress in one workspace.</p>
+      </div>
+    </header>
+
+    <section class="section">
+      <h2 class="section-title">New Account</h2>
+      <article class="card-ui">
+        <form class="form-ui" method="post">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <div class="card-actions">
+            <button class="btn-ui btn-ui-primary" type="submit">Create account</button>
+            <a class="btn-ui" href="{% url 'users:login' %}">Log in</a>
+          </div>
+        </form>
+      </article>
+    </section>
+  </div>
 {% endblock %}
