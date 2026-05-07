@@ -31,4 +31,12 @@ def signup(request: HttpRequest) -> HttpResponse:
 @login_required
 def profile(request: HttpRequest) -> HttpResponse:
     """Render the authenticated user's profile."""
-    return render(request, "users/profile.html")
+    roles = request.user.studybuddy_roles.order_by("display_name")
+
+    return render(
+        request,
+        "users/profile.html",
+        {
+            "roles": roles,
+        },
+    )

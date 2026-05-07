@@ -37,7 +37,7 @@
                 <dt>Roles</dt>
                 <dd>
                   <span class="profile-pill-list">
-                    {% for role in request.user.studybuddy_roles.all %}
+                    {% for role in roles %}
                       <span class="mock-pill">{{ role.display_name }}</span>
                     {% empty %}
                       <span class="text-muted-ui">No roles assigned yet.</span>
