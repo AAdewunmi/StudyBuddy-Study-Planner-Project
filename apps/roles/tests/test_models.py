@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from unittest.mock import Mock
+
 import pytest
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import PermissionDenied
@@ -96,10 +98,10 @@ def test_role_required_denies_users_without_required_role():
     """The role decorator rejects users who do not have the required role."""
     request = RequestFactory().get("/protected/")
     request.user = CustomUserFactory()
-
-    @role_required("admin")
-    def protected_view(request):
-        return HttpResponse("allowed")
+    view_func = Mock(return_value=HttpResponse("allowed"))
+    protected_view = role_required("admin")(view_func)
 
     with pytest.raises(PermissionDenied):
         protected_view(request)
+
+    view_func.assert_not_called()
