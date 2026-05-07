@@ -10,7 +10,7 @@ from django.shortcuts import render
 @login_required
 def index(request: HttpRequest) -> HttpResponse:
     """Render the authenticated StudyBuddy dashboard shell."""
-    roles = request.user.roles.order_by("display_name")
+    roles = request.user.studybuddy_roles.order_by("display_name")
 
     return render(
         request,
