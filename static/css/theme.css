@@ -247,6 +247,17 @@ p {
     padding-left: var(--space-xl);
 }
 
+.message-stack {
+    display: grid;
+    gap: var(--space-sm);
+    padding-top: var(--space-lg);
+}
+
+.message-stack .alert {
+    margin: 0;
+    border-radius: var(--radius-md);
+}
+
 .hero {
     padding: var(--space-xxl) 0 var(--space-xxxl);
     text-align: center;

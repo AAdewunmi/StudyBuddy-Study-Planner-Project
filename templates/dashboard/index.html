@@ -7,12 +7,15 @@
     <div class="page-stack">
       <header class="page-header">
         <div>
-          <span class="eyebrow">Studytracking 2026</span>
-          <h1 class="page-title">Dashboard</h1>
-          <p class="page-subtitle">A motivating snapshot of study time, goals, streaks, and the next session to start.</p>
+          <span class="eyebrow">Dashboard</span>
+          <h1 class="page-title">Your study dashboard</h1>
+          <p class="page-subtitle">
+            This is your protected StudyBuddy workspace. Sprint 2 will add study sessions,
+            notes, and personal progress metrics here.
+          </p>
         </div>
         <div class="card-actions">
-          <a class="btn-ui btn-ui-primary" href="#">+ Session</a>
+          <span class="mock-pill dark">Authenticated</span>
         </div>
       </header>
 
@@ -32,6 +35,40 @@
             <span class="metric-value">0</span>
             <span class="metric-label">Sessions tracked</span>
             <div class="progress-line"><span></span></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-tight">
+        <div class="card-grid card-grid-2">
+          <article class="card-ui feature-card">
+            <span class="feature-icon">01</span>
+            <h2 class="card-title-ui">No study sessions yet</h2>
+            <p>
+              Your dashboard is ready. Once the core study workflow is added,
+              this page will show recent sessions, notes, study totals, and
+              AI/NLP insight summaries.
+            </p>
+          </article>
+
+          <article class="card-ui feature-card">
+            <span class="feature-icon">02</span>
+            <h2 class="card-title-ui">Account access</h2>
+            {% if roles %}
+              <div class="mock-pill-row">
+                {% for role in roles %}
+                  <span class="mock-pill">{{ role.display_name }}</span>
+                {% endfor %}
+              </div>
+            {% else %}
+              <p>
+                No product roles have been assigned yet. Role-aware access is
+                available for future product surfaces.
+              </p>
+            {% endif %}
+            <div class="card-actions">
+              <a class="btn-ui" href="{% url 'users:profile' %}">Open Profile</a>
+            </div>
           </article>
         </div>
       </section>
@@ -79,27 +116,6 @@
           <article class="mock-panel">
             <div class="mock-panel-title"><span>Activities</span><span>Planned</span></div>
             <div class="donut"></div>
-          </article>
-        </div>
-      </section>
-
-      <section class="section-tight">
-        <div class="card-grid card-grid-2">
-          <article class="card-ui feature-card">
-            <span class="feature-icon">01</span>
-            <h2 class="card-title-ui">Build your first study plan</h2>
-            <p>Add a subject, target study time, and the first session you want to complete.</p>
-            <div class="card-actions">
-              <a class="btn-ui btn-ui-blue" href="#">Add Session</a>
-            </div>
-          </article>
-          <article class="card-ui feature-card">
-            <span class="feature-icon">02</span>
-            <h2 class="card-title-ui">Review account settings</h2>
-            <p>Confirm your StudyBuddy profile before personal planning preferences are added.</p>
-            <div class="card-actions">
-              <a class="btn-ui" href="{% url 'users:profile' %}">Open Profile</a>
-            </div>
           </article>
         </div>
       </section>
