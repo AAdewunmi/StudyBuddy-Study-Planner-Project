@@ -19,7 +19,7 @@
 #   - Docker Desktop or a compatible Docker daemon must be running.
 #   - This project copies source into the Docker image, so the script rebuilds
 #     the web service before verification.
-#   - Current expected isolated pytest baseline: 40 tests collected/passing.
+#   - Current expected isolated pytest baseline: 48 tests collected/passing.
 
 set -euo pipefail
 
@@ -27,7 +27,7 @@ PROJECT_ROOT="$(git rev-parse --show-toplevel)"
 EXPECTED_ROOT_NAME="StudyBuddy-Study-Planner-Project"
 SIGNUP_EMAIL="thursday.user@example.com"
 LOGIN_EMAIL="thursday.login@example.com"
-EXPECTED_TEST_COUNT=40
+EXPECTED_TEST_COUNT=48
 
 section() {
     printf '\n==> %s\n' "$1"
@@ -342,6 +342,6 @@ Verified:
 - Dashboard is the post-login product surface.
 - Migrations remain clean and applied.
 - Black and Ruff pass.
-- The isolated pytest suite passes with 40 tests.
+- The isolated pytest suite passes with 48 tests.
 
 RECEIPT
