@@ -6,6 +6,7 @@ import pytest
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
+from apps.roles.factories import RoleFactory
 from apps.users.factories import CustomUserFactory
 from apps.users.forms import UserSignUpForm
 
@@ -259,3 +260,18 @@ def test_authenticated_profile_shows_user_email(client):
 
     assert response.status_code == 200
     assert b"profile@example.com" in response.content
+
+
+@pytest.mark.django_db
+def test_authenticated_profile_receives_roles_from_view_context(client):
+    """Profile role display is fed by view context, not template permissions."""
+    user = CustomUserFactory(email="role.profile@example.com")
+    role = RoleFactory(slug="learner", display_name="Learner")
+    user.studybuddy_roles.add(role)
+    client.force_login(user)
+
+    response = client.get(reverse("users:profile"))
+
+    assert response.status_code == 200
+    assert list(response.context["roles"]) == [role]
+    assert b"Learner" in response.content
