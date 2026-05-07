@@ -1,4 +1,4 @@
-"""Dashboard URL routes."""
+"""URL routes for the authenticated dashboard."""
 
 from __future__ import annotations
 
