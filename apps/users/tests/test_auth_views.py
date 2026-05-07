@@ -18,6 +18,7 @@ def test_signup_page_renders(client):
     response = client.get(reverse("users:signup"))
 
     assert response.status_code == 200
+    assert b"Create your StudyBuddy account" in response.content
     assert b"Create Account" in response.content
     assert b"New Account" in response.content
 
@@ -52,6 +53,34 @@ def test_signup_creates_user_and_redirects_to_dashboard(client):
     assert response.status_code == 302
     assert response["Location"] == reverse("dashboard:index")
     assert CustomUser.objects.filter(email="new.user@example.com").exists()
+
+
+@pytest.mark.django_db
+def test_signup_follows_redirect_and_keeps_user_authenticated(client):
+    """A signup request reaches the dashboard and keeps the user signed in."""
+    response = client.post(
+        reverse("users:signup"),
+        {
+            "email": "journey.signup@example.com",
+            "username": "",
+            "first_name": "Journey",
+            "last_name": "Signup",
+            "password1": "StrongPassword123!",
+            "password2": "StrongPassword123!",
+        },
+        follow=True,
+    )
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [(reverse("dashboard:index"), 302)]
+    assert b"Dashboard" in response.content
+
+    dashboard_response = client.get(reverse("dashboard:index"))
+    profile_response = client.get(reverse("users:profile"))
+
+    assert dashboard_response.status_code == 200
+    assert profile_response.status_code == 200
+    assert b"journey.signup@example.com" in profile_response.content
 
 
 @pytest.mark.django_db
@@ -159,6 +188,32 @@ def test_login_with_email_redirects_to_dashboard(client):
 
     assert response.status_code == 302
     assert response["Location"] == reverse("dashboard:index")
+
+
+@pytest.mark.django_db
+def test_login_follows_redirect_and_keeps_user_authenticated(client):
+    """A login request reaches the dashboard and unlocks protected pages."""
+    user = CustomUserFactory(email="journey.login@example.com")
+
+    response = client.post(
+        reverse("users:login"),
+        {
+            "username": user.email,
+            "password": "password123",
+        },
+        follow=True,
+    )
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [(reverse("dashboard:index"), 302)]
+    assert b"Dashboard" in response.content
+
+    dashboard_response = client.get(reverse("dashboard:index"))
+    profile_response = client.get(reverse("users:profile"))
+
+    assert dashboard_response.status_code == 200
+    assert profile_response.status_code == 200
+    assert b"journey.login@example.com" in profile_response.content
 
 
 @pytest.mark.django_db

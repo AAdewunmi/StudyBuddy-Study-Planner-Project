@@ -157,6 +157,89 @@ p {
     width: 100%;
 }
 
+.site-footer {
+    padding: var(--space-xl);
+    background: transparent;
+}
+
+.footer-shell {
+    width: min(100%, 1240px);
+    margin: 0 auto;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+    background: rgb(255 255 255 / 88%);
+    box-shadow: 0 14px 40px rgb(15 23 42 / 5%);
+}
+
+.footer-primary {
+    display: grid;
+    grid-template-columns: minmax(280px, 1fr) minmax(320px, auto);
+    gap: var(--space-xxl);
+    align-items: start;
+    padding: var(--space-xl);
+}
+
+.footer-brand-block {
+    max-width: 540px;
+}
+
+.footer-brand-block p {
+    max-width: 500px;
+    margin: var(--space-md) 0 0;
+    color: var(--color-muted);
+    font-size: 0.98rem;
+}
+
+.footer-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(140px, 1fr));
+    gap: var(--space-xl);
+}
+
+.footer-nav div {
+    display: grid;
+    gap: 10px;
+}
+
+.footer-heading {
+    color: var(--color-ink);
+    font-size: 0.78rem;
+    font-weight: 850;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.footer-nav a,
+.footer-legal a {
+    color: var(--color-muted);
+    font-size: 0.94rem;
+    font-weight: 750;
+}
+
+.footer-nav a:hover,
+.footer-legal a:hover {
+    color: var(--color-blue);
+}
+
+.footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-xl);
+    border-top: 1px solid var(--color-line);
+    color: var(--color-muted);
+    font-size: 0.88rem;
+    font-weight: 700;
+}
+
+.footer-legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+}
+
 .container-ui {
     width: min(100%, 1240px);
     margin: 0 auto;
@@ -878,6 +961,10 @@ p {
         grid-template-columns: 1fr;
     }
 
+    .footer-primary {
+        grid-template-columns: 1fr;
+    }
+
     .mock-app {
         grid-template-columns: 1fr;
     }
@@ -912,6 +999,24 @@ p {
 
     .nav-actions .btn-ui {
         flex: 1;
+    }
+
+    .site-footer {
+        padding: var(--space-md);
+    }
+
+    .footer-primary,
+    .footer-bottom {
+        padding: var(--space-lg);
+    }
+
+    .footer-nav {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-bottom {
+        display: grid;
+        justify-content: start;
     }
 
     .card-actions,
