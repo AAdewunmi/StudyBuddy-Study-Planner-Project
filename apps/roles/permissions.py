@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable, Callable
+from collections.abc import Callable, Iterable
 from functools import wraps
 from typing import Any
 
@@ -18,7 +18,7 @@ def user_has_role(user: Any, role_slug: str) -> bool:
     if getattr(user, "is_superuser", False):
         return True
 
-    return user.roles.filter(slug=role_slug).exists()
+    return user.studybuddy_roles.filter(slug=role_slug).exists()
 
 
 def user_has_any_role(user: Any, role_slugs: Iterable[str]) -> bool:
