@@ -55,9 +55,7 @@ class StudyNoteAdmin(admin.ModelAdmin):
         "session__title",
         "session__owner__email",
     )
-    readonly_fields = (
-        "created_at",
-    )
+    readonly_fields = ("created_at",)
 
     def session_owner(self, obj: StudyNote) -> str:
         """

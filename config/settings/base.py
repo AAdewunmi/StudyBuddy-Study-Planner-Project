@@ -1,4 +1,10 @@
-"""Base Django settings shared by all StudyBuddy environments."""
+"""
+Base Django settings for the StudyBuddy Django SaaS MVP.
+
+This module contains configuration shared by local, CI, and production
+environments. Environment-specific modules should import from this file and
+override only the settings that differ.
+"""
 
 from __future__ import annotations
 
@@ -23,15 +29,16 @@ DEBUG = env("DJANGO_DEBUG")
 ALLOWED_HOSTS = env("DJANGO_ALLOWED_HOSTS")
 
 INSTALLED_APPS = [
-    "apps.roles",
-    "apps.users",
-    "apps.dashboard",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "apps.users",
+    "apps.roles",
+    "apps.dashboard",
+    "apps.sessions.apps.StudySessionsConfig",
 ]
 
 MIDDLEWARE = [
@@ -74,10 +81,10 @@ if env("DATABASE_URL", default=None):
 else:
     DATABASES = {
         "default": {
-            "ENGINE": "django.db.backends.postgresql",
+            "ENGINE": env("DB_ENGINE", default="django.db.backends.postgresql"),
             "NAME": env("POSTGRES_DB", default="studybuddy_local"),
-            "USER": env("POSTGRES_USER", default=""),
-            "PASSWORD": env("POSTGRES_PASSWORD", default=""),
+            "USER": env("POSTGRES_USER", default="studybuddy"),
+            "PASSWORD": env("POSTGRES_PASSWORD", default="studybuddy"),
             "HOST": env("POSTGRES_HOST", default="localhost"),
             "PORT": env("POSTGRES_PORT", default="5432"),
         }
