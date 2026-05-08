@@ -13,6 +13,10 @@
         </div>
         <div class="card-actions">
           <a class="btn-ui btn-ui-primary" href="{% url 'dashboard:index' %}">Dashboard</a>
+          <form class="nav-logout-form" method="post" action="{% url 'users:logout' %}">
+            {% csrf_token %}
+            <button class="btn-ui btn-ui-ghost" type="submit">Log Out</button>
+          </form>
         </div>
       </header>
 
@@ -67,6 +71,10 @@
           <p>Head back to the dashboard to start shaping the first trackable study workflow.</p>
           <div class="card-actions">
             <a class="btn-ui btn-ui-blue" href="{% url 'dashboard:index' %}">Open Dashboard</a>
+            <form class="nav-logout-form" method="post" action="{% url 'users:logout' %}">
+              {% csrf_token %}
+              <button class="btn-ui btn-ui-ghost" type="submit">Log Out</button>
+            </form>
           </div>
         </div>
       </section>
