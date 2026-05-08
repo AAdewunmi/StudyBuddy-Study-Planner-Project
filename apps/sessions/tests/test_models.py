@@ -4,40 +4,15 @@ from __future__ import annotations
 
 import pytest
 from django.core.exceptions import ValidationError
-from django.db import connection
 from django.utils import timezone
 
 from apps.sessions.models import StudyNote, StudySession
 from apps.users.factories import CustomUserFactory
 
-pytestmark = pytest.mark.django_db(transaction=True)
+pytestmark = pytest.mark.django_db
 
 
-@pytest.fixture
-def study_session_tables(django_db_blocker):
-    """Create the not-yet-migrated Sprint 2 tables for isolated model tests."""
-    with django_db_blocker.unblock():
-        with connection.cursor() as cursor:
-            cursor.execute(f'DROP TABLE IF EXISTS "{StudyNote._meta.db_table}" CASCADE')
-            cursor.execute(
-                f'DROP TABLE IF EXISTS "{StudySession._meta.db_table}" CASCADE'
-            )
-
-        with connection.schema_editor() as schema_editor:
-            schema_editor.create_model(StudySession)
-            schema_editor.create_model(StudyNote)
-
-    yield
-
-    with django_db_blocker.unblock():
-        with connection.cursor() as cursor:
-            cursor.execute(f'DROP TABLE IF EXISTS "{StudyNote._meta.db_table}" CASCADE')
-            cursor.execute(
-                f'DROP TABLE IF EXISTS "{StudySession._meta.db_table}" CASCADE'
-            )
-
-
-def test_study_session_string_and_note_count(study_session_tables):
+def test_study_session_string_and_note_count():
     """Study sessions expose readable labels and count attached notes."""
     user = CustomUserFactory()
     unsaved_session = StudySession(
@@ -59,7 +34,7 @@ def test_study_session_string_and_note_count(study_session_tables):
     assert unsaved_session.note_count == 1
 
 
-def test_completed_session_cannot_be_dated_in_future(study_session_tables):
+def test_completed_session_cannot_be_dated_in_future():
     """Completed sessions cannot point at a future study date."""
     session = StudySession(
         owner=CustomUserFactory(),
@@ -76,7 +51,7 @@ def test_completed_session_cannot_be_dated_in_future(study_session_tables):
     assert "study_date" in error.value.message_dict
 
 
-def test_planned_future_session_is_valid(study_session_tables):
+def test_planned_future_session_is_valid():
     """Planned sessions may be scheduled for a future date."""
     session = StudySession(
         owner=CustomUserFactory(),
@@ -90,7 +65,7 @@ def test_planned_future_session_is_valid(study_session_tables):
     session.clean()
 
 
-def test_study_note_validation_string_and_word_count(study_session_tables):
+def test_study_note_validation_string_and_word_count():
     """Study notes validate useful content and expose simple text metrics."""
     session = StudySession.objects.create(
         owner=CustomUserFactory(),
