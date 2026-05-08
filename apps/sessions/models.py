@@ -1,9 +1,6 @@
-"""
-Database models for the StudyBuddy session workflow.
+"""Database models for StudyBuddy study sessions and notes."""
 
-The sessions app owns the core study activity domain for Sprint 2:
-study sessions and notes attached to those sessions.
-"""
+from __future__ import annotations
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -58,7 +55,15 @@ class StudySession(models.Model):
         Model metadata for stable user-facing ordering.
         """
 
+        app_label = "study_sessions"
         ordering = ["-study_date", "-created_at"]
+        indexes = [
+            models.Index(
+                fields=["owner", "-study_date"],
+                name="study_session_owner_date_idx",
+            ),
+            models.Index(fields=["status"], name="study_session_status_idx"),
+        ]
 
     def __str__(self) -> str:
         """
@@ -81,7 +86,9 @@ class StudySession(models.Model):
         ):
             raise ValidationError(
                 {
-                    "study_date": "Completed study sessions cannot be dated in the future.",
+                    "study_date": (
+                        "Completed study sessions cannot be dated in the future."
+                    ),
                 }
             )
 
@@ -118,7 +125,14 @@ class StudyNote(models.Model):
         Model metadata for displaying the newest notes first.
         """
 
+        app_label = "study_sessions"
         ordering = ["-created_at"]
+        indexes = [
+            models.Index(
+                fields=["session", "-created_at"],
+                name="study_note_session_created_idx",
+            ),
+        ]
 
     def __str__(self) -> str:
         """
