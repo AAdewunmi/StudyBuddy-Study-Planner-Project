@@ -126,6 +126,25 @@ p {
     margin: 0;
 }
 
+.footer-logout-form {
+    margin: 0;
+}
+
+.footer-logout-form button {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: var(--color-muted);
+    font: inherit;
+    font-size: 0.94rem;
+    font-weight: 750;
+    text-align: left;
+}
+
+.footer-logout-form button:hover {
+    color: var(--color-blue);
+}
+
 .nav-links {
     flex: 1;
 }
