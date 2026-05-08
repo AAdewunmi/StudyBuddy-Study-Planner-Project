@@ -1,28 +1,24 @@
-"""
-factory_boy factories for the sessions app tests.
-"""
+"""factory_boy factories for the sessions app tests."""
+
+from __future__ import annotations
 
 import factory
 from django.utils import timezone
 from factory.django import DjangoModelFactory
 
 from apps.sessions.models import StudyNote, StudySession
-from apps.users.factories import UserFactory
+from apps.users.factories import CustomUserFactory
 
 
 class StudySessionFactory(DjangoModelFactory):
-    """
-    Test factory for StudySession.
-    """
+    """Test factory for StudySession."""
 
     class Meta:
-        """
-        Factory metadata binding this factory to StudySession.
-        """
+        """Factory metadata binding this factory to StudySession."""
 
         model = StudySession
 
-    owner = factory.SubFactory(UserFactory)
+    owner = factory.SubFactory(CustomUserFactory)
     title = factory.Sequence(lambda number: f"Study session {number}")
     subject = "Django"
     status = StudySession.Status.PLANNED
@@ -31,14 +27,10 @@ class StudySessionFactory(DjangoModelFactory):
 
 
 class StudyNoteFactory(DjangoModelFactory):
-    """
-    Test factory for StudyNote.
-    """
+    """Test factory for StudyNote."""
 
     class Meta:
-        """
-        Factory metadata binding this factory to StudyNote.
-        """
+        """Factory metadata binding this factory to StudyNote."""
 
         model = StudyNote
 
