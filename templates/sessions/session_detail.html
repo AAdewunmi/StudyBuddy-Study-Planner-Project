@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}{{ session.title }} | StudyBuddy{% endblock %}
+
+{% block content %}
+  <div class="container-ui">
+    <div class="page-stack">
+      <header class="page-header">
+        <div>
+          <span class="eyebrow">Study sessions</span>
+          <h1 class="page-title">{{ session.title }}</h1>
+          <p class="page-subtitle">Review the session details, add study notes, and keep useful revision points attached to this work.</p>
+        </div>
+        <div class="card-actions">
+          <a class="btn-ui" href="{% url 'sessions:list' %}">Back to Study Sessions</a>
+          <a class="btn-ui btn-ui-primary" href="{% url 'sessions:update' session.pk %}">Edit Session</a>
+        </div>
+      </header>
+
+      <section class="section-tight">
+        <div class="card-grid card-grid-2">
+          <article class="card-ui">
+            <h2 class="card-title-ui">Session Details</h2>
+            <dl class="detail-list">
+              <div class="detail-row">
+                <dt>Subject</dt>
+                <dd>{{ session.subject }}</dd>
+              </div>
+              <div class="detail-row">
+                <dt>Status</dt>
+                <dd>{{ session.get_status_display }}</dd>
+              </div>
+              <div class="detail-row">
+                <dt>Study date</dt>
+                <dd>{{ session.study_date }}</dd>
+              </div>
+              <div class="detail-row">
+                <dt>Duration</dt>
+                <dd>{{ session.duration_minutes }} minutes</dd>
+              </div>
+              <div class="detail-row">
+                <dt>Notes</dt>
+                <dd>{{ session.note_count }}</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="card-ui">
+            <h2 class="card-title-ui">Add Note</h2>
+            <form class="form-ui" method="post" action="{% url 'sessions:add_note' session.pk %}" novalidate>
+              {% csrf_token %}
+
+              {% if note_form.non_field_errors %}
+                <div class="form-errors">
+                  {{ note_form.non_field_errors }}
+                </div>
+              {% endif %}
+
+              {% for field in note_form %}
+                <p>
+                  <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                  {{ field }}
+                  {% if field.help_text %}
+                    <span class="helptext">{{ field.help_text }}</span>
+                  {% endif %}
+                  {% if field.errors %}
+                    <span class="form-errors">{{ field.errors }}</span>
+                  {% endif %}
+                </p>
+              {% endfor %}
+
+              <div class="card-actions">
+                <button class="btn-ui btn-ui-primary" type="submit">Add Note</button>
+              </div>
+            </form>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-tight">
+        <div class="section-header">
+          <span class="eyebrow">Study Notes</span>
+          <h2 class="section-title">Session notes</h2>
+        </div>
+
+        {% if notes %}
+          <div class="card-grid">
+            {% for note in notes %}
+              <article class="card-ui">
+                <div class="mock-panel-title">
+                  <span>{{ note.created_at }}</span>
+                  <span>{{ note.word_count }} words</span>
+                </div>
+                <p>{{ note.content }}</p>
+              </article>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="quote-card">
+            <span class="eyebrow">Notes</span>
+            <h2 class="section-title">No notes added yet.</h2>
+            <p>Add a note to capture what you studied, key ideas, blockers, or revision points.</p>
+          </div>
+        {% endif %}
+      </section>
+    </div>
+  </div>
+{% endblock %}

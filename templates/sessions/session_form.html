@@ -12,7 +12,7 @@
           <p class="page-subtitle">Plan focused study time, track the subject, and keep each session ready for notes and progress totals.</p>
         </div>
         <div class="card-actions">
-          <a class="btn-ui" href="{% url 'dashboard:index' %}">Back to Dashboard</a>
+          <a class="btn-ui" href="{% url 'sessions:list' %}">Back to Study Sessions</a>
         </div>
       </header>
 
@@ -44,7 +44,7 @@
 
             <div class="card-actions">
               <button class="btn-ui btn-ui-primary" type="submit">{{ submit_label }}</button>
-              <a class="btn-ui" href="{% url 'dashboard:index' %}">Cancel</a>
+              <a class="btn-ui" href="{% url 'sessions:list' %}">Cancel</a>
             </div>
           </form>
         </article>

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Study sessions | StudyBuddy{% endblock %}
+
+{% block content %}
+  <div class="container-ui">
+    <div class="page-stack">
+      <header class="page-header">
+        <div>
+          <span class="eyebrow">Study sessions</span>
+          <h1 class="page-title">Study Sessions</h1>
+          <p class="page-subtitle">Track what you planned, studied, and completed across one focused StudyBuddy workspace.</p>
+        </div>
+        <div class="card-actions">
+          <a class="btn-ui btn-ui-primary" href="{% url 'sessions:create' %}">Create Session</a>
+        </div>
+      </header>
+
+      <section class="section-tight">
+        {% if sessions %}
+          <div class="card-grid">
+            {% for session in sessions %}
+              <article class="card-ui">
+                <div class="mock-panel-title">
+                  <span>{{ session.title }}</span>
+                  <span>{{ session.study_date }}</span>
+                </div>
+                <p>{{ session.subject }}</p>
+                <div class="mock-pill-row">
+                  <span class="mock-pill">{{ session.get_status_display }}</span>
+                  <span class="mock-pill">{{ session.duration_minutes }} minutes</span>
+                </div>
+                <div class="card-actions">
+                  <a class="btn-ui" href="{% url 'sessions:detail' session.pk %}">View Session</a>
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="quote-card">
+            <span class="eyebrow">First session</span>
+            <h2 class="section-title">Create your first study session.</h2>
+            <p>Start building a study history with the subject, date, duration, and progress state for each focused session.</p>
+            <div class="card-actions">
+              <a class="btn-ui btn-ui-blue" href="{% url 'sessions:create' %}">Create Your First Session</a>
+            </div>
+          </div>
+        {% endif %}
+      </section>
+    </div>
+  </div>
+{% endblock %}
