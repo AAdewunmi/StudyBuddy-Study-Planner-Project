@@ -9,7 +9,6 @@ from apps.sessions.factories import StudySessionFactory
 from apps.sessions.models import StudySession
 from apps.users.factories import UserFactory
 
-
 pytestmark = pytest.mark.django_db
 
 
@@ -117,7 +116,9 @@ def test_invalid_session_duration_is_rejected(client) -> None:
 
     assert response.status_code == 200
     assert StudySession.objects.filter(owner=user).count() == 0
-    assert "Ensure this value is greater than or equal to 1" in response.content.decode()
+    assert (
+        "Ensure this value is greater than or equal to 1" in response.content.decode()
+    )
 
 
 def test_anonymous_user_is_redirected_from_create_session_page(client) -> None:

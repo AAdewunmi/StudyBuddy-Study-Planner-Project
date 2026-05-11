@@ -25,6 +25,9 @@ class CustomUserFactory(factory.django.DjangoModelFactory):
     password = factory.django.Password("password123")
 
 
+UserFactory = CustomUserFactory
+
+
 class UserWithRoleFactory(CustomUserFactory):
     """Create a user and attach a role after persistence."""
 

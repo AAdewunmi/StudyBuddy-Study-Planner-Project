@@ -7,7 +7,7 @@ from django.utils import timezone
 from factory.django import DjangoModelFactory
 
 from apps.sessions.models import StudyNote, StudySession
-from apps.users.factories import CustomUserFactory
+from apps.users.factories import UserFactory
 
 
 class StudySessionFactory(DjangoModelFactory):
@@ -18,7 +18,7 @@ class StudySessionFactory(DjangoModelFactory):
 
         model = StudySession
 
-    owner = factory.SubFactory(CustomUserFactory)
+    owner = factory.SubFactory(UserFactory)
     title = factory.Sequence(lambda number: f"Study session {number}")
     subject = "Django"
     status = StudySession.Status.PLANNED
