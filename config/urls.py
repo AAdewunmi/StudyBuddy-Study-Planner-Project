@@ -1,4 +1,4 @@
-"""Root URL configuration for StudyBuddy."""
+"""Root URL configuration for the StudyBuddy Django SaaS MVP."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from django.views.generic import TemplateView
 urlpatterns = [
     path("", TemplateView.as_view(template_name="home.html"), name="home"),
     path("admin/", admin.site.urls),
-    path("accounts/", include("apps.users.urls")),
+    path("users/", include("apps.users.urls")),
     path("dashboard/", include("apps.dashboard.urls")),
     path("sessions/", include("apps.sessions.urls")),
 ]
