@@ -49,6 +49,14 @@ class StudySessionForm(forms.ModelForm):
             ),
         }
 
+    def clean_title(self) -> str:
+        """Normalize the submitted study session title."""
+        return self.cleaned_data["title"].strip()
+
+    def clean_subject(self) -> str:
+        """Normalize the submitted study session subject."""
+        return self.cleaned_data["subject"].strip()
+
 
 class StudyNoteForm(forms.ModelForm):
     """Form used to add notes to a study session."""
@@ -71,3 +79,7 @@ class StudyNoteForm(forms.ModelForm):
                 }
             ),
         }
+
+    def clean_content(self) -> str:
+        """Normalize the submitted study note content."""
+        return self.cleaned_data["content"].strip()
