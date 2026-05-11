@@ -49,6 +49,16 @@ class StudySessionForm(forms.ModelForm):
             ),
         }
 
+    def __init__(self, *args, **kwargs) -> None:
+        """Keep rendered duration bounds aligned with domain validation."""
+        super().__init__(*args, **kwargs)
+
+        duration_field = self.fields["duration_minutes"]
+        duration_field.min_value = 1
+        duration_field.max_value = 1440
+        duration_field.widget.attrs["min"] = 1
+        duration_field.widget.attrs["max"] = 1440
+
     def clean_title(self) -> str:
         """Normalize the submitted study session title."""
         return self.cleaned_data["title"].strip()
