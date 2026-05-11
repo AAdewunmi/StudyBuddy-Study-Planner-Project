@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} | StudyBuddy{% endblock %}
+
+{% block content %}
+  <div class="container-ui">
+    <div class="page-stack">
+      <header class="page-header">
+        <div>
+          <span class="eyebrow">Study sessions</span>
+          <h1 class="page-title">{{ page_title }}</h1>
+          <p class="page-subtitle">Plan focused study time, track the subject, and keep each session ready for notes and progress totals.</p>
+        </div>
+        <div class="card-actions">
+          <a class="btn-ui" href="{% url 'dashboard:index' %}">Back to Dashboard</a>
+        </div>
+      </header>
+
+      <section class="section-tight">
+        <article class="card-ui form-card">
+          <h2 class="card-title-ui">Session Details</h2>
+
+          <form class="form-ui" method="post" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+              <div class="form-errors">
+                {{ form.non_field_errors }}
+              </div>
+            {% endif %}
+
+            {% for field in form %}
+              <p>
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                  <span class="helptext">{{ field.help_text }}</span>
+                {% endif %}
+                {% if field.errors %}
+                  <span class="form-errors">{{ field.errors }}</span>
+                {% endif %}
+              </p>
+            {% endfor %}
+
+            <div class="card-actions">
+              <button class="btn-ui btn-ui-primary" type="submit">{{ submit_label }}</button>
+              <a class="btn-ui" href="{% url 'dashboard:index' %}">Cancel</a>
+            </div>
+          </form>
+        </article>
+      </section>
+    </div>
+  </div>
+{% endblock %}
