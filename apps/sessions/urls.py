@@ -1,11 +1,10 @@
-"""
-URL routes for study sessions.
-"""
+"""URL routes for StudyBuddy study session workflows."""
+
+from __future__ import annotations
 
 from django.urls import path
 
 from apps.sessions import views
-
 
 app_name = "sessions"
 
