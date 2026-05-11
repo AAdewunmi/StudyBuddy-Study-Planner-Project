@@ -25,6 +25,17 @@ def test_study_session_form_strips_title_and_subject() -> None:
     assert form.cleaned_data["subject"] == "Django"
 
 
+def test_study_session_form_renders_duration_bounds() -> None:
+    """Study session form renders the same bounds enforced by validation."""
+    form = StudySessionForm()
+    duration_field = form.fields["duration_minutes"]
+
+    assert duration_field.min_value == 1
+    assert duration_field.max_value == 1440
+    assert duration_field.widget.attrs["min"] == 1
+    assert duration_field.widget.attrs["max"] == 1440
+
+
 def test_study_note_form_strips_content() -> None:
     """Study note form normalizes leading and trailing whitespace."""
     form = StudyNoteForm(
