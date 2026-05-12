@@ -91,7 +91,7 @@
                   <span>{{ note.created_at }}</span>
                   <span>{{ note.word_count }} words</span>
                 </div>
-                <p>{{ note.content }}</p>
+                <p>{{ note.content|linebreaksbr }}</p>
               </article>
             {% endfor %}
           </div>
