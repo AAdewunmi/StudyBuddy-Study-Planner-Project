@@ -28,3 +28,18 @@ def get_session_for_user_or_404(
 def get_notes_for_session(session: StudySession) -> QuerySet[StudyNote]:
     """Return notes attached to a study session."""
     return session.notes.all()
+
+
+def get_note_for_user_or_404(
+    user: AbstractBaseUser,
+    session_pk: int,
+    note_pk: int,
+) -> StudyNote:
+    """Return one note attached to a user-owned study session or raise a 404."""
+    return get_object_or_404(
+        StudyNote.objects.select_related("session").filter(
+            session__owner=user,
+            session_id=session_pk,
+        ),
+        pk=note_pk,
+    )

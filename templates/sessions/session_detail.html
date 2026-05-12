@@ -92,6 +92,44 @@
                   <span>{{ note.word_count }} words</span>
                 </div>
                 <p>{{ note.content|linebreaksbr }}</p>
+                <div class="note-actions">
+                  <details class="note-edit-panel" {% if editing_note.pk == note.pk %}open{% endif %}>
+                    <summary>Edit note</summary>
+                    <form class="form-ui" method="post" action="{% url 'sessions:update_note' session.pk note.pk %}" novalidate>
+                      {% csrf_token %}
+
+                      {% if editing_note.pk == note.pk %}
+                        {% if edit_note_form.non_field_errors %}
+                          <div class="form-errors">
+                            {{ edit_note_form.non_field_errors }}
+                          </div>
+                        {% endif %}
+
+                        <p>
+                          <label for="{{ edit_note_form.content.id_for_label }}">Note content</label>
+                          {{ edit_note_form.content }}
+                          {% for error in edit_note_form.content.errors %}
+                            <span class="form-errors">{{ error }}</span>
+                          {% endfor %}
+                        </p>
+                      {% else %}
+                        <p>
+                          <label for="note-{{ note.pk }}-content">Note content</label>
+                          <textarea id="note-{{ note.pk }}-content" name="content" rows="5">{{ note.content }}</textarea>
+                        </p>
+                      {% endif %}
+
+                      <div class="card-actions">
+                        <button class="btn-ui btn-ui-primary" type="submit">Save Note</button>
+                      </div>
+                    </form>
+                  </details>
+
+                  <form class="note-delete-form" method="post" action="{% url 'sessions:delete_note' session.pk note.pk %}">
+                    {% csrf_token %}
+                    <button class="btn-ui btn-ui-danger" type="submit">Delete Note</button>
+                  </form>
+                </div>
               </article>
             {% endfor %}
           </div>
