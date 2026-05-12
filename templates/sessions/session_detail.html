@@ -9,7 +9,7 @@
         <div>
           <span class="eyebrow">Study sessions</span>
           <h1 class="page-title">{{ session.title }}</h1>
-          <p class="page-subtitle">Review the session details, add study notes, and keep useful revision points attached to this work.</p>
+          <p class="page-subtitle">{{ session.subject }} study session for notes, revision points, and progress review.</p>
         </div>
         <div class="card-actions">
           <a class="btn-ui" href="{% url 'sessions:list' %}">Back to Study Sessions</a>
@@ -56,18 +56,16 @@
                 </div>
               {% endif %}
 
-              {% for field in note_form %}
-                <p>
-                  <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                  {{ field }}
-                  {% if field.help_text %}
-                    <span class="helptext">{{ field.help_text }}</span>
-                  {% endif %}
-                  {% if field.errors %}
-                    <span class="form-errors">{{ field.errors }}</span>
-                  {% endif %}
-                </p>
-              {% endfor %}
+              <p>
+                <label for="{{ note_form.content.id_for_label }}">Note content</label>
+                {{ note_form.content }}
+                {% if note_form.content.help_text %}
+                  <span class="helptext">{{ note_form.content.help_text }}</span>
+                {% endif %}
+                {% for error in note_form.content.errors %}
+                  <span class="form-errors">{{ error }}</span>
+                {% endfor %}
+              </p>
 
               <div class="card-actions">
                 <button class="btn-ui btn-ui-primary" type="submit">Add Note</button>
@@ -88,7 +86,7 @@
             {% for note in notes %}
               <article class="card-ui">
                 <div class="mock-panel-title">
-                  <span>{{ note.created_at }}</span>
+                  <span>Added {{ note.created_at }}</span>
                   <span>{{ note.word_count }} words</span>
                 </div>
                 <p>{{ note.content|linebreaksbr }}</p>

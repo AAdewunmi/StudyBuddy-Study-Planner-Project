@@ -1,4 +1,4 @@
-"""Forms for StudyBuddy study session and note workflows."""
+"""Forms for the StudyBuddy session workflow."""
 
 from __future__ import annotations
 
@@ -27,12 +27,12 @@ class StudySessionForm(forms.ModelForm):
         widgets = {
             "title": forms.TextInput(
                 attrs={
-                    "placeholder": "Revise Django model relationships",
+                    "placeholder": "Example: Revise Django model relationships",
                 }
             ),
             "subject": forms.TextInput(
                 attrs={
-                    "placeholder": "Django, statistics, biology",
+                    "placeholder": "Example: Django, PostgreSQL, Algorithms",
                 }
             ),
             "study_date": forms.DateInput(
