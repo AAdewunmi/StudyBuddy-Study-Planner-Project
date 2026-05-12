@@ -29,18 +29,62 @@
               </div>
             {% endif %}
 
-            {% for field in form %}
-              <p>
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
-                {% if field.help_text %}
-                  <span class="helptext">{{ field.help_text }}</span>
+            <div class="form-field">
+              <label for="{{ form.title.id_for_label }}">Title</label>
+              {{ form.title }}
+              {% if form.title.help_text %}
+                <span class="helptext">{{ form.title.help_text }}</span>
+              {% endif %}
+              {% if form.title.errors %}
+                <span class="form-errors">{{ form.title.errors }}</span>
+              {% endif %}
+            </div>
+
+            <div class="form-field">
+              <label for="{{ form.subject.id_for_label }}">Subject</label>
+              {{ form.subject }}
+              {% if form.subject.help_text %}
+                <span class="helptext">{{ form.subject.help_text }}</span>
+              {% endif %}
+              {% if form.subject.errors %}
+                <span class="form-errors">{{ form.subject.errors }}</span>
+              {% endif %}
+            </div>
+
+            <div class="form-field-grid">
+              <div class="form-field">
+                <label for="{{ form.status.id_for_label }}">Status</label>
+                {{ form.status }}
+                {% if form.status.help_text %}
+                  <span class="helptext">{{ form.status.help_text }}</span>
                 {% endif %}
-                {% if field.errors %}
-                  <span class="form-errors">{{ field.errors }}</span>
+                {% if form.status.errors %}
+                  <span class="form-errors">{{ form.status.errors }}</span>
                 {% endif %}
-              </p>
-            {% endfor %}
+              </div>
+
+              <div class="form-field">
+                <label for="{{ form.study_date.id_for_label }}">Study date</label>
+                {{ form.study_date }}
+                {% if form.study_date.help_text %}
+                  <span class="helptext">{{ form.study_date.help_text }}</span>
+                {% endif %}
+                {% if form.study_date.errors %}
+                  <span class="form-errors">{{ form.study_date.errors }}</span>
+                {% endif %}
+              </div>
+
+              <div class="form-field">
+                <label for="{{ form.duration_minutes.id_for_label }}">Duration</label>
+                {{ form.duration_minutes }}
+                {% if form.duration_minutes.help_text %}
+                  <span class="helptext">{{ form.duration_minutes.help_text }}</span>
+                {% endif %}
+                {% if form.duration_minutes.errors %}
+                  <span class="form-errors">{{ form.duration_minutes.errors }}</span>
+                {% endif %}
+              </div>
+            </div>
 
             <div class="card-actions">
               <button class="btn-ui btn-ui-primary" type="submit">{{ submit_label }}</button>
