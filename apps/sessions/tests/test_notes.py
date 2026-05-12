@@ -1,6 +1,6 @@
-"""
-Tests for study notes attached to sessions.
-"""
+"""Tests for study notes attached to sessions."""
+
+from __future__ import annotations
 
 import pytest
 from django.urls import reverse
@@ -8,7 +8,6 @@ from django.urls import reverse
 from apps.sessions.factories import StudyNoteFactory, StudySessionFactory
 from apps.sessions.models import StudyNote
 from apps.users.factories import UserFactory
-
 
 pytestmark = pytest.mark.django_db
 
@@ -91,4 +90,7 @@ def test_short_note_content_is_rejected(client) -> None:
 
     assert response.status_code == 400
     assert StudyNote.objects.filter(session=session).count() == 0
-    assert "Study notes must contain at least 10 characters" in response.content.decode()
+    assert (
+        "Study notes must contain at least 10 characters"
+        in response.content.decode()
+    )
