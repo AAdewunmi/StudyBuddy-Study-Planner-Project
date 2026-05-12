@@ -1,4 +1,9 @@
-"""Database models for StudyBuddy study sessions and notes."""
+"""
+Database models for the StudyBuddy session workflow.
+
+The sessions app owns the core study activity domain for Sprint 2:
+study sessions and notes attached to those sessions.
+"""
 
 from __future__ import annotations
 
