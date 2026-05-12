@@ -374,6 +374,18 @@ p {
     color: #ffffff;
 }
 
+.btn-ui-danger {
+    border-color: #fecdca;
+    background: #fff5f5;
+    color: #b42318;
+}
+
+.btn-ui-danger:hover {
+    border-color: #fda29b;
+    background: #fee4e2;
+    color: #912018;
+}
+
 .btn-ui-ghost {
     border-color: transparent;
     background: transparent;
@@ -608,6 +620,33 @@ p {
 .form-errors ul {
     margin: 0;
     padding-left: var(--space-lg);
+}
+
+.note-actions {
+    display: grid;
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-line);
+}
+
+.note-edit-panel {
+    display: grid;
+    gap: var(--space-md);
+}
+
+.note-edit-panel summary {
+    cursor: pointer;
+    color: var(--color-ink);
+    font-weight: 800;
+}
+
+.note-edit-panel[open] summary {
+    margin-bottom: var(--space-md);
+}
+
+.note-delete-form {
+    margin: 0;
 }
 
 .text-muted-ui {

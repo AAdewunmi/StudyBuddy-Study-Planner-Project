@@ -10,6 +10,7 @@ from django.views.decorators.http import require_POST
 
 from apps.sessions.forms import StudyNoteForm, StudySessionForm
 from apps.sessions.selectors import (
+    get_note_for_user_or_404,
     get_notes_for_session,
     get_session_for_user_or_404,
     get_sessions_for_user,
@@ -124,3 +125,49 @@ def session_add_note(request: HttpRequest, pk: int) -> HttpResponse:
         },
         status=400,
     )
+
+
+@login_required
+@require_POST
+def session_update_note(
+    request: HttpRequest,
+    pk: int,
+    note_pk: int,
+) -> HttpResponse:
+    """Update a note attached to a user-owned study session."""
+    note = get_note_for_user_or_404(request.user, pk, note_pk)
+    session = note.session
+    form = StudyNoteForm(request.POST, instance=note)
+
+    if form.is_valid():
+        form.save()
+        messages.success(request, "Study note updated.")
+        return redirect("sessions:detail", pk=session.pk)
+
+    return render(
+        request,
+        "sessions/session_detail.html",
+        {
+            "session": session,
+            "notes": get_notes_for_session(session),
+            "note_form": StudyNoteForm(),
+            "edit_note_form": form,
+            "editing_note": note,
+        },
+        status=400,
+    )
+
+
+@login_required
+@require_POST
+def session_delete_note(
+    request: HttpRequest,
+    pk: int,
+    note_pk: int,
+) -> HttpResponse:
+    """Delete a note attached to a user-owned study session."""
+    note = get_note_for_user_or_404(request.user, pk, note_pk)
+    session = note.session
+    note.delete()
+    messages.success(request, "Study note deleted.")
+    return redirect("sessions:detail", pk=session.pk)

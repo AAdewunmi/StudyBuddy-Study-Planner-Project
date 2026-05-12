@@ -69,7 +69,7 @@ class StudySessionForm(forms.ModelForm):
 
 
 class StudyNoteForm(forms.ModelForm):
-    """Form used to add notes to a study session."""
+    """Form used to add and update notes on a study session."""
 
     class Meta:
         """Form metadata binding the form to StudyNote."""

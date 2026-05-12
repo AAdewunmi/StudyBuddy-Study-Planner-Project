@@ -14,4 +14,14 @@ urlpatterns = [
     path("<int:pk>/", views.session_detail, name="detail"),
     path("<int:pk>/edit/", views.session_update, name="update"),
     path("<int:pk>/notes/new/", views.session_add_note, name="add_note"),
+    path(
+        "<int:pk>/notes/<int:note_pk>/edit/",
+        views.session_update_note,
+        name="update_note",
+    ),
+    path(
+        "<int:pk>/notes/<int:note_pk>/delete/",
+        views.session_delete_note,
+        name="delete_note",
+    ),
 ]
