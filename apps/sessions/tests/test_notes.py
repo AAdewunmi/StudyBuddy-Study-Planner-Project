@@ -91,6 +91,5 @@ def test_short_note_content_is_rejected(client) -> None:
     assert response.status_code == 400
     assert StudyNote.objects.filter(session=session).count() == 0
     assert (
-        "Study notes must contain at least 10 characters"
-        in response.content.decode()
+        "Study notes must contain at least 10 characters" in response.content.decode()
     )
