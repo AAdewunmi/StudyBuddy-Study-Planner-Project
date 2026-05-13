@@ -1,4 +1,6 @@
-"""Views for authenticated StudyBuddy dashboard pages."""
+"""
+Dashboard views for authenticated StudyBuddy users.
+"""
 
 from __future__ import annotations
 
@@ -11,7 +13,9 @@ from apps.dashboard.services import build_dashboard_context
 
 @login_required
 def index(request: HttpRequest) -> HttpResponse:
-    """Render the authenticated StudyBuddy dashboard shell."""
+    """
+    Render the authenticated user's personal dashboard.
+    """
 
     return render(
         request,
