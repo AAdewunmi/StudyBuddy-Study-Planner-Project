@@ -9,60 +9,71 @@
 [![Code style: Black, Ruff, isort](https://img.shields.io/badge/code%20style-black%20%7C%20ruff%20%7C%20isort-black)](https://github.com/AAdewunmi/StudyBuddy-Study-Planner-Project/blob/main/pyproject.toml)
 [![License](https://img.shields.io/github/license/AAdewunmi/StudyBuddy-Study-Planner-Project)](https://github.com/AAdewunmi/StudyBuddy-Study-Planner-Project/blob/main/LICENSE)
 
-StudyBuddy-Django-App is a production-minded SaaS MVP for study productivity.
+StudyBuddy-Django-App is a production-minded Django SaaS MVP for study
+productivity. It lets authenticated users create study sessions, capture notes,
+review their own study history, and see personal dashboard metrics from stored
+data.
 
-The product helps users register, manage study sessions, capture notes, review personal progress, and generate lightweight deterministic AI/NLP insights from their own study material.
+The repository is focused on a small, maintainable Django product foundation:
+email-first authentication, user-owned study workflows, strict ownership
+boundaries, a service-backed dashboard, PostgreSQL persistence, and pytest
+coverage.
 
-StudyBuddy is not a learning management system, a classroom administration platform, a course marketplace, or a general-purpose AI chatbot. The repository is focused on a small, maintainable Django product foundation that can grow into study planning, notes, progress tracking, and lightweight insight features.
+StudyBuddy is not a learning management system, classroom administration
+platform, course marketplace, or general-purpose chatbot.
 
-Sprint 1 establishes the product foundation, Django architecture, PostgreSQL configuration, custom user model, roles foundation, authentication workflow, protected dashboard shell, and first test suite.
+## Current State
 
-## Sprint 1 scope
+Sprint 1 established the product foundation: Django architecture, split
+settings, PostgreSQL configuration, custom user model, roles, authentication,
+profile, protected dashboard routing, and the initial test baseline.
 
-Sprint 1 delivers:
+Sprint 2 is complete. The canonical implementation outline is documented in
+[docs/codex-studybuddy-sprint-2-outline.md](docs/codex-studybuddy-sprint-2-outline.md).
 
-- Django project structure under `config/`
-- Split settings for base, local, test, and production
-- Environment-driven configuration
-- PostgreSQL local persistence configuration
-- Email-first custom user model
-- Role model and user-role relationship
-- Signup, login, logout, and profile views
-- Bootstrap-backed template shell
-- Protected dashboard
-- Pytest, pytest-django, and factory_boy test baseline
-- Practical architecture and setup documentation
+Sprint 2 delivered:
 
-Sprint 1 does not yet implement study sessions, notes, dashboard metrics, AI/NLP insights, or deployment. Those are delivered in later sprints.
+- `StudySession` and `StudyNote` domain models.
+- Owner-scoped session list, create, detail, and update workflows.
+- Note create, update, and delete workflows scoped through parent session
+  ownership.
+- Selector helpers for user-scoped session and note queries.
+- Service helpers for dashboard aggregate metrics.
+- A data-backed dashboard that renders prepared metrics and recent activity.
+- Strict custom design-system templates using `static/css/theme.css`, not
+  Bootstrap visual classes.
+- Sprint 2 runbooks under `docs/sprint-runbook/sprint-2/`.
 
-## Tech stack
+## Tech Stack
 
-- Python 3.11+
+- Python 3.13 in Docker
 - Django 5.x
-- PostgreSQL
-- pytest
-- pytest-django
+- PostgreSQL 16
+- pytest and pytest-django
 - factory_boy
-- Bootstrap 5
 - django-environ
+- Black, Ruff, and isort
+- Custom Django template design system in `static/css/theme.css`
+- Docker Compose
 
 ## Repository Structure
 
 ```text
 StudyBuddy-Study-Planner-Project/
     apps/
-        dashboard/       Authenticated dashboard shell.
+        dashboard/       Dashboard view, context service, and metrics tests.
         roles/           Role model and user-role relationships.
+        sessions/        Study sessions, notes, selectors, services, and tests.
         users/           Custom user model, auth forms, profile, and user URLs.
     config/
-        settings/        Environment-specific Django settings.
+        settings/        Base, local, test, and production Django settings.
         urls.py          Project URL routing.
         asgi.py          ASGI application entrypoint.
         wsgi.py          WSGI application entrypoint.
-    docs/                Architecture and project documentation.
-    static/              Project static assets.
-    templates/           Shared and app-level Django templates.
-    tests/               Pytest model and view tests.
+    docs/                Architecture, domain, design, setup, and runbooks.
+    static/css/theme.css Project-owned design system styles.
+    templates/           Base, dashboard, session, user, and public templates.
+    tests/               Cross-app pytest coverage.
     Dockerfile           Container image definition.
     docker-compose.yml   Local PostgreSQL-backed development stack.
     manage.py            Django management command entrypoint.
@@ -71,36 +82,81 @@ StudyBuddy-Study-Planner-Project/
     requirements.txt     Python dependency list.
 ```
 
-## Local setup
+## Core Routes
+
+- `home` -> `/`
+- `users:signup` -> `/users/signup/`
+- `users:login` -> `/users/login/`
+- `users:logout` -> `/users/logout/`
+- `users:profile` -> `/users/profile/`
+- `dashboard:index` -> `/dashboard/`
+- `sessions:list` -> `/sessions/`
+- `sessions:create` -> `/sessions/new/`
+- `sessions:detail` -> `/sessions/<pk>/`
+- `sessions:update` -> `/sessions/<pk>/edit/`
+- `sessions:add_note` -> `/sessions/<pk>/notes/new/`
+- `sessions:update_note` -> `/sessions/<pk>/notes/<note_pk>/edit/`
+- `sessions:delete_note` -> `/sessions/<pk>/notes/<note_pk>/delete/`
+
+## Local Setup
 
 Run the Docker-backed local stack.
 
 ```bash
-docker compose up --build
+docker compose up -d --build
 ```
 
 Run checks inside the web container.
 
 ```bash
-docker compose exec -T web python manage.py check
-docker compose exec -T web python manage.py makemigrations --check --dry-run
+docker compose exec -T web python manage.py check --settings=config.settings.local
+docker compose exec -T web python manage.py makemigrations study_sessions --check --dry-run --settings=config.settings.local
+docker compose exec -T web python manage.py migrate --noinput --settings=config.settings.local
 docker compose exec -T web python -m black . --check
-docker compose exec -T web python -m isort . --check-only
 docker compose exec -T web python -m ruff check .
 docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest -q
 ```
 
-## Environment settings
+Run the completed Sprint 2 dashboard/session verification.
 
-StudyBuddy isolates environment behaviour with explicit settings modules:
+```bash
+./docs/sprint-runbook/sprint-2/sprint-2-day-5.sh
+```
+
+## Environment Settings
+
+StudyBuddy isolates environment behavior with explicit settings modules:
 
 - `config.settings.local` is for Docker-backed local development.
-- `config.settings.test` is for tests and CI, and uses PostgreSQL.
-- `config.settings.production` is for deployment and requires production environment variables.
+- `config.settings.test` is for tests and CI, using PostgreSQL.
+- `config.settings.production` is for deployment and requires production
+  environment variables.
 
-Docker Compose runs the app with `config.settings.local`. CI runs checks and tests with `config.settings.test`.
+Docker Compose runs the app with `config.settings.local`. CI and local test
+commands use `config.settings.test`.
 
-## CI coverage
+## Verification Baseline
 
-CI generates `coverage.xml` with `pytest-cov` and uploads it to Codecov with the `CODECOV_TOKEN` GitHub Actions secret.
-The Codecov repository must be active in Codecov before uploads will be accepted.
+The current Sprint 2 dashboard and sessions verification command is:
+
+```bash
+docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest apps/dashboard/tests apps/sessions/tests -q
+```
+
+Expected current receipt:
+
+```text
+64 passed
+```
+
+The full local suite should also pass:
+
+```bash
+docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest -q
+```
+
+## CI Coverage
+
+CI generates `coverage.xml` with `pytest-cov` and uploads it to Codecov with
+the `CODECOV_TOKEN` GitHub Actions secret. The Codecov repository must be active
+in Codecov before uploads will be accepted.

@@ -1,8 +1,9 @@
 # StudyBuddy Domain Model
 
 StudyBuddy is centered on authenticated, user-owned study activity. Sprint 1
-establishes the account, role, dashboard, and authentication foundation. Sprint
-2 extends that foundation with study sessions and notes.
+established the account, role, dashboard, and authentication foundation. Sprint
+2 extends that foundation with study sessions, notes, selectors, services, and
+dashboard metrics.
 
 ## Current Foundation
 
@@ -16,8 +17,9 @@ Users sign up and log in with email addresses. Product roles are modeled by
 `apps.roles.Role` and are related to users through `Role.users`, exposed on the
 user side as `user.studybuddy_roles`.
 
-The authenticated dashboard is the current product surface. It is protected by
-Django authentication and reads the current user's roles for display.
+The authenticated dashboard is a data-backed product surface. It is protected by
+Django authentication, reads the current user's roles for display, and renders
+study metrics prepared by Python services.
 
 ## Study Session Ownership
 
@@ -75,6 +77,42 @@ Domain rules:
 - Notes are ordered newest first.
 - Notes must contain at least 10 non-whitespace characters.
 - `word_count` reports the number of whitespace-separated words.
+- Note create, update, and delete workflows are all scoped through the parent
+  session owner.
+
+## Selectors And Services
+
+Ownership-sensitive query logic lives in `apps/sessions/selectors.py`.
+
+Current selectors include:
+
+- `get_sessions_for_user(user)`;
+- `get_session_for_user_or_404(user, pk)`;
+- `get_recent_sessions_for_user(user, limit=5)`;
+- `get_notes_for_session(session)`;
+- `get_notes_for_user(user)`;
+- `get_note_for_user_or_404(user, session_pk, note_pk)`.
+
+Aggregate session business logic lives in `apps/sessions/services.py`.
+
+`build_session_metrics_for_user(user)` returns a `SessionMetrics` value with:
+
+- `total_sessions`;
+- `completed_sessions`;
+- `total_minutes`;
+- `note_count`;
+- `recent_sessions`.
+
+Dashboard context composition lives in `apps/dashboard/services.py`.
+
+`build_dashboard_context(user)` returns:
+
+- `metrics`;
+- `recent_activity`;
+- `roles`.
+
+Templates render these prepared values. Templates must not calculate aggregate
+counts, sums, filters, recent-session query logic, or ownership rules.
 
 ## App Label
 
@@ -92,3 +130,8 @@ CustomUser * -> * Role
 
 `CustomUser` owns study sessions. `StudySession` owns notes. `Role` supports
 role-aware behavior independently of the study session workflow.
+
+## Sprint 2 Outline
+
+The canonical Sprint 2 implementation outline is
+`docs/codex-studybuddy-sprint-2-outline.md`.

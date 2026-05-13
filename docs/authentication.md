@@ -1,10 +1,9 @@
-# Authentication and Access Control
+# Authentication And Access Control
 
-Sprint 1 establishes the StudyBuddy identity baseline and the first protected
-product surface.
-
-The current goal is a real SaaS-shaped authentication journey without
-overbuilding permissions before study-session workflows exist.
+StudyBuddy uses an email-first authentication foundation with protected product
+surfaces. Sprint 1 established signup, login, logout, profile, dashboard
+routing, and role helpers. Sprint 2 now uses that foundation for owner-scoped
+study sessions, notes, and data-backed dashboard metrics.
 
 ## User Model
 
@@ -29,12 +28,12 @@ AUTH_USER_MODEL = "users.CustomUser"
 
 ## Authentication Routes
 
-User-facing authentication routes live under `/accounts/`:
+User-facing authentication routes live under `/users/`:
 
-- `users:signup` -> `/accounts/signup/`
-- `users:login` -> `/accounts/login/`
-- `users:logout` -> `/accounts/logout/`
-- `users:profile` -> `/accounts/profile/`
+- `users:signup` -> `/users/signup/`
+- `users:login` -> `/users/login/`
+- `users:logout` -> `/users/logout/`
+- `users:profile` -> `/users/profile/`
 
 Signup and login redirect authenticated users to the dashboard:
 
@@ -47,6 +46,8 @@ LOGOUT_REDIRECT_URL = "home"
 The protected dashboard route is:
 
 - `dashboard:index` -> `/dashboard/`
+
+Study workflow routes live under `/sessions/`.
 
 ## Signup Flow
 
@@ -110,18 +111,41 @@ Do not use `user.roles`; that is not the current related name.
 Anonymous users fail role checks. Superusers pass role checks. Regular users
 pass only when `user.studybuddy_roles` contains the requested slug.
 
+## Study Workflow Access
+
+All study workflow views require authentication.
+
+Study sessions are resolved through user-scoped selectors before views render or
+mutate data. Users can list, create, view, and update their own sessions. They
+receive `404` when attempting to access another user's session detail or update
+URL.
+
+Study notes inherit ownership through their parent session. Note create, update,
+and delete paths resolve the parent session through the authenticated user before
+reading or writing notes.
+
 ## Dashboard Access
 
-The dashboard is the Sprint 1 post-login product destination.
+The dashboard is a protected, data-backed product surface.
 
-It is intentionally a protected shell until Sprint 2 adds study-session data.
-It displays placeholder study metrics, an empty-session state, account access,
-and role-aware messaging backed by `user.studybuddy_roles`.
+It renders prepared context from `apps.dashboard.services.build_dashboard_context`.
+That context includes:
+
+- `metrics.total_sessions`;
+- `metrics.completed_sessions`;
+- `metrics.total_minutes`;
+- `metrics.note_count`;
+- `recent_activity`;
+- `roles`.
+
+Dashboard metrics are scoped to the logged-in user and exclude records owned by
+other users. The dashboard template only renders prepared values; it does not
+calculate counts, sums, filters, or ownership rules.
 
 ## Validation
 
-The authentication journey is covered by HTTP-level tests, not just isolated
-model creation. Tests verify:
+The authentication and access-control journey is covered by HTTP-level tests and
+database-backed workflow tests. Tests verify:
 
 - signup page render;
 - signup user creation;
@@ -133,4 +157,8 @@ model creation. Tests verify:
 - profile protection;
 - authenticated profile rendering;
 - logout redirect behavior;
-- dashboard access for authenticated users.
+- dashboard access for authenticated users;
+- anonymous dashboard redirects;
+- owner-scoped session list, detail, and update behavior;
+- note create, update, and delete ownership behavior;
+- dashboard metrics scoped to the current user.
