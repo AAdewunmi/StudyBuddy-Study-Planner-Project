@@ -8,6 +8,10 @@ category feel: a polished study-product website with a bright marketing shell,
 a blue brand accent, dark rounded calls to action, and dashboard views that make
 study tracking feel motivating and useful.
 
+The current Sprint 2 product workflow is documented in
+`docs/studybuddy-sprint-2-canonical-implementation-outline.md`. Template
+changes should stay aligned with that outline.
+
 ## Visual Direction
 
 StudyBuddy should feel like:
