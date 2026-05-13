@@ -1,4 +1,6 @@
-"""Views for the StudyBuddy study session workflow."""
+"""
+Views for the StudyBuddy study session workflow.
+"""
 
 from __future__ import annotations
 
@@ -19,7 +21,10 @@ from apps.sessions.selectors import (
 
 @login_required
 def session_list(request: HttpRequest) -> HttpResponse:
-    """Render the authenticated user's study sessions."""
+    """
+    Render the authenticated user's study sessions.
+    """
+
     sessions = get_sessions_for_user(request.user)
 
     return render(
@@ -33,7 +38,10 @@ def session_list(request: HttpRequest) -> HttpResponse:
 
 @login_required
 def session_create(request: HttpRequest) -> HttpResponse:
-    """Create a study session owned by the current user."""
+    """
+    Create a study session owned by the current user.
+    """
+
     if request.method == "POST":
         form = StudySessionForm(request.POST)
 
@@ -59,7 +67,10 @@ def session_create(request: HttpRequest) -> HttpResponse:
 
 @login_required
 def session_detail(request: HttpRequest, pk: int) -> HttpResponse:
-    """Render a user-owned study session and its notes."""
+    """
+    Render a user-owned study session and its notes.
+    """
+
     session = get_session_for_user_or_404(request.user, pk)
     note_form = StudyNoteForm()
 
@@ -76,7 +87,10 @@ def session_detail(request: HttpRequest, pk: int) -> HttpResponse:
 
 @login_required
 def session_update(request: HttpRequest, pk: int) -> HttpResponse:
-    """Update a study session owned by the current user."""
+    """
+    Update a study session owned by the current user.
+    """
+
     session = get_session_for_user_or_404(request.user, pk)
 
     if request.method == "POST":
@@ -104,7 +118,10 @@ def session_update(request: HttpRequest, pk: int) -> HttpResponse:
 @login_required
 @require_POST
 def session_add_note(request: HttpRequest, pk: int) -> HttpResponse:
-    """Add a note to a user-owned study session."""
+    """
+    Add a note to a user-owned study session.
+    """
+
     session = get_session_for_user_or_404(request.user, pk)
     form = StudyNoteForm(request.POST)
 
@@ -134,7 +151,10 @@ def session_update_note(
     pk: int,
     note_pk: int,
 ) -> HttpResponse:
-    """Update a note attached to a user-owned study session."""
+    """
+    Update a note attached to a user-owned study session.
+    """
+
     note = get_note_for_user_or_404(request.user, pk, note_pk)
     session = note.session
     form = StudyNoteForm(request.POST, instance=note)
@@ -165,7 +185,10 @@ def session_delete_note(
     pk: int,
     note_pk: int,
 ) -> HttpResponse:
-    """Delete a note attached to a user-owned study session."""
+    """
+    Delete a note attached to a user-owned study session.
+    """
+
     note = get_note_for_user_or_404(request.user, pk, note_pk)
     session = note.session
     note.delete()
