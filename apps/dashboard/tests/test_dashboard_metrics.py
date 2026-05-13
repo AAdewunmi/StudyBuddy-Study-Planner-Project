@@ -10,7 +10,6 @@ from apps.sessions.factories import StudyNoteFactory, StudySessionFactory
 from apps.sessions.models import StudySession
 from apps.users.factories import UserFactory
 
-
 pytestmark = pytest.mark.django_db
 
 
