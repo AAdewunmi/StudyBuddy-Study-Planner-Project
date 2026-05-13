@@ -2,12 +2,16 @@
 
 from __future__ import annotations
 
+from datetime import timedelta
+
 import pytest
 from django.http import Http404
+from django.utils import timezone
 
 from apps.sessions.factories import StudyNoteFactory, StudySessionFactory
 from apps.sessions.selectors import (
     get_notes_for_session,
+    get_recent_sessions_for_user,
     get_session_for_user_or_404,
     get_sessions_for_user,
 )
@@ -45,6 +49,24 @@ def test_get_session_for_user_or_404_rejects_other_users_session() -> None:
 
     with pytest.raises(Http404):
         get_session_for_user_or_404(user, other_session.pk)
+
+
+def test_get_recent_sessions_for_user_returns_limited_owned_sessions() -> None:
+    """Recent session queries keep dashboard activity user-scoped and ordered."""
+    user = CustomUserFactory(email="recent.owner@example.com")
+    other_user = CustomUserFactory(email="recent.other@example.com")
+    today = timezone.localdate()
+    newest_session = StudySessionFactory(owner=user, study_date=today)
+    older_session = StudySessionFactory(
+        owner=user,
+        study_date=today - timedelta(days=1),
+    )
+    StudySessionFactory(owner=user, study_date=today - timedelta(days=2))
+    StudySessionFactory(owner=other_user, study_date=today + timedelta(days=1))
+
+    sessions = get_recent_sessions_for_user(user, limit=2)
+
+    assert sessions == [newest_session, older_session]
 
 
 def test_get_notes_for_session_returns_attached_notes() -> None:
