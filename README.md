@@ -6,7 +6,7 @@
 [![Django](https://img.shields.io/badge/django-5.x-092E20?logo=django&logoColor=white)](https://github.com/AAdewunmi/StudyBuddy-Study-Planner-Project/blob/main/requirements.txt)
 [![PostgreSQL](https://img.shields.io/badge/postgresql-16-4169E1?logo=postgresql&logoColor=white)](https://github.com/AAdewunmi/StudyBuddy-Study-Planner-Project/blob/main/docker-compose.yml)
 [![Docker](https://img.shields.io/badge/docker-compose-2496ED?logo=docker&logoColor=white)](https://github.com/AAdewunmi/StudyBuddy-Study-Planner-Project/blob/main/docker-compose.yml)
-[![Code style: Black, Ruff, isort](https://img.shields.io/badge/code%20style-black%20%7C%20ruff%20%7C%20isort-black)](https://github.com/AAdewunmi/StudyBuddy-Study-Planner-Project/blob/main/pyproject.toml)
+[![Code style: Black, Ruff](https://img.shields.io/badge/code%20style-black%20%7C%20ruff-black)](https://github.com/AAdewunmi/StudyBuddy-Study-Planner-Project/blob/main/pyproject.toml)
 [![License](https://img.shields.io/github/license/AAdewunmi/StudyBuddy-Study-Planner-Project)](https://github.com/AAdewunmi/StudyBuddy-Study-Planner-Project/blob/main/LICENSE)
 
 StudyBuddy-Django-App is a production-minded Django SaaS MVP for study
@@ -22,18 +22,11 @@ coverage.
 StudyBuddy is not a learning management system, classroom administration
 platform, course marketplace, or general-purpose chatbot.
 
-## Current State
-
-Sprint 1 established the product foundation: Django architecture, split
-settings, PostgreSQL configuration, custom user model, roles, authentication,
-profile, protected dashboard routing, and the initial test baseline.
-
-Sprint 2 is complete. The canonical implementation outline is documented in
-[docs/studybuddy-sprint-2-canonical-implementation-outline.md](docs/studybuddy-sprint-2-canonical-implementation-outline.md).
-
-Sprint 2 delivered:
+## Current Capabilities
 
 - `StudySession` and `StudyNote` domain models.
+- Email-first signup, login, logout, and profile flows.
+- Role-aware access helpers through `user.studybuddy_roles`.
 - Owner-scoped session list, create, detail, and update workflows.
 - Note create, update, and delete workflows scoped through parent session
   ownership.
@@ -42,7 +35,6 @@ Sprint 2 delivered:
 - A data-backed dashboard that renders prepared metrics and recent activity.
 - Strict custom design-system templates using `static/css/theme.css`, not
   Bootstrap visual classes.
-- Sprint 2 runbooks under `docs/sprint-runbook/sprint-2/`.
 
 ## Tech Stack
 
@@ -52,9 +44,111 @@ Sprint 2 delivered:
 - pytest and pytest-django
 - factory_boy
 - django-environ
-- Black, Ruff, and isort
+- Black and Ruff
 - Custom Django template design system in `static/css/theme.css`
 - Docker Compose
+
+## Quick Start
+
+Create the local environment file, start the Docker-backed stack, apply
+migrations, then open the app.
+
+```bash
+cp .env.example .env
+docker compose up -d --build
+docker compose exec -T web python manage.py migrate --noinput --settings=config.settings.local
+```
+
+The app runs at:
+
+```text
+http://localhost:8000
+```
+
+## Local Setup
+
+Run the Docker-backed local stack after creating `.env`.
+
+```bash
+docker compose up -d --build
+```
+
+Run checks inside the web container.
+
+```bash
+docker compose exec -T web python manage.py check --settings=config.settings.local
+docker compose exec -T web python manage.py makemigrations study_sessions --check --dry-run --settings=config.settings.local
+docker compose exec -T web python manage.py migrate --noinput --settings=config.settings.local
+docker compose exec -T web python -m black . --check
+docker compose exec -T web python -m ruff check .
+docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest -q
+```
+
+Run the dashboard/session verification runbook.
+
+```bash
+./docs/sprint-runbook/sprint-2/sprint-2-day-5.sh
+```
+
+## Environment Settings
+
+StudyBuddy isolates environment behavior with explicit settings modules:
+
+- `config.settings.local` is for Docker-backed local development.
+- `config.settings.test` is for tests and CI, using PostgreSQL.
+- `config.settings.production` is for deployment and requires production
+  environment variables.
+
+Docker Compose runs the app with `config.settings.local`. CI and local test
+commands use `config.settings.test`.
+
+## Architecture Notes
+
+The main project documentation is:
+
+- [Architecture](docs/architecture.md)
+- [Domain model](docs/domain-model.md)
+- [Design system](docs/design-system.md)
+- [Sprint 2 canonical implementation outline](docs/studybuddy-sprint-2-canonical-implementation-outline.md)
+
+The completed Sprint 2 outline records the implementation history. The README
+keeps the current runtime shape and verification path front and center.
+
+## Verification Baseline
+
+The current Sprint 2 dashboard and sessions verification command is:
+
+```bash
+docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest apps/dashboard/tests apps/sessions/tests -q
+```
+
+Expected current receipt:
+
+```text
+64 passed
+```
+
+The full local suite should also pass:
+
+```bash
+docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest -q
+```
+
+## Core Routes
+
+- `home` -> `/`
+- `users:signup` -> `/users/signup/`
+- `users:login` -> `/users/login/`
+- `users:logout` -> `/users/logout/`
+- `users:profile` -> `/users/profile/`
+- `dashboard:index` -> `/dashboard/`
+- `sessions:list` -> `/sessions/`
+- `sessions:create` -> `/sessions/new/`
+- `sessions:detail` -> `/sessions/<pk>/`
+- `sessions:update` -> `/sessions/<pk>/edit/`
+- `sessions:add_note` -> `/sessions/<pk>/notes/new/`
+- `sessions:update_note` -> `/sessions/<pk>/notes/<note_pk>/edit/`
+- `sessions:delete_note` -> `/sessions/<pk>/notes/<note_pk>/delete/`
 
 ## Repository Structure
 
@@ -80,79 +174,6 @@ StudyBuddy-Study-Planner-Project/
     pyproject.toml       Project metadata and tool configuration.
     pytest.ini           Pytest and Django test configuration.
     requirements.txt     Python dependency list.
-```
-
-## Core Routes
-
-- `home` -> `/`
-- `users:signup` -> `/users/signup/`
-- `users:login` -> `/users/login/`
-- `users:logout` -> `/users/logout/`
-- `users:profile` -> `/users/profile/`
-- `dashboard:index` -> `/dashboard/`
-- `sessions:list` -> `/sessions/`
-- `sessions:create` -> `/sessions/new/`
-- `sessions:detail` -> `/sessions/<pk>/`
-- `sessions:update` -> `/sessions/<pk>/edit/`
-- `sessions:add_note` -> `/sessions/<pk>/notes/new/`
-- `sessions:update_note` -> `/sessions/<pk>/notes/<note_pk>/edit/`
-- `sessions:delete_note` -> `/sessions/<pk>/notes/<note_pk>/delete/`
-
-## Local Setup
-
-Run the Docker-backed local stack.
-
-```bash
-docker compose up -d --build
-```
-
-Run checks inside the web container.
-
-```bash
-docker compose exec -T web python manage.py check --settings=config.settings.local
-docker compose exec -T web python manage.py makemigrations study_sessions --check --dry-run --settings=config.settings.local
-docker compose exec -T web python manage.py migrate --noinput --settings=config.settings.local
-docker compose exec -T web python -m black . --check
-docker compose exec -T web python -m ruff check .
-docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest -q
-```
-
-Run the completed Sprint 2 dashboard/session verification.
-
-```bash
-./docs/sprint-runbook/sprint-2/sprint-2-day-5.sh
-```
-
-## Environment Settings
-
-StudyBuddy isolates environment behavior with explicit settings modules:
-
-- `config.settings.local` is for Docker-backed local development.
-- `config.settings.test` is for tests and CI, using PostgreSQL.
-- `config.settings.production` is for deployment and requires production
-  environment variables.
-
-Docker Compose runs the app with `config.settings.local`. CI and local test
-commands use `config.settings.test`.
-
-## Verification Baseline
-
-The current Sprint 2 dashboard and sessions verification command is:
-
-```bash
-docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest apps/dashboard/tests apps/sessions/tests -q
-```
-
-Expected current receipt:
-
-```text
-64 passed
-```
-
-The full local suite should also pass:
-
-```bash
-docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest -q
 ```
 
 ## CI Coverage
