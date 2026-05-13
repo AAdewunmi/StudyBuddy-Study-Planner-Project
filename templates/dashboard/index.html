@@ -10,118 +10,101 @@
           <span class="eyebrow">Dashboard</span>
           <h1 class="page-title">Your study dashboard</h1>
           <p class="page-subtitle">
-            This is your protected StudyBuddy workspace. Sprint 2 will add study sessions,
-            notes, and personal progress metrics here.
+            A personal view of your study activity, recent progress, notes, and
+            account access.
           </p>
         </div>
         <div class="card-actions">
-          <span class="mock-pill dark">Authenticated</span>
+          <a class="btn-ui btn-ui-primary" href="{% url 'sessions:create' %}">Create Session</a>
         </div>
       </header>
 
       <section class="section-tight">
-        <div class="card-grid">
-          <article class="card-ui">
-            <span class="metric-value">0h</span>
-            <span class="metric-label">Today</span>
-            <div class="progress-line"><span></span></div>
-          </article>
-          <article class="card-ui">
-            <span class="metric-value">0%</span>
-            <span class="metric-label">Weekly goal</span>
-            <div class="progress-line"><span></span></div>
-          </article>
-          <article class="card-ui">
-            <span class="metric-value">0</span>
-            <span class="metric-label">Sessions tracked</span>
-            <div class="progress-line"><span></span></div>
-          </article>
-        </div>
-      </section>
-
-      <section class="section-tight">
         <div class="card-grid card-grid-2">
-          <article class="card-ui feature-card">
-            <span class="feature-icon">01</span>
-            <h2 class="card-title-ui">No study sessions yet</h2>
-            <p>
-              Your dashboard is ready. Once the core study workflow is added,
-              this page will show recent sessions, notes, study totals, and
-              AI/NLP insight summaries.
-            </p>
+          <article class="card-ui">
+            <span class="metric-value">{{ metrics.total_sessions }}</span>
+            <span class="metric-label">Total sessions</span>
+            <div class="progress-line"><span></span></div>
           </article>
-
-          <article class="card-ui feature-card">
-            <span class="feature-icon">02</span>
-            <h2 class="card-title-ui">Account access</h2>
-            {% if roles %}
-              <div class="mock-pill-row">
-                {% for role in roles %}
-                  <span class="mock-pill">{{ role.display_name }}</span>
-                {% endfor %}
-              </div>
-            {% else %}
-              <p>
-                No product roles have been assigned yet. Role-aware access is
-                available for future product surfaces.
-              </p>
-            {% endif %}
-            <div class="card-actions">
-              <a class="btn-ui" href="{% url 'users:profile' %}">Open Profile</a>
-              <form class="nav-logout-form" method="post" action="{% url 'users:logout' %}">
-                {% csrf_token %}
-                <button class="btn-ui btn-ui-ghost" type="submit">Log Out</button>
-              </form>
-            </div>
+          <article class="card-ui">
+            <span class="metric-value">{{ metrics.completed_sessions }}</span>
+            <span class="metric-label">Completed</span>
+            <div class="progress-line"><span></span></div>
+          </article>
+          <article class="card-ui">
+            <span class="metric-value">{{ metrics.total_minutes }}</span>
+            <span class="metric-label">Study minutes</span>
+            <div class="progress-line"><span></span></div>
+          </article>
+          <article class="card-ui">
+            <span class="metric-value">{{ metrics.note_count }}</span>
+            <span class="metric-label">Notes</span>
+            <div class="progress-line"><span></span></div>
           </article>
         </div>
       </section>
 
       <section class="section-tight">
-        <div class="mock-grid">
-          <article class="mock-panel tall">
-            <div class="mock-panel-title"><span>Streaks</span><span>Start today</span></div>
-            <div class="streak-row">
-              <span class="streak-day">M</span><span class="streak-day">T</span><span class="streak-day">W</span><span class="streak-day">T</span><span class="streak-day">F</span>
-            </div>
-            <div class="mock-panel-title"><span>Study Trend</span><span>This week</span></div>
-            <div class="chart-line"></div>
-            <div class="mock-panel-title"><span>Medals</span><span>Coming soon</span></div>
-            <div class="medal-row">
-              <span class="medal">0</span>
-              <span class="medal">0</span>
-              <span class="medal">0</span>
-            </div>
-          </article>
-
-          <article class="mock-panel">
-            <div class="mock-panel-title"><span>Goals</span><span>Daily</span></div>
-            <span class="metric-value">2h 0m</span>
-            <span class="metric-label">Suggested study goal</span>
-            <div class="progress-line"><span></span></div>
-          </article>
-
-          <article class="mock-panel">
-            <div class="mock-panel-title"><span>Study Days</span><span>0/365</span></div>
-            <span class="metric-value">0%</span>
-            <span class="metric-label">Year progress</span>
-            <div class="progress-line"><span></span></div>
-          </article>
-
-          <article class="mock-panel">
-            <div class="mock-panel-title"><span>Courses</span><span>Next</span></div>
-            <div class="table-list">
-              <div class="table-row"><span>Create first course</span><div class="progress-line"><span></span></div></div>
-              <div class="table-row"><span>Add a study goal</span><div class="progress-line"><span></span></div></div>
-              <div class="table-row"><span>Track session</span><div class="progress-line"><span></span></div></div>
-            </div>
-          </article>
-
-          <article class="mock-panel">
-            <div class="mock-panel-title"><span>Activities</span><span>Planned</span></div>
-            <div class="donut"></div>
-          </article>
+        <div class="section-header">
+          <span class="eyebrow">Recent activity</span>
+          <h2 class="section-title">Latest study sessions</h2>
         </div>
+
+        {% if recent_activity %}
+          <div class="card-grid">
+            {% for session in recent_activity %}
+              <article class="card-ui">
+                <div class="mock-panel-title">
+                  <span>{{ session.title }}</span>
+                  <span>{{ session.study_date }}</span>
+                </div>
+                <p>{{ session.subject }}</p>
+                <div class="mock-pill-row">
+                  <span class="mock-pill">{{ session.get_status_display }}</span>
+                  <span class="mock-pill">{{ session.duration_minutes }} minutes</span>
+                </div>
+                <div class="card-actions">
+                  <a class="btn-ui" href="{% url 'sessions:detail' session.pk %}">View Session</a>
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="quote-card">
+            <span class="eyebrow">First session</span>
+            <h2 class="section-title">No study activity yet</h2>
+            <p>No study sessions yet. Create your first study session to start building a visible record of your progress.</p>
+            <div class="card-actions">
+              <a class="btn-ui btn-ui-blue" href="{% url 'sessions:create' %}">Create Your First Session</a>
+            </div>
+          </div>
+        {% endif %}
+      </section>
+
+      <section class="section-tight">
+        <article class="card-ui feature-card">
+          <span class="feature-icon">01</span>
+          <h2 class="card-title-ui">Account access</h2>
+          {% if roles %}
+            <div class="mock-pill-row">
+              {% for role in roles %}
+                <span class="mock-pill">{{ role.display_name }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p>
+              No product roles have been assigned yet. Role-aware access is
+              available for future product surfaces.
+            </p>
+          {% endif %}
+          <div class="card-actions">
+            <a class="btn-ui" href="{% url 'users:profile' %}">Open Profile</a>
+            <form class="nav-logout-form" method="post" action="{% url 'users:logout' %}">
+              {% csrf_token %}
+              <button class="btn-ui btn-ui-ghost" type="submit">Log Out</button>
+            </form>
+          </div>
+        </article>
       </section>
     </div>
   </div>
