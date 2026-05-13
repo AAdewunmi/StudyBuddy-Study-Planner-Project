@@ -54,6 +54,18 @@ def get_notes_for_session(session: StudySession) -> QuerySet[StudyNote]:
     return session.notes.all().order_by("-created_at")
 
 
+def get_notes_for_user(user: Any) -> QuerySet[StudyNote]:
+    """
+    Return notes attached to sessions owned by the supplied user.
+    """
+
+    return (
+        StudyNote.objects.select_related("session")
+        .filter(session__owner=user)
+        .order_by("-created_at")
+    )
+
+
 def get_note_for_user_or_404(
     user: Any,
     session_pk: int,

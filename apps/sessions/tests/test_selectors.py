@@ -11,6 +11,7 @@ from django.utils import timezone
 from apps.sessions.factories import StudyNoteFactory, StudySessionFactory
 from apps.sessions.selectors import (
     get_notes_for_session,
+    get_notes_for_user,
     get_recent_sessions_for_user,
     get_session_for_user_or_404,
     get_sessions_for_user,
@@ -76,5 +77,18 @@ def test_get_notes_for_session_returns_attached_notes() -> None:
     StudyNoteFactory()
 
     notes = list(get_notes_for_session(session))
+
+    assert notes == [note]
+
+
+def test_get_notes_for_user_returns_notes_for_owned_sessions() -> None:
+    """User note queries are scoped through session ownership."""
+    user = CustomUserFactory(email="notes.owner@example.com")
+    other_user = CustomUserFactory(email="notes.other@example.com")
+    session = StudySessionFactory(owner=user)
+    note = StudyNoteFactory(session=session)
+    StudyNoteFactory(session=StudySessionFactory(owner=other_user))
+
+    notes = list(get_notes_for_user(user))
 
     assert notes == [note]
