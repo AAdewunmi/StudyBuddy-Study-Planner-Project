@@ -3,7 +3,7 @@
 StudyBuddy-Django-App is structured as a modular Django SaaS MVP. The current
 project includes the Sprint 1 authentication foundation and the completed
 Sprint 2 core study workflow described in
-`docs/codex-studybuddy-sprint-2-outline.md`.
+`docs/studybuddy-sprint-2-canonical-implementation-outline.md`.
 
 The architecture uses Django templates with project-owned CSS in
 `static/css/theme.css`, Django models for domain persistence, PostgreSQL for the

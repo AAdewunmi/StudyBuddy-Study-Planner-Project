@@ -1,4 +1,4 @@
-# codex-studybuddy-sprint-2-outline
+# studybuddy-sprint-2-canonical-implementation-outline
 
 Selected sprint: Sprint 2 - Core StudyBuddy workflow.
 

@@ -85,7 +85,7 @@ required_files=(
   "static/css/theme.css"
   "docs/domain-model.md"
   "docs/design-system.md"
-  "docs/codex-studybuddy-sprint-2-outline.md"
+  "docs/studybuddy-sprint-2-canonical-implementation-outline.md"
   "config/urls.py"
 )
 
@@ -607,7 +607,7 @@ content = "\n".join(
     [
         Path("docs/design-system.md").read_text(encoding="utf-8"),
         Path("docs/domain-model.md").read_text(encoding="utf-8"),
-        Path("docs/codex-studybuddy-sprint-2-outline.md").read_text(
+        Path("docs/studybuddy-sprint-2-canonical-implementation-outline.md").read_text(
             encoding="utf-8",
         ),
     ],
@@ -615,7 +615,7 @@ content = "\n".join(
 
 required_phrases = [
     "Authenticated Dashboard",
-    "codex-studybuddy-sprint-2-outline",
+    "studybuddy-sprint-2-canonical-implementation-outline",
     "metrics.total_sessions",
     "metrics.completed_sessions",
     "metrics.total_minutes",

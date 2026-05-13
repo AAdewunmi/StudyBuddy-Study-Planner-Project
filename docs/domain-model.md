@@ -134,4 +134,4 @@ role-aware behavior independently of the study session workflow.
 ## Sprint 2 Outline
 
 The canonical Sprint 2 implementation outline is
-`docs/codex-studybuddy-sprint-2-outline.md`.
+`docs/studybuddy-sprint-2-canonical-implementation-outline.md`.

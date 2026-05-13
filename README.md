@@ -29,7 +29,7 @@ settings, PostgreSQL configuration, custom user model, roles, authentication,
 profile, protected dashboard routing, and the initial test baseline.
 
 Sprint 2 is complete. The canonical implementation outline is documented in
-[docs/codex-studybuddy-sprint-2-outline.md](docs/codex-studybuddy-sprint-2-outline.md).
+[docs/studybuddy-sprint-2-canonical-implementation-outline.md](docs/studybuddy-sprint-2-canonical-implementation-outline.md).
 
 Sprint 2 delivered:
 

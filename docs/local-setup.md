@@ -134,7 +134,7 @@ The completed Sprint 2 dashboard/session verification is:
 The canonical Sprint 2 implementation outline is:
 
 ```text
-docs/codex-studybuddy-sprint-2-outline.md
+docs/studybuddy-sprint-2-canonical-implementation-outline.md
 ```
 
 ## Stop The Stack
