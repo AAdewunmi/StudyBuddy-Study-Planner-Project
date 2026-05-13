@@ -7,8 +7,12 @@ from typing import Any
 
 from django.db.models import Sum
 
-from apps.sessions.models import StudyNote, StudySession
-from apps.sessions.selectors import get_recent_sessions_for_user, get_sessions_for_user
+from apps.sessions.models import StudySession
+from apps.sessions.selectors import (
+    get_notes_for_user,
+    get_recent_sessions_for_user,
+    get_sessions_for_user,
+)
 
 
 @dataclass(frozen=True)
@@ -34,8 +38,10 @@ def build_session_metrics_for_user(user: Any) -> SessionMetrics:
 
     return SessionMetrics(
         total_sessions=sessions.count(),
-        completed_sessions=sessions.filter(status=StudySession.Status.COMPLETED).count(),
+        completed_sessions=sessions.filter(
+            status=StudySession.Status.COMPLETED
+        ).count(),
         total_minutes=total_minutes,
-        note_count=StudyNote.objects.filter(session__owner=user).count(),
+        note_count=get_notes_for_user(user).count(),
         recent_sessions=get_recent_sessions_for_user(user),
     )

@@ -20,4 +20,5 @@ def build_dashboard_context(user: Any) -> dict[str, Any]:
     return {
         "metrics": metrics,
         "recent_activity": metrics.recent_sessions,
+        "roles": user.studybuddy_roles.order_by("display_name"),
     }

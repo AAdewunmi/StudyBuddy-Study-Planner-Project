@@ -6,6 +6,7 @@ import pytest
 from django.urls import reverse
 
 from apps.roles.factories import RoleFactory
+from apps.sessions.factories import StudySessionFactory
 from apps.users.factories import CustomUserFactory
 
 
@@ -45,3 +46,19 @@ def test_dashboard_displays_roles_from_view_context(client):
     assert response.status_code == 200
     assert list(response.context["roles"]) == [role]
     assert b"Learner" in response.content
+
+
+@pytest.mark.django_db
+def test_dashboard_uses_user_scoped_service_context(client):
+    """Dashboard context includes session metrics from the dashboard service."""
+    user = CustomUserFactory()
+    StudySessionFactory(owner=user, duration_minutes=60)
+    StudySessionFactory(duration_minutes=120)
+    client.force_login(user)
+
+    response = client.get(reverse("dashboard:index"))
+
+    assert response.status_code == 200
+    assert response.context["metrics"].total_sessions == 1
+    assert response.context["metrics"].total_minutes == 60
+    assert len(response.context["recent_activity"]) == 1
