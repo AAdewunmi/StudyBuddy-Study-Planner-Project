@@ -109,6 +109,7 @@ The main project documentation is:
 - [Architecture](docs/architecture.md)
 - [Domain model](docs/domain-model.md)
 - [Design system](docs/design-system.md)
+- [Operational runbook](RUNBOOK.md)
 - [Sprint 2 canonical implementation outline](docs/studybuddy-sprint-2-canonical-implementation-outline.md)
 
 The completed Sprint 2 outline records the implementation history. The README
@@ -173,6 +174,7 @@ StudyBuddy-Study-Planner-Project/
     manage.py            Django management command entrypoint.
     pyproject.toml       Project metadata and tool configuration.
     pytest.ini           Pytest and Django test configuration.
+    RUNBOOK.md           Operational runbook for local checks and handoff.
     requirements.txt     Python dependency list.
 ```
 
