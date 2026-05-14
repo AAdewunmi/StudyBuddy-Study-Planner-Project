@@ -39,12 +39,39 @@ def test_study_insight_inherits_ownership_through_session() -> None:
     assert insight.session.owner == session.owner
 
 
+def test_study_insight_string_includes_session_and_confidence() -> None:
+    """String output identifies the source session and confidence score."""
+    insight = StudyInsightFactory(confidence=88)
+
+    assert str(insight) == f"Insight for {insight.session} (88%)"
+
+
 def test_study_insight_rejects_invalid_keyword_shape() -> None:
     """Keywords must be stored as a list of strings."""
     insight = StudyInsightFactory.build(keywords={"django": 3})
 
     with pytest.raises(ValidationError):
         insight.full_clean()
+
+
+def test_study_insight_rejects_non_string_keywords() -> None:
+    """Keyword lists cannot contain non-string values."""
+    insight = StudyInsightFactory.build(keywords=["django", 3])
+
+    with pytest.raises(ValidationError) as exc_info:
+        insight.full_clean()
+
+    assert "Each keyword must be stored as a string." in str(exc_info.value)
+
+
+def test_study_insight_rejects_invalid_source_hash_length() -> None:
+    """Source hashes must be stored as SHA-256 hex digests."""
+    insight = StudyInsightFactory.build(source_hash="not-a-sha")
+
+    with pytest.raises(ValidationError) as exc_info:
+        insight.full_clean()
+
+    assert "Source hash must be a SHA-256 hex digest." in str(exc_info.value)
 
 
 def test_study_insight_is_unique_for_session_and_source_hash() -> None:
