@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "apps.roles",
     "apps.dashboard",
     "apps.sessions.apps.StudySessionsConfig",
+    "apps.insights.apps.InsightsConfig",
 ]
 
 MIDDLEWARE = [

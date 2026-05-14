@@ -17,7 +17,6 @@ class StudyInsightFactory(factory.django.DjangoModelFactory):
         model = StudyInsight
 
     session = factory.SubFactory(StudySessionFactory)
-    owner = factory.LazyAttribute(lambda insight: insight.session.owner)
     summary = "Django tests confirm the study workflow behaves as expected."
     keywords = factory.LazyFunction(lambda: ["django", "tests", "workflow"])
     confidence = 76
@@ -25,6 +24,4 @@ class StudyInsightFactory(factory.django.DjangoModelFactory):
         "This insight was generated with deterministic keyword extraction, "
         "extractive summarisation, and rule-based confidence scoring."
     )
-    source_hash = factory.Sequence(
-        lambda number: f"{number:064x}"[-64:]
-    )
+    source_hash = factory.Sequence(lambda number: f"{number:064x}"[-64:])

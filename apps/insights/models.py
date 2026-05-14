@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
-from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+
+from apps.sessions.models import StudySession
 
 
 class StudyInsight(models.Model):
@@ -16,13 +17,8 @@ class StudyInsight(models.Model):
     existing insight when the underlying note text has not changed.
     """
 
-    owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="study_insights",
-    )
     session = models.ForeignKey(
-        "sessions.StudySession",
+        StudySession,
         on_delete=models.CASCADE,
         related_name="insights",
     )
@@ -42,8 +38,8 @@ class StudyInsight(models.Model):
         ordering = ["-created_at", "-id"]
         constraints = [
             models.UniqueConstraint(
-                fields=["owner", "session", "source_hash"],
-                name="unique_insight_per_owner_session_source",
+                fields=["session", "source_hash"],
+                name="unique_insight_per_session_source",
             )
         ]
 
@@ -52,20 +48,8 @@ class StudyInsight(models.Model):
         return f"Insight for {self.session} ({self.confidence}%)"
 
     def clean(self) -> None:
-        """Validate ownership and JSON field shape."""
+        """Validate JSON field shape and source hash format."""
         super().clean()
-
-        if self.session_id and self.owner_id:
-            session_owner_id = getattr(self.session, "owner_id", None)
-            if session_owner_id is not None and session_owner_id != self.owner_id:
-                raise ValidationError(
-                    {
-                        "owner": (
-                            "Insight owner must match the owner of the "
-                            "study session."
-                        )
-                    }
-                )
 
         if not isinstance(self.keywords, list):
             raise ValidationError({"keywords": "Keywords must be stored as a list."})
