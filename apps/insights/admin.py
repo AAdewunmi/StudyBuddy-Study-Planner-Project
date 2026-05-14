@@ -13,7 +13,7 @@ class StudyInsightAdmin(admin.ModelAdmin):
 
     list_display = (
         "id",
-        "owner",
+        "session_owner",
         "session",
         "confidence",
         "keywords_preview",
@@ -21,14 +21,20 @@ class StudyInsightAdmin(admin.ModelAdmin):
     )
     list_filter = ("confidence", "created_at")
     search_fields = (
-        "owner__email",
+        "session__owner__email",
         "session__title",
         "summary",
         "keywords",
         "source_hash",
     )
+    list_select_related = ("session", "session__owner")
     readonly_fields = ("created_at", "updated_at", "source_hash")
     ordering = ("-created_at", "-id")
+
+    @admin.display(description="Owner", ordering="session__owner__email")
+    def session_owner(self, obj: StudyInsight) -> str:
+        """Return the parent session owner email for admin inspection."""
+        return obj.session.owner.email
 
     @admin.display(description="Keywords")
     def keywords_preview(self, obj: StudyInsight) -> str:

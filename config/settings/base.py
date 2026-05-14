@@ -1,9 +1,9 @@
-"""
-Base Django settings for the StudyBuddy Django SaaS MVP.
+"""Base Django settings for the StudyBuddy SaaS MVP.
 
-This module contains configuration shared by local, CI, and production
-environments. Environment-specific modules should import from this file and
-override only the settings that differ.
+The base settings module contains configuration shared by local, CI, and
+production environments. Environment-specific settings should live in
+``config.settings.local``, ``config.settings.test``, or
+``config.settings.production``.
 """
 
 from __future__ import annotations
@@ -74,6 +74,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "config.wsgi.application"
+ASGI_APPLICATION = "config.asgi.application"
 
 if env("DATABASE_URL", default=None):
     DATABASES = {
@@ -118,10 +119,11 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+STATICFILES_DIRS = [BASE_DIR / "static"] if (BASE_DIR / "static").exists() else []
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
