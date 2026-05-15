@@ -8,25 +8,37 @@ from apps.insights.nlp.keyword_extraction import extract_keywords
 def test_extract_keywords_ranks_by_frequency_then_alphabetically() -> None:
     """Keyword ranking is deterministic and explainable."""
     text = (
-        "Biology chemistry biology algebra chemistry biology " "revision algebra tests."
+        "Django testing testing pytest Django testing database " "database alpha beta."
     )
 
     assert extract_keywords(text, limit=4) == [
-        "biology",
-        "algebra",
-        "chemistry",
-        "revision",
+        "testing",
+        "database",
+        "django",
+        "alpha",
+    ]
+
+
+def test_extract_keywords_uses_alphabetical_order_for_ties() -> None:
+    """Terms with the same frequency are sorted alphabetically."""
+    text = "zebra alpha beta zebra alpha beta"
+
+    assert extract_keywords(text, limit=3) == [
+        "alpha",
+        "beta",
+        "zebra",
     ]
 
 
 def test_extract_keywords_caps_results_by_limit() -> None:
     """Keyword output respects the configured limit."""
-    text = "calculus algebra physics chemistry biology geometry"
+    text = "django pytest postgres docker templates bootstrap views models"
 
-    assert extract_keywords(text, limit=3) == [
-        "algebra",
-        "biology",
-        "calculus",
+    assert extract_keywords(text, limit=4) == [
+        "bootstrap",
+        "django",
+        "docker",
+        "models",
     ]
 
 
