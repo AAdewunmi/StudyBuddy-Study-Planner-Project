@@ -35,10 +35,7 @@ def test_split_sentences_handles_note_list_items() -> None:
 
 def test_split_sentences_keeps_abbreviations_and_decimals_together() -> None:
     """Known abbreviations and decimals do not create false boundaries."""
-    text = (
-        "Dr. Smith used e.g. 3.14 in examples. "
-        "Students solved 2.5 practice sets."
-    )
+    text = "Dr. Smith used e.g. 3.14 in examples. " "Students solved 2.5 practice sets."
 
     assert split_sentences(text) == [
         "Dr. Smith used e.g. 3.14 in examples.",

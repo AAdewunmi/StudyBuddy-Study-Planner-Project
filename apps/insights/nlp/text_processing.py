@@ -259,8 +259,7 @@ def _ends_with_non_boundary_abbreviation(text: str, index: int) -> bool:
     """Return whether text up to index ends with a known abbreviation."""
     prefix = text[: index + 1].strip().lower()
     return any(
-        prefix.endswith(abbreviation)
-        for abbreviation in NON_BOUNDARY_ABBREVIATIONS
+        prefix.endswith(abbreviation) for abbreviation in NON_BOUNDARY_ABBREVIATIONS
     )
 
 
