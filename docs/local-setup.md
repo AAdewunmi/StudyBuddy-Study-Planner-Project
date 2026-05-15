@@ -123,6 +123,14 @@ Run tests with coverage, matching CI.
 docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest --cov=apps --cov=config --cov-report=xml -q
 ```
 
+If you run pytest from a host-side Python environment instead of inside the
+container, point the test settings at the PostgreSQL port published by Docker
+Compose.
+
+```bash
+TEST_DATABASE_URL=postgres://studybuddy:studybuddy@localhost:5432/studybuddy_test python3 -m pytest --cov=apps --cov=config --cov-report=term-missing -q
+```
+
 ## Run Sprint Verification Runbooks
 
 The completed Sprint 2 dashboard/session verification is:
