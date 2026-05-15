@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import pytest
+
+from apps.insights.nlp import summarisation
 from apps.insights.nlp.summarisation import LOW_INFORMATION_SUMMARY, summarise_text
 
 
@@ -44,5 +47,35 @@ def test_summarise_text_handles_low_information_input() -> None:
     assert summarise_text("and the of to") == LOW_INFORMATION_SUMMARY
     assert summarise_text("AI ML UX") == LOW_INFORMATION_SUMMARY
     assert summarise_text("Useful content exists.", max_sentences=0) == (
+        LOW_INFORMATION_SUMMARY
+    )
+
+
+def test_summarise_text_handles_empty_keyword_result(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A defensive empty keyword result should produce a low-information summary."""
+    monkeypatch.setattr(
+        summarisation,
+        "extract_keywords",
+        lambda _text, limit=8: [],
+    )
+
+    assert summarise_text("Biology notes contain useful context.") == (
+        LOW_INFORMATION_SUMMARY
+    )
+
+
+def test_summarise_text_handles_unscored_sentences(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Sentences with no keyword overlap should not be presented as useful."""
+    monkeypatch.setattr(
+        summarisation,
+        "extract_keywords",
+        lambda _text, limit=8: ["absent"],
+    )
+
+    assert summarise_text("Biology notes contain useful context.") == (
         LOW_INFORMATION_SUMMARY
     )
