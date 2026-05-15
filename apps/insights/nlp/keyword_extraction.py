@@ -6,8 +6,10 @@ from collections import Counter
 
 from apps.insights.nlp.text_processing import meaningful_tokens
 
+DEFAULT_KEYWORD_LIMIT = 8
 
-def extract_keywords(text: str | None, limit: int = 8) -> list[str]:
+
+def extract_keywords(text: str | None, limit: int = DEFAULT_KEYWORD_LIMIT) -> list[str]:
     """Extract ranked keywords from note text.
 
     Ranking is deterministic:
