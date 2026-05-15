@@ -45,7 +45,7 @@ def test_meaningful_tokens_filters_stop_words_and_short_terms() -> None:
 
 def test_source_text_hash_uses_normalised_text_sha256() -> None:
     """Source hashes are valid SHA-256 digests of normalised text."""
-    expected = hashlib.sha256("algebra notes".encode("utf-8")).hexdigest()
+    expected = hashlib.sha256(b"algebra notes").hexdigest()
 
     assert source_text_hash("  Algebra\nNotes  ") == expected
     assert len(source_text_hash("Algebra notes")) == 64

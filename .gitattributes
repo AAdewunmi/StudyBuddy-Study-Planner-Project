@@ -53,5 +53,4 @@ LICENSE text eol=lf
 *.avif binary
 *.zip binary
 *.gz binary
-*.sqlite3 binary
 *.db binary
