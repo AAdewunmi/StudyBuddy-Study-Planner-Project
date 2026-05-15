@@ -84,6 +84,14 @@ docker compose exec -T web python -m ruff check .
 docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest -q
 ```
 
+Host-side pytest also uses PostgreSQL. When running from a local Python
+environment, point the test settings at Docker Compose's published database
+port:
+
+```bash
+TEST_DATABASE_URL=postgres://studybuddy:studybuddy@localhost:5432/studybuddy_test python3 -m pytest --cov=apps --cov=config --cov-report=term-missing -q
+```
+
 Run the dashboard/session verification runbook.
 
 ```bash
