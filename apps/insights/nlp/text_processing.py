@@ -6,7 +6,20 @@ import hashlib
 import re
 
 TOKEN_PATTERN = re.compile(r"[a-z0-9]+")
-SENTENCE_PATTERN = re.compile(r"(?<=[.!?])\s+")
+SENTENCE_ENDINGS = frozenset(".!?")
+UNORDERED_LIST_MARKERS = ("- ", "* ")
+ORDERED_LIST_ENDINGS = frozenset(".):")
+NON_BOUNDARY_ABBREVIATIONS = frozenset(
+    {
+        "dr.",
+        "e.g.",
+        "i.e.",
+        "mr.",
+        "mrs.",
+        "ms.",
+        "prof.",
+    }
+)
 
 STOP_WORDS = frozenset(
     {
@@ -182,6 +195,110 @@ def meaningful_tokens(text: str | None, minimum_length: int = 3) -> list[str]:
     ]
 
 
+def _strip_list_marker(line: str) -> str:
+    """Return a note line without a simple list marker."""
+    stripped = line.strip()
+
+    for marker in UNORDERED_LIST_MARKERS:
+        if stripped.startswith(marker):
+            return stripped[len(marker) :].strip()
+
+    marker, separator, remainder = stripped.partition(" ")
+    if (
+        separator
+        and remainder.strip()
+        and marker[-1:] in ORDERED_LIST_ENDINGS
+        and marker[:-1].isdigit()
+    ):
+        return remainder.strip()
+
+    return stripped
+
+
+def _source_text_blocks(text: str) -> list[str]:
+    """Return paragraph and list-item blocks in source order."""
+    blocks: list[str] = []
+    current_paragraph: list[str] = []
+
+    def append_current_paragraph() -> None:
+        if current_paragraph:
+            blocks.append(" ".join(current_paragraph))
+            current_paragraph.clear()
+
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line:
+            append_current_paragraph()
+            continue
+
+        without_list_marker = _strip_list_marker(line)
+        if without_list_marker != line:
+            append_current_paragraph()
+            if without_list_marker:
+                blocks.append(without_list_marker)
+            continue
+
+        current_paragraph.append(line)
+
+    append_current_paragraph()
+    return blocks
+
+
+def _is_decimal_point(text: str, index: int) -> bool:
+    """Return whether a period is part of a numeric decimal."""
+    return (
+        text[index] == "."
+        and index > 0
+        and index + 1 < len(text)
+        and text[index - 1].isdigit()
+        and text[index + 1].isdigit()
+    )
+
+
+def _ends_with_non_boundary_abbreviation(text: str, index: int) -> bool:
+    """Return whether text up to index ends with a known abbreviation."""
+    prefix = text[: index + 1].strip().lower()
+    return any(
+        prefix.endswith(abbreviation)
+        for abbreviation in NON_BOUNDARY_ABBREVIATIONS
+    )
+
+
+def _is_sentence_boundary(text: str, index: int) -> bool:
+    """Return whether the character at index should end a sentence."""
+    if text[index] not in SENTENCE_ENDINGS:
+        return False
+
+    if _is_decimal_point(text, index):
+        return False
+
+    if _ends_with_non_boundary_abbreviation(text, index):
+        return False
+
+    return index + 1 == len(text) or text[index + 1].isspace()
+
+
+def _split_sentence_block(block: str) -> list[str]:
+    """Split one paragraph or list item into sentence-like units."""
+    sentences: list[str] = []
+    start = 0
+
+    for index in range(len(block)):
+        if not _is_sentence_boundary(block, index):
+            continue
+
+        sentence = block[start : index + 1].strip()
+        if sentence:
+            sentences.append(sentence)
+        start = index + 1
+
+    remainder = block[start:].strip()
+    if remainder:
+        sentences.append(remainder)
+
+    return sentences
+
+
 def split_sentences(text: str | None) -> list[str]:
     """Split text into simple source sentences.
 
@@ -198,8 +315,11 @@ def split_sentences(text: str | None) -> list[str]:
     if not stripped:
         return []
 
-    sentences = SENTENCE_PATTERN.split(stripped)
-    return [sentence.strip() for sentence in sentences if sentence.strip()]
+    sentences: list[str] = []
+    for block in _source_text_blocks(stripped):
+        sentences.extend(_split_sentence_block(block))
+
+    return sentences
 
 
 def source_text_hash(text: str | None) -> str:
