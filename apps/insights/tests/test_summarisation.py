@@ -21,19 +21,28 @@ def test_summarise_text_selects_high_signal_source_sentence() -> None:
 def test_summarise_text_preserves_source_order_after_scoring() -> None:
     """Selected sentences should be returned in original reading order."""
     text = (
-        "Database transactions keep study notes consistent. "
+        "Database database transactions keep study notes consistent. "
         "Django forms validate study sessions. "
-        "Database constraints protect ownership rules."
+        "Database database constraints protect ownership rules."
     )
 
     result = summarise_text(text, max_sentences=2)
 
     assert result == (
-        "Database transactions keep study notes consistent. "
-        "Database constraints protect ownership rules."
+        "Database database transactions keep study notes consistent. "
+        "Database database constraints protect ownership rules."
     )
 
 
 def test_summarise_text_handles_empty_input() -> None:
     """Empty input should return the low-information summary."""
     assert summarise_text("") == LOW_INFORMATION_SUMMARY
+
+
+def test_summarise_text_handles_low_information_input() -> None:
+    """Low-signal input should not be presented as a useful summary."""
+    assert summarise_text("and the of to") == LOW_INFORMATION_SUMMARY
+    assert summarise_text("AI ML UX") == LOW_INFORMATION_SUMMARY
+    assert summarise_text("Useful content exists.", max_sentences=0) == (
+        LOW_INFORMATION_SUMMARY
+    )

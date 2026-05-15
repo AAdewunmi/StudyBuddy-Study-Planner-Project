@@ -33,24 +33,30 @@ def summarise_text(text: str | None, max_sentences: int = 2) -> str:
     if not sentences:
         return LOW_INFORMATION_SUMMARY
 
+    meaningful_terms = meaningful_tokens(text)
+    if not meaningful_terms:
+        return LOW_INFORMATION_SUMMARY
+
     keywords = extract_keywords(text, limit=8)
-    token_counts = Counter(meaningful_tokens(text))
+    token_counts = Counter(meaningful_terms)
 
     if not keywords:
-        return sentences[0]
+        return LOW_INFORMATION_SUMMARY
 
     keyword_set = set(keywords)
     scored_sentences: list[tuple[int, int, str]] = []
 
     for index, sentence in enumerate(sentences):
         sentence_tokens = meaningful_tokens(sentence)
-        score = sum(token_counts[token] for token in sentence_tokens if token in keyword_set)
+        score = sum(
+            token_counts[token] for token in sentence_tokens if token in keyword_set
+        )
 
         if score > 0:
             scored_sentences.append((score, index, sentence))
 
     if not scored_sentences:
-        return sentences[0]
+        return LOW_INFORMATION_SUMMARY
 
     selected = sorted(scored_sentences, key=lambda item: (-item[0], item[1]))[
         :max_sentences
