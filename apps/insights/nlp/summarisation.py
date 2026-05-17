@@ -62,6 +62,6 @@ def summarise_text(text: str | None, max_sentences: int = 2) -> str:
         :max_sentences
     ]
 
-    # Preserve source order after ranking so the summary reads naturally.
+    # Preserve source order and copy sentences verbatim so summaries stay grounded.
     selected_in_source_order = sorted(selected, key=lambda item: item[1])
     return " ".join(sentence for _score, _index, sentence in selected_in_source_order)
