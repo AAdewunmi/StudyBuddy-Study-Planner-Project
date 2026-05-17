@@ -2,32 +2,35 @@
 
 ## Purpose
 
-StudyBuddy's study insight feature helps users review notes attached to their
-study sessions. The MVP direction is intentionally lightweight: usefulness,
+StudyBuddy includes a lightweight AI/NLP feature that helps users review their
+study notes. The feature is designed for an early SaaS MVP where usefulness,
 determinism, explainability, and testability matter more than model complexity.
 
-The system should not use a large language model, external API, background
-worker, or opaque prediction service for the first implementation. It should use
-deterministic text processing so the same source notes produce the same stored
-insight.
+The system does not use a large language model, external API, background
+worker, or opaque prediction service. It uses deterministic text processing so
+the same source notes produce the same insight outputs.
 
-## Current Scope
+## Current Project Status
 
-The project currently has the persistence layer for generated insights:
+The current project includes:
 
 - `apps.insights.models.StudyInsight`
-- `apps.insights.apps.InsightsConfig`
 - `apps.insights.admin.StudyInsightAdmin`
-- model, admin, and migration tests
+- deterministic text normalisation and source hashing helpers
+- deterministic keyword extraction
+- extractive summary generation
+- rule-based confidence scoring
+- deterministic explanation building
+- model, admin, and NLP unit tests
 
-The deterministic NLP pipeline, selectors, views, and templates are planned
-Sprint 3 work. This document describes the contract those pieces should follow
-when they are added.
+The end-to-end generation service, selectors, session-detail UI integration,
+and insights dashboard are still future integration work. When those pieces are
+added, they should follow this contract.
 
 ## Product Behaviour
 
-A signed-in user should be able to generate an insight from notes attached to
-one of their own study sessions.
+A signed-in user should be able to open one of their own study sessions and
+generate an insight from the notes attached to that session.
 
 The generated insight contains:
 
@@ -35,10 +38,12 @@ The generated insight contains:
 - ranked keywords
 - a confidence score from 0 to 100
 - an explanation of how the insight was produced
-- a source hash representing normalised note text
+- a source hash representing the normalised note text
 
-The insight is stored in the database and can be reused later while the source
-notes remain unchanged.
+The insight is stored in the database and can be viewed again later when the
+session or insight UI is wired in. If the source notes have not changed, the
+application should reuse the existing insight instead of creating a duplicate
+row.
 
 ## Deterministic Contract
 
@@ -51,8 +56,8 @@ For the same source note text, the pipeline must produce the same:
 - confidence score
 - explanation pattern
 
-The source hash should be generated from normalised note text using SHA-256. The
-hash lets the application detect whether notes have changed since the last
+The source hash is generated from normalised note text using SHA-256. The hash
+allows the application to detect whether notes have changed since the last
 generated insight.
 
 If a user generates an insight twice without changing the notes, StudyBuddy
@@ -60,10 +65,10 @@ should reuse the existing insight instead of creating a duplicate row.
 
 ## Input Scope
 
-The Sprint 3 implementation should analyse note content attached to a single
-study session.
+The Sprint 3 implementation analyses note content attached to a single study
+session.
 
-It must not analyse:
+It does not analyse:
 
 - notes from other users
 - sessions owned by another user
@@ -74,15 +79,15 @@ It must not analyse:
 
 ## Text Normalisation
 
-The planned pipeline should lowercase text, trim whitespace, collapse repeated
-whitespace, and tokenise alphanumeric terms.
+The pipeline lowercases text, trims whitespace, collapses repeated whitespace,
+and tokenises alphanumeric terms.
 
-Stop words should be filtered before keyword extraction. Short terms should also
-be removed where they are unlikely to carry meaningful study context.
+Stop words are filtered before keyword extraction. Short terms are also removed
+where they are unlikely to carry meaningful study context.
 
 ## Keyword Extraction
 
-Keywords should be selected using deterministic term frequency.
+Keywords are selected using deterministic term frequency.
 
 Ranking rules:
 
@@ -95,22 +100,22 @@ concepts without pretending to infer deep semantic meaning.
 
 ## Extractive Summary
 
-The summary should be extractive. It should select sentences from the user's own
-notes rather than generating new claims.
+The summary is extractive. It selects sentences from the user's own notes
+rather than generating new claims.
 
-Sentence scoring should use meaningful tokens and extracted keyword frequency.
-High-signal sentences should be selected, then returned in their original source
+Sentence scoring uses meaningful tokens and extracted keyword frequency.
+High-signal sentences are selected, then returned in their original source
 order so the summary remains readable.
 
-When there is not enough content, the system should return a low-information
-message instead of fabricating a useful-looking summary.
+When there is not enough content, the system returns a low-information message
+instead of fabricating a useful-looking summary.
 
 ## Confidence Scoring
 
-Confidence should be rule-based. It reflects whether the input text contains
-enough meaningful content to support a useful insight.
+Confidence is rule-based. It reflects whether the input text contains enough
+meaningful content to support a useful insight.
 
-The score should consider:
+The score considers:
 
 - meaningful token count
 - unique meaningful token count
@@ -123,13 +128,12 @@ Confidence labels:
 - `Medium` for scores from 45 to 74
 - `High` for scores from 75 to 100
 
-The confidence score is not a probability, an intelligence score, or a claim
-of factual correctness. It is a quality signal for the generated insight.
+The confidence score is not a probability, an intelligence score, or a claim of
+factual correctness. It is a quality signal for the generated insight.
 
 ## Explanation
 
-Every generated insight should include an explanation. The explanation should
-tell the user:
+Every generated insight includes an explanation. The explanation tells the user:
 
 - that keywords came from deterministic term frequency
 - that the summary uses source sentences
@@ -137,8 +141,8 @@ tell the user:
 - which keywords were detected
 - when there was too little content to analyse properly
 
-The explanation is part of the product contract. It avoids presenting the result
-as smarter or more authoritative than it is.
+The explanation is part of the product contract. It avoids presenting the
+result as smarter or more authoritative than it is.
 
 ## Persistence Rules
 
@@ -156,12 +160,18 @@ Current fields:
 - `updated_at`
 
 `StudyInsight` does not store a separate `owner` field. Ownership is inherited
-through `StudyInsight.session.owner`, matching the existing `StudyNote`
+through `StudyInsight.session.owner`, matching the existing session and note
 ownership model.
 
 Uniqueness rule:
 
 - one insight per session and source hash
+
+Ownership rule:
+
+- insight ownership is resolved through the parent session
+- any generation service or view must ensure the session belongs to the
+  requesting user before creating or returning an insight
 
 Validation rules currently enforced by the model:
 
@@ -170,8 +180,8 @@ Validation rules currently enforced by the model:
 - `confidence` must be between 0 and 100
 - `source_hash` must be 64 characters
 
-The planned NLP pipeline should generate `source_hash` values as valid SHA-256
-hex digests before creating a `StudyInsight`.
+The NLP pipeline should generate `source_hash` values as valid SHA-256 hex
+digests before creating a `StudyInsight`.
 
 ## Permission Rules
 
@@ -193,18 +203,18 @@ Current tests cover:
 - duplicate protection for `session` and `source_hash`
 - admin owner display through the parent session
 - admin keyword preview behaviour
-
-Planned Sprint 3 tests should cover:
-
 - text normalisation
 - source hashing
 - keyword extraction
-- summary generation
+- extractive summary generation
 - confidence scoring
 - explanation behaviour
-- idempotent insight generation
-- permission enforcement
-- session detail or insights UI visibility, when those views exist
+
+Future integration tests should cover:
+
+- idempotent insight generation through a service layer
+- permission enforcement for generation and retrieval
+- session detail or insights dashboard visibility, when those views exist
 
 ## Known Limitations
 
@@ -221,6 +231,7 @@ Current limitations:
 - no personalised recommendations
 - no support for uploaded files
 - no multilingual NLP tuning
+- no end-to-end insight generation UI yet
 
 These limitations are acceptable for the Sprint 3 MVP because the feature is
 deterministic, cheap to run, easy to test, and honest in the UI.
