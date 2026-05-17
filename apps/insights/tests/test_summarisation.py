@@ -6,6 +6,7 @@ import pytest
 
 from apps.insights.nlp import summarisation
 from apps.insights.nlp.summarisation import LOW_INFORMATION_SUMMARY, summarise_text
+from apps.insights.nlp.text_processing import split_sentences
 
 
 def test_summarise_text_selects_high_signal_source_sentence() -> None:
@@ -35,6 +36,27 @@ def test_summarise_text_preserves_source_order_after_scoring() -> None:
         "Database database transactions keep study notes consistent. "
         "Database database constraints protect ownership rules."
     )
+
+
+def test_summarise_text_uses_only_user_note_sentences() -> None:
+    """Every summary sentence should be copied from the user's own notes."""
+    text = (
+        "Photosynthesis photosynthesis uses chlorophyll to convert light into glucose. "
+        "Cell respiration releases stored energy during revision. "
+        "Photosynthesis depends on carbon dioxide and water."
+    )
+
+    result = summarise_text(text, max_sentences=2)
+
+    assert result == (
+        "Photosynthesis photosynthesis uses chlorophyll to convert light into glucose. "
+        "Photosynthesis depends on carbon dioxide and water."
+    )
+    source_sentences = split_sentences(text)
+    summary_sentences = split_sentences(result)
+    assert summary_sentences
+    assert all(sentence in source_sentences for sentence in summary_sentences)
+    assert "mitochondria" not in result
 
 
 def test_summarise_text_handles_empty_input() -> None:
