@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from apps.insights.nlp.confidence import confidence_label, score_confidence
+from apps.insights.nlp.summarisation import LOW_INFORMATION_SUMMARY
 
 
 def test_score_confidence_returns_zero_for_empty_text() -> None:
@@ -39,6 +40,24 @@ def test_score_confidence_increases_for_richer_content() -> None:
     )
 
     assert strong > weak
+
+
+def test_score_confidence_does_not_reward_low_information_summary() -> None:
+    """Fallback summary text should not be treated as a usable summary."""
+    text = (
+        "Django testing confirms reliable session workflows. "
+        "Database-backed notes improve review quality."
+    )
+    keywords = ["django", "testing", "database"]
+
+    with_fallback_summary = score_confidence(text, keywords, LOW_INFORMATION_SUMMARY)
+    with_extract_summary = score_confidence(
+        text,
+        keywords,
+        "Django testing confirms reliable session workflows.",
+    )
+
+    assert with_extract_summary > with_fallback_summary
 
 
 def test_confidence_label_maps_score_to_user_facing_label() -> None:
