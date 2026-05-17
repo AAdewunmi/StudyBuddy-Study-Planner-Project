@@ -208,10 +208,10 @@ Current tests cover:
 - keyword extraction
 - extractive summary generation
 - confidence scoring
+- explanation behaviour
 
 Future integration tests should cover:
 
-- explanation behaviour
 - idempotent insight generation through a service layer
 - permission enforcement for generation and retrieval
 - session detail or insights dashboard visibility, when those views exist
