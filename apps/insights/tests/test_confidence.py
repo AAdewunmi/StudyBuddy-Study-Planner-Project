@@ -40,6 +40,15 @@ def test_score_confidence_is_repeatable_for_same_inputs() -> None:
     assert len(set(scores)) == 1
 
 
+def test_score_confidence_rewards_moderate_unique_term_variety() -> None:
+    """Five to nine unique meaningful terms should receive the middle bonus."""
+    text = "alpha beta gamma delta epsilon alpha beta gamma delta epsilon"
+
+    result = score_confidence(text, [], "")
+
+    assert result == 43
+
+
 def test_score_confidence_increases_for_richer_content() -> None:
     """Richer text with keywords and summary should score higher."""
     weak = score_confidence("Django.", ["django"], "Django.")
