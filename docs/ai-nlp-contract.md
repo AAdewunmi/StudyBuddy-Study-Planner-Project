@@ -123,8 +123,8 @@ Confidence labels:
 - `Medium` for scores from 45 to 74
 - `High` for scores from 75 to 100
 
-The confidence score is not a probability and does not claim factual
-correctness. It is a quality signal for the generated insight.
+The confidence score is not a probability, an intelligence score, or a claim
+of factual correctness. It is a quality signal for the generated insight.
 
 ## Explanation
 

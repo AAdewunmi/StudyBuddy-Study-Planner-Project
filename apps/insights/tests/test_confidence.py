@@ -26,6 +26,20 @@ def test_score_confidence_stays_within_bounds() -> None:
     assert 0 <= result <= 100
 
 
+def test_score_confidence_is_repeatable_for_same_inputs() -> None:
+    """The same inputs should always produce the same heuristic score."""
+    text = (
+        "Django testing confirms reliable session workflows. "
+        "Database-backed notes improve review quality."
+    )
+    keywords = ["django", "testing", "database"]
+    summary = "Django testing confirms reliable session workflows."
+
+    scores = [score_confidence(text, keywords, summary) for _ in range(5)]
+
+    assert len(set(scores)) == 1
+
+
 def test_score_confidence_increases_for_richer_content() -> None:
     """Richer text with keywords and summary should score higher."""
     weak = score_confidence("Django.", ["django"], "Django.")

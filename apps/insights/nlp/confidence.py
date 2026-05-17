@@ -8,9 +8,9 @@ from apps.insights.nlp.text_processing import meaningful_tokens
 def score_confidence(text: str | None, keywords: list[str], summary: str) -> int:
     """Score confidence for a generated insight.
 
-    The score is a transparent quality heuristic. It reflects whether the
-    source text contains enough meaningful content to support a useful
-    extractive summary and keyword set.
+    The score is a transparent quality heuristic, not a probability or model
+    intelligence signal. It reflects whether the source text contains enough
+    meaningful content to support a useful extractive summary and keyword set.
 
     Args:
         text: Raw source text.
