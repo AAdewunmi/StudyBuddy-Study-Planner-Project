@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ session.title }} | StudyBuddy{% endblock %}
+{% block title %}{{ study_session.title }} | StudyBuddy{% endblock %}
 
 {% block content %}
   <div class="container-ui">
@@ -8,46 +8,46 @@
       <header class="page-header">
         <div>
           <span class="eyebrow">Study sessions</span>
-          <h1 class="page-title">{{ session.title }}</h1>
-          <p class="page-subtitle">{{ session.subject }} study session for notes, revision points, and progress review.</p>
+          <h1 class="page-title">{{ study_session.title }}</h1>
+          <p class="page-subtitle">{{ study_session.subject }} study session for notes, revision points, and progress review.</p>
         </div>
         <div class="card-actions">
           <a class="btn-ui" href="{% url 'sessions:list' %}">Back to Study Sessions</a>
-          <a class="btn-ui btn-ui-primary" href="{% url 'sessions:update' session.pk %}">Edit Session</a>
+          <a class="btn-ui btn-ui-primary" href="{% url 'sessions:update' study_session.pk %}">Edit Session</a>
         </div>
       </header>
 
       <section class="section-tight">
-        <div class="card-grid card-grid-2">
+        <div class="card-grid">
           <article class="card-ui">
             <h2 class="card-title-ui">Session Details</h2>
             <dl class="detail-list">
               <div class="detail-row">
                 <dt>Subject</dt>
-                <dd>{{ session.subject }}</dd>
+                <dd>{{ study_session.subject }}</dd>
               </div>
               <div class="detail-row">
                 <dt>Status</dt>
-                <dd>{{ session.get_status_display }}</dd>
+                <dd>{{ study_session.get_status_display }}</dd>
               </div>
               <div class="detail-row">
                 <dt>Study date</dt>
-                <dd>{{ session.study_date }}</dd>
+                <dd>{{ study_session.study_date }}</dd>
               </div>
               <div class="detail-row">
                 <dt>Duration</dt>
-                <dd>{{ session.duration_minutes }} minutes</dd>
+                <dd>{{ study_session.duration_minutes }} minutes</dd>
               </div>
               <div class="detail-row">
                 <dt>Notes</dt>
-                <dd>{{ session.note_count }}</dd>
+                <dd>{{ study_session.note_count }}</dd>
               </div>
             </dl>
           </article>
 
           <article class="card-ui">
             <h2 class="card-title-ui">Add Note</h2>
-            <form class="form-ui" method="post" action="{% url 'sessions:add_note' session.pk %}" novalidate>
+            <form class="form-ui" method="post" action="{% url 'sessions:add_note' study_session.pk %}" novalidate>
               {% csrf_token %}
 
               {% if note_form.non_field_errors %}
@@ -72,6 +72,41 @@
               </div>
             </form>
           </article>
+
+          <article class="card-ui">
+            <span class="eyebrow">AI/NLP insight</span>
+            <h2 class="card-title-ui">Deterministic study insight</h2>
+
+            <form class="note-delete-form" method="post" action="{% url 'insights:generate' session_id=study_session.pk %}">
+              {% csrf_token %}
+              <div class="card-actions">
+                <button class="btn-ui btn-ui-primary" type="submit">Generate Insight</button>
+              </div>
+            </form>
+
+            {% if latest_insight %}
+              <p>{{ latest_insight.summary }}</p>
+
+              <div class="detail-list">
+                <div class="detail-row">
+                  <dt>Confidence</dt>
+                  <dd>{{ latest_insight.confidence }}%</dd>
+                </div>
+              </div>
+
+              <div class="mock-pill-row">
+                {% for keyword in latest_insight.keywords %}
+                  <span class="mock-pill">{{ keyword }}</span>
+                {% empty %}
+                  <span class="mock-pill">No keywords detected</span>
+                {% endfor %}
+              </div>
+
+              <p class="text-muted-ui">{{ latest_insight.explanation }}</p>
+            {% else %}
+              <p class="text-muted-ui">No insight generated yet.</p>
+            {% endif %}
+          </article>
         </div>
       </section>
 
@@ -93,7 +128,7 @@
                 <div class="note-actions">
                   <details class="note-edit-panel" {% if editing_note.pk == note.pk %}open{% endif %}>
                     <summary>Edit note</summary>
-                    <form class="form-ui" method="post" action="{% url 'sessions:update_note' session.pk note.pk %}" novalidate>
+                    <form class="form-ui" method="post" action="{% url 'sessions:update_note' study_session.pk note.pk %}" novalidate>
                       {% csrf_token %}
 
                       {% if editing_note.pk == note.pk %}
@@ -123,7 +158,7 @@
                     </form>
                   </details>
 
-                  <form class="note-delete-form" method="post" action="{% url 'sessions:delete_note' session.pk note.pk %}">
+                  <form class="note-delete-form" method="post" action="{% url 'sessions:delete_note' study_session.pk note.pk %}">
                     {% csrf_token %}
                     <button class="btn-ui btn-ui-danger" type="submit">Delete Note</button>
                   </form>

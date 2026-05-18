@@ -8,6 +8,7 @@ import pytest
 from django.urls import reverse
 from django.utils import timezone
 
+from apps.insights.factories import StudyInsightFactory
 from apps.sessions.factories import StudyNoteFactory, StudySessionFactory
 from apps.sessions.models import StudyNote, StudySession
 from apps.users.factories import CustomUserFactory
@@ -104,6 +105,30 @@ def test_session_detail_renders_session_and_notes(client) -> None:
     assert response.context["session"] == session
     assert b"Essay outline" in response.content
     assert b"Drafted thesis evidence notes." in response.content
+
+
+def test_session_detail_renders_latest_insight_panel(client) -> None:
+    """The detail page renders the latest insight and generation action."""
+    user = CustomUserFactory(email="detail.insight@example.com")
+    session = StudySessionFactory(owner=user, title="Insight session")
+    StudyInsightFactory(
+        session=session,
+        summary="Django testing confirms reliable session workflows.",
+        keywords=["django", "testing"],
+        confidence=76,
+        explanation="Keywords are ranked by deterministic term frequency.",
+    )
+    client.force_login(user)
+
+    response = client.get(reverse("sessions:detail", kwargs={"pk": session.pk}))
+    content = response.content.decode()
+
+    assert response.status_code == 200
+    assert reverse("insights:generate", kwargs={"session_id": session.pk}) in content
+    assert "Django testing confirms reliable session workflows." in content
+    assert "django" in content
+    assert "76%" in content
+    assert "Keywords are ranked by deterministic term frequency." in content
 
 
 def test_session_detail_rejects_other_users_session(client) -> None:
