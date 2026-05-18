@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
@@ -12,7 +12,12 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from apps.insights.selectors import get_latest_session_insight
 from apps.sessions.forms import StudyNoteForm, StudySessionForm
 from apps.sessions.models import StudySession
-from apps.sessions.selectors import get_note_for_user_or_404
+from apps.sessions.selectors import (
+    get_note_for_user_or_404,
+    get_notes_for_session,
+    get_session_for_user_or_404,
+    get_sessions_for_user,
+)
 
 
 def session_detail_context(
@@ -28,7 +33,7 @@ def session_detail_context(
         "session": study_session,
         "study_session": study_session,
         "note_form": note_form or StudyNoteForm(),
-        "notes": study_session.notes.order_by("-created_at", "-id"),
+        "notes": get_notes_for_session(study_session),
         "latest_insight": get_latest_session_insight(
             session=study_session,
             user=user,
@@ -50,15 +55,10 @@ class StudySessionListView(LoginRequiredMixin, ListView):
     model = StudySession
     template_name = "sessions/session_list.html"
     context_object_name = "sessions"
-    paginate_by = 10
 
     def get_queryset(self):
         """Return sessions scoped to the authenticated user."""
-        return (
-            StudySession.objects.filter(owner=self.request.user)
-            .prefetch_related("notes")
-            .order_by("-study_date", "-created_at")
-        )
+        return get_sessions_for_user(self.request.user)
 
     def get_context_data(self, **kwargs):
         """Expose both legacy and explicit context names."""
@@ -101,7 +101,7 @@ class StudySessionDetailView(LoginRequiredMixin, DetailView):
 
     def get_queryset(self):
         """Return sessions scoped to the authenticated user."""
-        return StudySession.objects.filter(owner=self.request.user)
+        return get_sessions_for_user(self.request.user)
 
     def get_context_data(self, **kwargs):
         """Add note form and latest insight to the detail context."""
@@ -125,7 +125,7 @@ class StudySessionUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_queryset(self):
         """Return sessions scoped to the authenticated user."""
-        return StudySession.objects.filter(owner=self.request.user)
+        return get_sessions_for_user(self.request.user)
 
     def form_valid(self, form):
         """Save a valid update and notify the user."""
@@ -152,11 +152,7 @@ class StudyNoteCreateView(LoginRequiredMixin, View):
 
     def post(self, request, pk: int):
         """Handle note creation for a study session."""
-        study_session = get_object_or_404(
-            StudySession,
-            pk=pk,
-            owner=request.user,
-        )
+        study_session = get_session_for_user_or_404(request.user, pk)
         form = StudyNoteForm(request.POST)
 
         if form.is_valid():

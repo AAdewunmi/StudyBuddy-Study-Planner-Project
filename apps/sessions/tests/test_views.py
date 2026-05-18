@@ -51,6 +51,25 @@ def test_session_list_shows_only_current_users_sessions(client) -> None:
     assert b"Hidden session" not in response.content
 
 
+def test_session_list_does_not_hide_owned_sessions_without_pagination_ui(
+    client,
+) -> None:
+    """The list page should not paginate unless the template exposes navigation."""
+    user = CustomUserFactory(email="list.all@example.com")
+    sessions = [
+        StudySessionFactory(owner=user, title=f"Owned session {number}")
+        for number in range(12)
+    ]
+    client.force_login(user)
+
+    response = client.get(reverse("sessions:list"))
+
+    assert response.status_code == 200
+    assert response.context["is_paginated"] is False
+    for session in sessions:
+        assert session.title.encode() in response.content
+
+
 def test_session_create_page_renders(client) -> None:
     """The create page renders a study session form."""
     user = CustomUserFactory(email="create.page@example.com")
