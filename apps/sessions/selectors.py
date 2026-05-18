@@ -51,7 +51,7 @@ def get_notes_for_session(session: StudySession) -> QuerySet[StudyNote]:
     Return notes belonging to the supplied session.
     """
 
-    return session.notes.all().order_by("-created_at")
+    return session.notes.all().order_by("-created_at", "-id")
 
 
 def get_notes_for_user(user: Any) -> QuerySet[StudyNote]:

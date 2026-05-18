@@ -16,16 +16,18 @@ The current project includes:
 
 - `apps.insights.models.StudyInsight`
 - `apps.insights.admin.StudyInsightAdmin`
+- `apps.insights.services.generate_insight_for_session`
+- `apps.insights.selectors.get_latest_session_insight`
+- `apps.insights.selectors.get_user_insights`
+- authenticated insight generation at `insights:generate`
+- session detail rendering for the latest generated insight
+- an insights list view scoped to the authenticated user
 - deterministic text normalisation and source hashing helpers
 - deterministic keyword extraction
 - extractive summary generation
 - rule-based confidence scoring
 - deterministic explanation building
-- model, admin, and NLP unit tests
-
-The end-to-end generation service, selectors, session-detail UI integration,
-and insights dashboard are still future integration work. When those pieces are
-added, they should follow this contract.
+- model, admin, NLP, service, selector, route, permission, and UI tests
 
 ## Product Behaviour
 
@@ -40,10 +42,9 @@ The generated insight contains:
 - an explanation of how the insight was produced
 - a source hash representing the normalised note text
 
-The insight is stored in the database and can be viewed again later when the
-session or insight UI is wired in. If the source notes have not changed, the
-application should reuse the existing insight instead of creating a duplicate
-row.
+The insight is stored in the database and can be viewed again later from the
+session detail workflow. If the source notes have not changed, the application
+should reuse the existing insight instead of creating a duplicate row.
 
 ## Deterministic Contract
 
@@ -209,12 +210,13 @@ Current tests cover:
 - extractive summary generation
 - confidence scoring
 - explanation behaviour
-
-Future integration tests should cover:
-
 - idempotent insight generation through a service layer
 - permission enforcement for generation and retrieval
-- session detail or insights dashboard visibility, when those views exist
+- authenticated owner-only POST generation
+- anonymous redirect behaviour
+- POST-only route behaviour
+- session detail visibility for the latest generated insight
+- architecture boundaries that keep NLP internals out of views
 
 ## Known Limitations
 
@@ -225,13 +227,11 @@ Current limitations:
 - no LLM integration
 - no semantic embeddings
 - no topic clustering
-- no cross-session insight history
 - no background processing
 - no evaluation dataset for summary quality
 - no personalised recommendations
 - no support for uploaded files
 - no multilingual NLP tuning
-- no end-to-end insight generation UI yet
 
 These limitations are acceptable for the Sprint 3 MVP because the feature is
 deterministic, cheap to run, easy to test, and honest in the UI.

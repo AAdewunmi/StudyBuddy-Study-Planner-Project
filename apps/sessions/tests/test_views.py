@@ -8,6 +8,7 @@ import pytest
 from django.urls import reverse
 from django.utils import timezone
 
+from apps.insights.factories import StudyInsightFactory
 from apps.sessions.factories import StudyNoteFactory, StudySessionFactory
 from apps.sessions.models import StudyNote, StudySession
 from apps.users.factories import CustomUserFactory
@@ -48,6 +49,25 @@ def test_session_list_shows_only_current_users_sessions(client) -> None:
     assert list(response.context["sessions"]) == [owned_session]
     assert b"Owned session" in response.content
     assert b"Hidden session" not in response.content
+
+
+def test_session_list_does_not_hide_owned_sessions_without_pagination_ui(
+    client,
+) -> None:
+    """The list page should not paginate unless the template exposes navigation."""
+    user = CustomUserFactory(email="list.all@example.com")
+    sessions = [
+        StudySessionFactory(owner=user, title=f"Owned session {number}")
+        for number in range(12)
+    ]
+    client.force_login(user)
+
+    response = client.get(reverse("sessions:list"))
+
+    assert response.status_code == 200
+    assert response.context["is_paginated"] is False
+    for session in sessions:
+        assert session.title.encode() in response.content
 
 
 def test_session_create_page_renders(client) -> None:
@@ -104,6 +124,30 @@ def test_session_detail_renders_session_and_notes(client) -> None:
     assert response.context["session"] == session
     assert b"Essay outline" in response.content
     assert b"Drafted thesis evidence notes." in response.content
+
+
+def test_session_detail_renders_latest_insight_panel(client) -> None:
+    """The detail page renders the latest insight and generation action."""
+    user = CustomUserFactory(email="detail.insight@example.com")
+    session = StudySessionFactory(owner=user, title="Insight session")
+    StudyInsightFactory(
+        session=session,
+        summary="Django testing confirms reliable session workflows.",
+        keywords=["django", "testing"],
+        confidence=76,
+        explanation="Keywords are ranked by deterministic term frequency.",
+    )
+    client.force_login(user)
+
+    response = client.get(reverse("sessions:detail", kwargs={"pk": session.pk}))
+    content = response.content.decode()
+
+    assert response.status_code == 200
+    assert reverse("insights:generate", kwargs={"session_id": session.pk}) in content
+    assert "Django testing confirms reliable session workflows." in content
+    assert "django" in content
+    assert "76%" in content
+    assert "Keywords are ranked by deterministic term frequency." in content
 
 
 def test_session_detail_rejects_other_users_session(client) -> None:

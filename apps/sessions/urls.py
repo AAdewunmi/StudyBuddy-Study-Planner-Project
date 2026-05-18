@@ -1,27 +1,35 @@
-"""URL routes for StudyBuddy study session workflows."""
+"""URL routes for study sessions."""
 
 from __future__ import annotations
 
 from django.urls import path
 
-from apps.sessions import views
+from apps.sessions.views import (
+    StudyNoteCreateView,
+    StudyNoteDeleteView,
+    StudyNoteUpdateView,
+    StudySessionCreateView,
+    StudySessionDetailView,
+    StudySessionListView,
+    StudySessionUpdateView,
+)
 
 app_name = "sessions"
 
 urlpatterns = [
-    path("", views.session_list, name="list"),
-    path("new/", views.session_create, name="create"),
-    path("<int:pk>/", views.session_detail, name="detail"),
-    path("<int:pk>/edit/", views.session_update, name="update"),
-    path("<int:pk>/notes/new/", views.session_add_note, name="add_note"),
+    path("", StudySessionListView.as_view(), name="list"),
+    path("new/", StudySessionCreateView.as_view(), name="create"),
+    path("<int:pk>/", StudySessionDetailView.as_view(), name="detail"),
+    path("<int:pk>/edit/", StudySessionUpdateView.as_view(), name="update"),
+    path("<int:pk>/notes/new/", StudyNoteCreateView.as_view(), name="add_note"),
     path(
         "<int:pk>/notes/<int:note_pk>/edit/",
-        views.session_update_note,
+        StudyNoteUpdateView.as_view(),
         name="update_note",
     ),
     path(
         "<int:pk>/notes/<int:note_pk>/delete/",
-        views.session_delete_note,
+        StudyNoteDeleteView.as_view(),
         name="delete_note",
     ),
 ]
