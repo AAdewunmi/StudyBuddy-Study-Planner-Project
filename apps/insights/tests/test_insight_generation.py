@@ -3,15 +3,38 @@
 from __future__ import annotations
 
 import pytest
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import FieldError, PermissionDenied
 
 from apps.insights.models import StudyInsight
 from apps.insights.selectors import get_latest_session_insight, get_user_insights
-from apps.insights.services import generate_insight_for_session
+from apps.insights.services import generate_insight_for_session, get_session_note_text
 from apps.sessions.factories import StudyNoteFactory, StudySessionFactory
 from apps.users.factories import CustomUserFactory
 
 pytestmark = pytest.mark.django_db
+
+
+class LegacyNoteCollection:
+    """Minimal note collection that simulates an older note schema."""
+
+    def __init__(self) -> None:
+        self.notes = [
+            type("LegacyNote", (), {"content": "  First note.  "})(),
+            type("LegacyNote", (), {"content": ""})(),
+            type("LegacyNote", (), {"content": "Second note."})(),
+        ]
+
+    def order_by(self, *fields: str) -> LegacyNoteCollection:
+        """Raise for created_at ordering and allow id-only fallback ordering."""
+        if fields == ("created_at", "id"):
+            raise FieldError("created_at is not available")
+
+        assert fields == ("id",)
+        return self
+
+    def __iter__(self):
+        """Return note instances for service aggregation."""
+        return iter(self.notes)
 
 
 def test_generate_insight_persists_analysis_result() -> None:
@@ -38,6 +61,27 @@ def test_generate_insight_persists_analysis_result() -> None:
     assert "django" in result.insight.keywords
     assert result.insight.confidence > 0
     assert result.insight.explanation
+
+
+def test_get_session_note_text_falls_back_for_legacy_note_queries(monkeypatch) -> None:
+    """Note text aggregation should handle sessions without a notes manager."""
+    note_collection = LegacyNoteCollection()
+
+    class LegacyStudyNote:
+        """Minimal StudyNote replacement for fallback query coverage."""
+
+        class objects:
+            """Manager replacement used by get_session_note_text."""
+
+            @staticmethod
+            def filter(*, session: object) -> LegacyNoteCollection:
+                assert session == legacy_session
+                return note_collection
+
+    legacy_session = type("LegacySession", (), {})()
+    monkeypatch.setattr("apps.insights.services.StudyNote", LegacyStudyNote)
+
+    assert get_session_note_text(legacy_session) == "First note.\n\nSecond note."
 
 
 def test_generate_insight_uses_source_hash() -> None:
