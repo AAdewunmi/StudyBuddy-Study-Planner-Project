@@ -40,6 +40,34 @@ def test_view_allows_owner_to_generate_insight(client) -> None:
     ).exists()
 
 
+def test_view_rejects_get_requests_for_generation(client) -> None:
+    """Insight generation should require POST."""
+    session = StudySessionFactory()
+    StudyNoteFactory(session=session, content="Django testing workflow.")
+    client.force_login(session.owner)
+
+    response = client.get(
+        reverse("insights:generate", kwargs={"session_id": session.pk}),
+    )
+
+    assert response.status_code == 405
+    assert StudyInsight.objects.count() == 0
+
+
+def test_view_redirects_anonymous_users_to_login(client) -> None:
+    """Anonymous users should not be able to generate insights."""
+    session = StudySessionFactory()
+    StudyNoteFactory(session=session, content="Django testing workflow.")
+
+    response = client.post(
+        reverse("insights:generate", kwargs={"session_id": session.pk}),
+    )
+
+    assert response.status_code == 302
+    assert response["Location"].startswith(f"{reverse('users:login')}?next=")
+    assert StudyInsight.objects.count() == 0
+
+
 def test_view_returns_404_for_another_users_session(client) -> None:
     """The generation route should not reveal another user's session."""
     session = StudySessionFactory()
