@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Insights | StudyBuddy{% endblock %}
+
+{% block content %}
+  <div class="container-ui">
+    <div class="page-stack">
+      <header class="page-header">
+        <div>
+          <span class="eyebrow">Insights</span>
+          <h1 class="page-title">Generated study insights</h1>
+          <p class="page-subtitle">
+            Review deterministic summaries, keywords, confidence scores, and
+            explanations generated from your study session notes.
+          </p>
+        </div>
+        <div class="card-actions">
+          <a class="btn-ui btn-ui-primary" href="{% url 'sessions:list' %}">Open Study Sessions</a>
+        </div>
+      </header>
+
+      <section class="section-tight">
+        {% if insights %}
+          <div class="card-grid">
+            {% for insight in insights %}
+              <article class="card-ui">
+                <div class="mock-panel-title">
+                  <span>{{ insight.session.title }}</span>
+                  <span>{{ insight.confidence }}%</span>
+                </div>
+
+                <p>{{ insight.summary }}</p>
+
+                <div class="mock-pill-row">
+                  {% for keyword in insight.keywords %}
+                    <span class="mock-pill">{{ keyword }}</span>
+                  {% empty %}
+                    <span class="mock-pill">No keywords detected</span>
+                  {% endfor %}
+                </div>
+
+                <p class="text-muted-ui">{{ insight.explanation }}</p>
+
+                <div class="card-actions">
+                  <a class="btn-ui" href="{% url 'sessions:detail' insight.session.pk %}">View Session</a>
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+
+          {% if is_paginated %}
+            <nav class="card-actions" aria-label="Insight pages">
+              {% if page_obj.has_previous %}
+                <a class="btn-ui" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+              {% endif %}
+
+              <span class="mock-pill">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+              {% if page_obj.has_next %}
+                <a class="btn-ui" href="?page={{ page_obj.next_page_number }}">Next</a>
+              {% endif %}
+            </nav>
+          {% endif %}
+        {% else %}
+          <div class="quote-card">
+            <span class="eyebrow">No insights yet</span>
+            <h2 class="section-title">Generate an insight from a study session.</h2>
+            <p>
+              Add notes to a study session, then generate an insight to see the
+              latest summary, keywords, confidence score, and explanation here.
+            </p>
+            <div class="card-actions">
+              <a class="btn-ui btn-ui-blue" href="{% url 'sessions:list' %}">Open Study Sessions</a>
+            </div>
+          </div>
+        {% endif %}
+      </section>
+    </div>
+  </div>
+{% endblock %}
