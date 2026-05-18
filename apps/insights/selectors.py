@@ -8,7 +8,7 @@ from apps.insights.models import StudyInsight
 
 
 def get_user_insights(user: object) -> QuerySet[StudyInsight]:
-    """Return insights attached to sessions owned by a user.
+    """Return insights owned by a user through their study sessions.
 
     Args:
         user: Authenticated user.
