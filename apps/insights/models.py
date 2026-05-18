@@ -23,7 +23,7 @@ class StudyInsight(models.Model):
         related_name="insights",
     )
     summary = models.TextField()
-    keywords = models.JSONField(default=list)
+    keywords = models.JSONField(default=list, blank=True)
     confidence = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(0), MaxValueValidator(100)]
     )

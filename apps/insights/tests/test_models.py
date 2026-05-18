@@ -54,6 +54,13 @@ def test_study_insight_rejects_invalid_keyword_shape() -> None:
         insight.full_clean()
 
 
+def test_study_insight_allows_empty_keyword_list() -> None:
+    """Low-information insights may have no detected keywords."""
+    insight = StudyInsightFactory(keywords=[])
+
+    assert insight.keywords == []
+
+
 def test_study_insight_rejects_non_string_keywords() -> None:
     """Keyword lists cannot contain non-string values."""
     insight = StudyInsightFactory.build(keywords=["django", 3])
