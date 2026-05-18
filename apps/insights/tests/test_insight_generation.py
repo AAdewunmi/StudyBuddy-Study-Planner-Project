@@ -8,6 +8,11 @@ from django.core.exceptions import FieldError, PermissionDenied
 from apps.insights.models import StudyInsight
 from apps.insights.selectors import get_latest_session_insight, get_user_insights
 from apps.insights.services import generate_insight_for_session, get_session_note_text
+from apps.insights.tests.test_architecture_boundaries import (
+    APPS_ROOT,
+    PROJECT_ROOT,
+    find_view_nlp_import_violations,
+)
 from apps.sessions.factories import StudyNoteFactory, StudySessionFactory
 from apps.users.factories import CustomUserFactory
 
@@ -163,6 +168,17 @@ def test_generate_insight_rejects_sessions_owned_by_other_users() -> None:
         )
 
     assert StudyInsight.objects.count() == 0
+
+
+def test_insight_generation_keeps_nlp_helpers_out_of_views() -> None:
+    """The service owns NLP orchestration; views should not import NLP internals."""
+    assert (
+        find_view_nlp_import_violations(
+            project_root=PROJECT_ROOT,
+            apps_root=APPS_ROOT,
+        )
+        == []
+    )
 
 
 def test_insight_selectors_scope_results_through_session_owner() -> None:

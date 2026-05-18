@@ -72,6 +72,58 @@ def test_list_view_queryset_is_scoped_to_authenticated_user() -> None:
     assert list(view.get_queryset()) == [user_insight]
 
 
+def test_list_view_renders_only_authenticated_users_insights(client) -> None:
+    """The insight dashboard should render only insights owned through sessions."""
+    user = UserFactory()
+    other_user = UserFactory()
+    user_insight = StudyInsightFactory(
+        session__owner=user,
+        session__title="Owned insight session",
+        summary="Owned deterministic summary.",
+        keywords=["django", "testing"],
+        confidence=84,
+        explanation="Owned explanation for generated insight.",
+    )
+    StudyInsightFactory(
+        session__owner=other_user,
+        session__title="Hidden insight session",
+        summary="Hidden deterministic summary.",
+    )
+    client.force_login(user)
+
+    response = client.get(reverse("insights:list"))
+    content = response.content.decode()
+
+    assert response.status_code == 200
+    assert list(response.context["insights"]) == [user_insight]
+    assert "Owned insight session" in content
+    assert "Owned deterministic summary." in content
+    assert "django" in content
+    assert "84%" in content
+    assert "Owned explanation for generated insight." in content
+    assert "Hidden insight session" not in content
+    assert "Hidden deterministic summary." not in content
+
+
+def test_list_view_requires_login(client) -> None:
+    """Anonymous users should be redirected before viewing insights."""
+    response = client.get(reverse("insights:list"))
+
+    assert response.status_code == 302
+    assert response["Location"].startswith(f"{reverse('users:login')}?next=")
+
+
+def test_list_view_renders_empty_state(client) -> None:
+    """Users without generated insights should see the empty dashboard state."""
+    user = UserFactory()
+    client.force_login(user)
+
+    response = client.get(reverse("insights:list"))
+
+    assert response.status_code == 200
+    assert b"Generate an insight from a study session." in response.content
+
+
 def test_view_rejects_get_requests_for_generation(client) -> None:
     """Insight generation should require POST."""
     session = StudySessionFactory()
