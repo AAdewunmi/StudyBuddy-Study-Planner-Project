@@ -21,6 +21,7 @@
                     {% if request.user.is_authenticated %}
                         <a href="{% url 'dashboard:index' %}" class="nav-link-ui {% if request.resolver_match.namespace == 'dashboard' %}active{% endif %}">Dashboard</a>
                         <a href="{% url 'sessions:list' %}" class="nav-link-ui {% if request.resolver_match.namespace == 'sessions' %}active{% endif %}">Study Sessions</a>
+                        <a href="{% url 'insights:list' %}" class="nav-link-ui {% if request.resolver_match.namespace == 'insights' %}active{% endif %}">Insights</a>
                     {% else %}
                         <a href="{% url 'home' %}" class="nav-link-ui {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Product</a>
                         <a href="{% url 'home' %}#guides" class="nav-link-ui">Study Guides</a>
@@ -88,6 +89,7 @@
                             {% if request.user.is_authenticated %}
                                 <a href="{% url 'dashboard:index' %}">Dashboard</a>
                                 <a href="{% url 'sessions:list' %}">Study Sessions</a>
+                                <a href="{% url 'insights:list' %}">Insights</a>
                                 <a href="{% url 'users:profile' %}">Profile</a>
                                 <form class="footer-logout-form" method="post" action="{% url 'users:logout' %}">
                                     {% csrf_token %}
