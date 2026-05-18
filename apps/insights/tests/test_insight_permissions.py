@@ -34,7 +34,10 @@ def test_view_allows_owner_to_generate_insight(client) -> None:
     )
 
     assert response.status_code == 302
-    assert StudyInsight.objects.filter(owner=session.owner, session=session).exists()
+    assert StudyInsight.objects.filter(
+        session=session,
+        session__owner=session.owner,
+    ).exists()
 
 
 def test_view_returns_404_for_another_users_session(client) -> None:
