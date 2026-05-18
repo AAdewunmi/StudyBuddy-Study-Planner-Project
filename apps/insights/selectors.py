@@ -8,7 +8,7 @@ from apps.insights.models import StudyInsight
 
 
 def get_user_insights(user: object) -> QuerySet[StudyInsight]:
-    """Return insights owned by a user.
+    """Return insights attached to sessions owned by a user.
 
     Args:
         user: Authenticated user.
@@ -17,8 +17,8 @@ def get_user_insights(user: object) -> QuerySet[StudyInsight]:
         QuerySet of user-scoped insights.
     """
     return (
-        StudyInsight.objects.filter(owner=user)
-        .select_related("session", "owner")
+        StudyInsight.objects.filter(session__owner=user)
+        .select_related("session", "session__owner")
         .order_by("-created_at", "-id")
     )
 
@@ -38,8 +38,8 @@ def get_latest_session_insight(
         Latest matching insight or ``None``.
     """
     return (
-        StudyInsight.objects.filter(session=session, owner=user)
-        .select_related("session", "owner")
+        StudyInsight.objects.filter(session=session, session__owner=user)
+        .select_related("session", "session__owner")
         .order_by("-created_at", "-id")
         .first()
     )

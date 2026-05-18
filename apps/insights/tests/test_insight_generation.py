@@ -3,10 +3,13 @@
 from __future__ import annotations
 
 import pytest
+from django.core.exceptions import PermissionDenied
 
 from apps.insights.models import StudyInsight
+from apps.insights.selectors import get_latest_session_insight, get_user_insights
 from apps.insights.services import generate_insight_for_session
 from apps.sessions.factories import StudyNoteFactory, StudySessionFactory
+from apps.users.factories import CustomUserFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -29,6 +32,8 @@ def test_generate_insight_persists_analysis_result() -> None:
 
     assert result.created is True
     assert StudyInsight.objects.count() == 1
+    assert result.insight.session == session
+    assert result.insight.session.owner == session.owner
     assert result.insight.summary
     assert "django" in result.insight.keywords
     assert result.insight.confidence > 0
@@ -100,3 +105,53 @@ def test_generate_insight_handles_session_without_notes() -> None:
 
     assert result.insight.confidence == 0
     assert "not enough study note content" in result.insight.summary.lower()
+
+
+def test_generate_insight_rejects_sessions_owned_by_other_users() -> None:
+    """Users should only generate insights for their own study sessions."""
+    session = StudySessionFactory()
+    other_user = CustomUserFactory()
+
+    with pytest.raises(PermissionDenied):
+        generate_insight_for_session(
+            session=session,
+            requested_by=other_user,
+        )
+
+    assert StudyInsight.objects.count() == 0
+
+
+def test_insight_selectors_scope_results_through_session_owner() -> None:
+    """Insight reads should inherit ownership from the parent study session."""
+    user = CustomUserFactory()
+    other_user = CustomUserFactory()
+    user_session = StudySessionFactory(owner=user)
+    other_session = StudySessionFactory(owner=other_user)
+    StudyNoteFactory(session=user_session, content="Django selectors protect owners.")
+    StudyNoteFactory(session=other_session, content="Private notes belong elsewhere.")
+
+    user_result = generate_insight_for_session(
+        session=user_session,
+        requested_by=user,
+    )
+    other_result = generate_insight_for_session(
+        session=other_session,
+        requested_by=other_user,
+    )
+
+    assert list(get_user_insights(user)) == [user_result.insight]
+    assert (
+        get_latest_session_insight(
+            session=user_session,
+            user=user,
+        )
+        == user_result.insight
+    )
+    assert (
+        get_latest_session_insight(
+            session=other_session,
+            user=user,
+        )
+        is None
+    )
+    assert other_result.insight not in get_user_insights(user)

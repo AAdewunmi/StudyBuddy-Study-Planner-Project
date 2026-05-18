@@ -106,7 +106,6 @@ def generate_insight_for_session(
     payload = analyse_note_text(note_text)
 
     insight, created = StudyInsight.objects.get_or_create(
-        owner=requested_by,
         session=session,
         source_hash=payload["source_hash"],
         defaults={
