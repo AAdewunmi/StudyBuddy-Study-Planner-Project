@@ -1,54 +1,77 @@
-.PHONY: build up down restart logs migrate makemigrations test check deploy-check collectstatic shell superuser lint format ci
+# StudyBuddy local development and verification commands.
+
+LOCAL_SETTINGS_MODULE ?= config.settings.local
+TEST_SETTINGS_MODULE ?= config.settings.test
+TEST_DATABASE_URL ?= postgres://studybuddy:studybuddy@db:5432/studybuddy_test
+
+COMPOSE := docker compose
+WEB_EXEC := $(COMPOSE) exec -T web
+TEST_ENV := env DJANGO_SETTINGS_MODULE=$(TEST_SETTINGS_MODULE) TEST_DATABASE_URL=$(TEST_DATABASE_URL)
+
+.PHONY: build up down restart logs migrate makemigrations check-migrations test test-insights check deploy-check collectstatic shell superuser lint format format-check ci sprint-3-day-5
 
 build:
-	docker compose build
+	$(COMPOSE) build
 
 up:
-	docker compose up -d
+	$(COMPOSE) up -d
 
 down:
-	docker compose down
+	$(COMPOSE) down
 
 restart:
-	docker compose down
-	docker compose up -d
+	$(COMPOSE) down
+	$(COMPOSE) up -d
 
 logs:
-	docker compose logs -f web
+	$(COMPOSE) logs -f web
 
 migrate:
-	docker compose exec web python manage.py migrate
+	$(WEB_EXEC) python manage.py migrate --noinput --settings=$(LOCAL_SETTINGS_MODULE)
 
 makemigrations:
-	docker compose exec web python manage.py makemigrations
+	$(WEB_EXEC) python manage.py makemigrations --settings=$(LOCAL_SETTINGS_MODULE)
+
+check-migrations:
+	$(WEB_EXEC) python manage.py makemigrations --check --dry-run --settings=$(LOCAL_SETTINGS_MODULE)
 
 test:
-	docker compose exec web pytest -q
+	$(WEB_EXEC) $(TEST_ENV) pytest -q
+
+test-insights:
+	$(WEB_EXEC) $(TEST_ENV) pytest apps/insights -q
 
 check:
-	docker compose exec web python manage.py check
+	$(WEB_EXEC) python manage.py check --settings=$(LOCAL_SETTINGS_MODULE)
 
 deploy-check:
-	docker compose exec web python manage.py check --deploy --settings=config.settings.production
+	$(WEB_EXEC) python manage.py check --deploy --settings=config.settings.production
 
 collectstatic:
-	docker compose exec web python manage.py collectstatic --noinput --settings=config.settings.production
+	$(WEB_EXEC) python manage.py collectstatic --noinput --settings=config.settings.production
 
 shell:
-	docker compose exec web python manage.py shell
+	$(WEB_EXEC) python manage.py shell --settings=$(LOCAL_SETTINGS_MODULE)
 
 superuser:
-	docker compose exec web python manage.py createsuperuser
+	$(WEB_EXEC) python manage.py createsuperuser --settings=$(LOCAL_SETTINGS_MODULE)
 
 lint:
-	docker compose exec web ruff check .
+	$(WEB_EXEC) python -m ruff check .
 
 format:
-	docker compose exec web black .
+	$(WEB_EXEC) python -m black .
+
+format-check:
+	$(WEB_EXEC) python -m black . --check
 
 ci:
-	docker compose exec web ruff check .
-	docker compose exec web black --check .
-	docker compose exec web python manage.py check
-	docker compose exec web python manage.py migrate
-	docker compose exec web pytest -q
+	$(WEB_EXEC) python -m black . --check
+	$(WEB_EXEC) python -m ruff check .
+	$(WEB_EXEC) python manage.py check --settings=$(LOCAL_SETTINGS_MODULE)
+	$(WEB_EXEC) python manage.py makemigrations --check --dry-run --settings=$(LOCAL_SETTINGS_MODULE)
+	$(WEB_EXEC) python manage.py migrate --noinput --settings=$(LOCAL_SETTINGS_MODULE)
+	$(WEB_EXEC) $(TEST_ENV) pytest -q
+
+sprint-3-day-5:
+	./docs/sprint-runbook/sprint-3/sprint-3-day-5.sh
