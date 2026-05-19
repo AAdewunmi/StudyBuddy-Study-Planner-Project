@@ -121,7 +121,7 @@ Run checks inside the web container.
 
 ```bash
 docker compose exec -T web python manage.py check --settings=config.settings.local
-docker compose exec -T web python manage.py makemigrations study_sessions --check --dry-run --settings=config.settings.local
+docker compose exec -T web python manage.py makemigrations --check --dry-run --settings=config.settings.local
 docker compose exec -T web python manage.py migrate --noinput --settings=config.settings.local
 docker compose exec -T web python -m black . --check
 docker compose exec -T web python -m ruff check .
@@ -136,10 +136,10 @@ port:
 TEST_DATABASE_URL=postgres://studybuddy:studybuddy@localhost:5432/studybuddy_test python3 -m pytest --cov=apps --cov=config --cov-report=term-missing -q
 ```
 
-Run the Sprint 3 insight verification runbook.
+Run the Sprint 3 final insight verification runbook.
 
 ```bash
-./docs/sprint-runbook/sprint-3/sprint-3-day-4.sh
+./docs/sprint-runbook/sprint-3/sprint-3-day-5.sh
 ```
 
 ## Environment Settings

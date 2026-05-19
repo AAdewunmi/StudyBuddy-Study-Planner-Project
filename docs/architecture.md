@@ -62,6 +62,14 @@ StudyBuddy-Study-Planner-Project/
             views.py
             urls.py
             tests/
+        insights/
+            models.py
+            selectors.py
+            services.py
+            views.py
+            urls.py
+            nlp/
+            tests/
         users/
             models.py
             forms.py
@@ -95,16 +103,20 @@ Current user-facing routes are:
 - `/users/` for signup, login, logout, and profile routes.
 - `/dashboard/` for the authenticated personal dashboard.
 - `/sessions/` for study session list, create, detail, update, and note routes.
+- `/insights/` for the authenticated insights dashboard.
+- `/insights/sessions/<session_id>/generate/` for owner-only insight
+  generation.
 
 The project does not use Django's default account namespace for authentication
 routes.
 
 ## Domain Boundaries
 
-The central Sprint 2 domain is:
+The current domain shape is:
 
 ```text
 CustomUser 1 -> * StudySession 1 -> * StudyNote
+StudySession 1 -> * StudyInsight
 CustomUser * -> * Role
 ```
 
@@ -112,6 +124,10 @@ CustomUser * -> * Role
 `apps.sessions.apps.StudySessionsConfig`, and its model app label is
 `study_sessions` to avoid colliding with Django's built-in
 `django.contrib.sessions` app.
+
+`StudyInsight` lives in `apps.insights`. Insights are generated from notes on a
+single study session, inherit ownership through `StudyInsight.session.owner`,
+and are unique per `session` and `source_hash`.
 
 ## Query And Service Boundaries
 
@@ -122,6 +138,12 @@ StudyBuddy keeps ownership and aggregate logic out of templates:
 - `apps/dashboard/services.py` composes dashboard context for views.
 - `apps/dashboard/views.py` passes prepared context into the template.
 - `templates/dashboard/index.html` only renders prepared values and links.
+- `apps/insights/selectors.py` owns user-scoped insight queries.
+- `apps/insights/services.py` owns deterministic insight generation and reuse.
+- `apps/insights/nlp/` contains deterministic text processing, keyword
+  extraction, summarisation, confidence scoring, and explanation helpers.
+- `apps/insights/views.py` keeps NLP internals out of views by calling the
+  service layer.
 
 Dashboard aggregates include:
 
@@ -133,6 +155,9 @@ Dashboard aggregates include:
 
 Templates must not calculate counts, sums, filters, or ownership rules.
 
+Insight views must filter through `session__owner` or resolve the source session
+through the authenticated user before creating or returning an insight.
+
 ## UI Boundary
 
 Templates extend `templates/base.html` and use shared classes from
@@ -143,20 +168,23 @@ Bootstrap visual utility classes for layout, cards, buttons, alerts, or metrics.
 
 ## Verification Boundary
 
-The current Sprint 2 dashboard and sessions verification command is:
+The current Sprint 3 final verification runbook is:
 
 ```bash
-docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest apps/dashboard/tests apps/sessions/tests -q
+./docs/sprint-runbook/sprint-3/sprint-3-day-5.sh
 ```
 
 Expected current receipt:
 
 ```text
-64 passed
+Sprint 3 Day 5 verification complete.
+apps/insights tests: 69 passed
+full project test suite: 188 passed
 ```
 
-The full Docker-backed Sprint 2 verification runbook is:
+Run the dashboard and sessions focused suite when changing Sprint 2 workflow
+code:
 
 ```bash
-./docs/sprint-runbook/sprint-2/sprint-2-day-5.sh
+docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest apps/dashboard/tests apps/sessions/tests -q
 ```

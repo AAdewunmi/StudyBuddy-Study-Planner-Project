@@ -2,8 +2,9 @@
 
 StudyBuddy is centered on authenticated, user-owned study activity. Sprint 1
 established the account, role, dashboard, and authentication foundation. Sprint
-2 extends that foundation with study sessions, notes, selectors, services, and
-dashboard metrics.
+2 extended that foundation with study sessions, notes, selectors, services, and
+dashboard metrics. Sprint 3 adds deterministic AI/NLP insights generated from a
+user's own session notes.
 
 ## Current Foundation
 
@@ -20,6 +21,9 @@ user side as `user.studybuddy_roles`.
 The authenticated dashboard is a data-backed product surface. It is protected by
 Django authentication, reads the current user's roles for display, and renders
 study metrics prepared by Python services.
+
+The insights dashboard is also authentication-protected. It renders generated
+study insights scoped through the owner of each insight's parent session.
 
 ## Study Session Ownership
 
@@ -80,6 +84,32 @@ Domain rules:
 - Note create, update, and delete workflows are all scoped through the parent
   session owner.
 
+## StudyInsight
+
+`apps.insights.models.StudyInsight` represents deterministic NLP output for the
+notes attached to one study session.
+
+Core fields:
+
+- `session`: foreign key to `StudySession`
+- `summary`: extractive summary copied from source note sentences
+- `keywords`: JSON list of ranked keyword strings
+- `confidence`: rule-based score from 0 to 100
+- `explanation`: user-facing explanation of how the insight was produced
+- `source_hash`: SHA-256 hash of normalised note text
+- `created_at` and `updated_at`: audit timestamps
+
+Domain rules:
+
+- Insights inherit ownership through `StudyInsight.session.owner`.
+- `StudyInsight` does not store a separate `owner` field.
+- The uniqueness contract is one insight per `session` and `source_hash`.
+- Re-running generation for unchanged notes reuses the existing insight.
+- Changing note text creates a new source hash and can create a new insight.
+- `keywords` must be stored as a list of strings.
+- `source_hash` must be a 64-character SHA-256 hex digest.
+- Cross-user reads and writes must filter through the parent session owner.
+
 ## Selectors And Services
 
 Ownership-sensitive query logic lives in `apps/sessions/selectors.py`.
@@ -114,6 +144,19 @@ Dashboard context composition lives in `apps/dashboard/services.py`.
 Templates render these prepared values. Templates must not calculate aggregate
 counts, sums, filters, recent-session query logic, or ownership rules.
 
+Insight read selectors live in `apps/insights/selectors.py`.
+
+Current insight selectors include:
+
+- `get_user_insights(user)`;
+- `get_latest_session_insight(session=session, user=user)`.
+
+Insight generation lives in `apps/insights/services.py`.
+
+`generate_insight_for_session(session=session, requested_by=user)` validates
+ownership, combines session note text, runs the deterministic NLP pipeline, and
+creates or reuses a `StudyInsight`.
+
 ## App Label
 
 The project already uses Django's built-in `django.contrib.sessions` app for
@@ -125,11 +168,13 @@ built-in `sessions` label if the app is installed in a later sprint.
 
 ```text
 CustomUser 1 -> * StudySession 1 -> * StudyNote
+StudySession 1 -> * StudyInsight
 CustomUser * -> * Role
 ```
 
-`CustomUser` owns study sessions. `StudySession` owns notes. `Role` supports
-role-aware behavior independently of the study session workflow.
+`CustomUser` owns study sessions. `StudySession` owns notes and insights.
+`StudyInsight` ownership is inherited through the parent session. `Role`
+supports role-aware behavior independently of the study session workflow.
 
 ## Canonical Implementation Outline
 

@@ -113,7 +113,7 @@ Verification:
 pytest apps/insights -q
 ```
 
-Expected current receipt:
+Sprint 2 historical receipt:
 
 ```text
 69 passed
@@ -384,7 +384,7 @@ Verification:
 pytest apps/dashboard/tests apps/sessions/tests -q
 ```
 
-Expected current receipt:
+Sprint 2 historical receipt:
 
 ```text
 64 passed
@@ -427,7 +427,7 @@ Final Sprint 2 verification command:
 pytest apps/dashboard/tests apps/sessions/tests -q
 ```
 
-Expected current receipt:
+Sprint 2 historical receipt:
 
 ```text
 64 passed

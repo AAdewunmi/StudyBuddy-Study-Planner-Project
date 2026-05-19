@@ -250,7 +250,7 @@ PY
 print_step "Confirm AI/NLP contract document sections"
 
 required_sections=(
-  "## Current Scope"
+  "## Input Scope"
   "## Deterministic Contract"
   "## Text Normalisation"
   "## Keyword Extraction"

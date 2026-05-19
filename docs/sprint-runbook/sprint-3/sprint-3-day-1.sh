@@ -257,7 +257,7 @@ PY
 
 section "Confirm AI/NLP contract document sections"
 required_doc_sections=(
-    "## Current Scope"
+    "## Input Scope"
     "## Deterministic Contract"
     "## Keyword Extraction"
     "## Extractive Summary"
