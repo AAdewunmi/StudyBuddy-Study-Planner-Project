@@ -41,8 +41,9 @@ Run these commands from the repository root.
 
 ```bash
 cp .env.example .env
-docker compose up -d --build
-docker compose exec -T web python manage.py migrate --noinput --settings=config.settings.local
+make build
+make up
+make migrate
 ```
 
 Open the app at:
@@ -56,7 +57,7 @@ http://localhost:8000
 Start or rebuild the local stack:
 
 ```bash
-docker compose up -d --build
+make up
 ```
 
 Check running services:
@@ -68,19 +69,19 @@ docker compose ps
 Run the Django system check:
 
 ```bash
-docker compose exec -T web python manage.py check --settings=config.settings.local
+make check
 ```
 
 Apply migrations:
 
 ```bash
-docker compose exec -T web python manage.py migrate --noinput --settings=config.settings.local
+make migrate
 ```
 
 Confirm model migrations are clean:
 
 ```bash
-docker compose exec -T web python manage.py makemigrations --check --dry-run --settings=config.settings.local
+make check-migrations
 ```
 
 Stop the stack:
@@ -100,18 +101,19 @@ docker compose down -v
 Run formatting, linting, and tests inside the web container.
 
 ```bash
-docker compose exec -T web python -m black . --check
-docker compose exec -T web python -m ruff check .
-docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest -q
+make format-check
+make lint
+make test
 ```
 
-`pytest.ini` already defaults to `config.settings.test`, but setting
-`DJANGO_SETTINGS_MODULE` explicitly keeps Docker and CI commands easy to audit.
+The Makefile keeps `DJANGO_SETTINGS_MODULE=config.settings.test` and
+`TEST_DATABASE_URL=postgres://studybuddy:studybuddy@db:5432/studybuddy_test`
+explicit for Docker-backed test commands.
 
 To auto-fix local formatting and import-order issues:
 
 ```bash
-docker compose exec -T web python -m black .
+make format
 docker compose exec -T web python -m ruff check . --fix
 ```
 
@@ -120,7 +122,7 @@ docker compose exec -T web python -m ruff check . --fix
 Run the current Sprint 3 final verification runbook:
 
 ```bash
-./docs/sprint-runbook/sprint-3/sprint-3-day-5.sh
+make sprint-3-day-5
 ```
 
 That script verifies:
@@ -235,6 +237,8 @@ The insights workflow should render:
 - `docs/domain-model.md`: users, roles, sessions, notes, selectors, services.
 - `docs/design-system.md`: template and CSS design-system contract.
 - `docs/local-setup.md`: Docker-backed local setup.
+- `Makefile`: repeatable aliases for local setup, checks, tests, and Sprint
+  verification.
 - `docs/studybuddy-canonical-implementation-outline.md`: central canonical
   implementation outline for StudyBuddy.
 - `docs/sprint-runbook/sprint-2/sprint-2-day-5.sh`: complete Sprint 2

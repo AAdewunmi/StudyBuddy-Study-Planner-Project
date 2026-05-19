@@ -37,7 +37,8 @@ database service.
 Run the local app and PostgreSQL services.
 
 ```bash
-docker compose up --build
+make build
+make up
 ```
 
 The Django app is available at:
@@ -49,7 +50,7 @@ http://localhost:8000
 For detached mode, run:
 
 ```bash
-docker compose up -d --build
+make up
 ```
 
 ## Verify Services
@@ -63,15 +64,15 @@ The `db` service should be healthy, and the `web` service should be running.
 ## Run Django Checks
 
 ```bash
-docker compose exec -T web python manage.py check --settings=config.settings.local
+make check
 docker compose exec -T web python manage.py check --settings=config.settings.test
 ```
 
 ## Run Migrations
 
 ```bash
-docker compose exec -T web python manage.py migrate --noinput --settings=config.settings.local
-docker compose exec -T web python manage.py makemigrations --check --dry-run --settings=config.settings.local
+make migrate
+make check-migrations
 ```
 
 Expected output for an already-initialized local database:
@@ -91,8 +92,8 @@ migrations and exit successfully. After that, the `makemigrations --check
 ## Run Formatting And Linting
 
 ```bash
-docker compose exec -T web python -m black . --check
-docker compose exec -T web python -m ruff check .
+make format-check
+make lint
 ```
 
 `ruff` is the current import-order gate used by the project checks.
@@ -102,13 +103,13 @@ docker compose exec -T web python -m ruff check .
 Run the full test suite with isolated test settings.
 
 ```bash
-docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest -q
+make test
 ```
 
 Run the current Sprint 3 insights suite.
 
 ```bash
-docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest apps/insights -q
+make test-insights
 ```
 
 Expected current receipt:
@@ -142,7 +143,7 @@ TEST_DATABASE_URL=postgres://studybuddy:studybuddy@localhost:5432/studybuddy_tes
 The current Sprint 3 final verification is:
 
 ```bash
-./docs/sprint-runbook/sprint-3/sprint-3-day-5.sh
+make sprint-3-day-5
 ```
 
 The completed Sprint 2 dashboard/session verification is:

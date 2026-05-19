@@ -99,8 +99,9 @@ migrations, then open the app.
 
 ```bash
 cp .env.example .env
-docker compose up -d --build
-docker compose exec -T web python manage.py migrate --noinput --settings=config.settings.local
+make build
+make up
+make migrate
 ```
 
 The app runs at:
@@ -114,10 +115,25 @@ http://localhost:8000
 Run the Docker-backed local stack after creating `.env`.
 
 ```bash
-docker compose up -d --build
+make up
 ```
 
-Run checks inside the web container.
+The `Makefile` provides repeatable aliases for the same Docker commands used by
+the runbooks and review checks.
+
+```bash
+make check              # Django system check with config.settings.local
+make check-migrations   # Confirm migrations are clean
+make migrate            # Apply local PostgreSQL migrations
+make format-check       # Run Black in check mode
+make lint               # Run Ruff checks
+make test-insights      # Run the Sprint 3 insights test suite
+make test               # Run the full pytest suite
+make ci                 # Run the local CI-style verification chain
+make sprint-3-day-5     # Run the Sprint 3 final verification runbook
+```
+
+The equivalent raw Docker commands are:
 
 ```bash
 docker compose exec -T web python manage.py check --settings=config.settings.local
@@ -125,7 +141,7 @@ docker compose exec -T web python manage.py makemigrations --check --dry-run --s
 docker compose exec -T web python manage.py migrate --noinput --settings=config.settings.local
 docker compose exec -T web python -m black . --check
 docker compose exec -T web python -m ruff check .
-docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest -q
+docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test TEST_DATABASE_URL=postgres://studybuddy:studybuddy@db:5432/studybuddy_test pytest -q
 ```
 
 Host-side pytest also uses PostgreSQL. When running from a local Python
@@ -139,7 +155,7 @@ TEST_DATABASE_URL=postgres://studybuddy:studybuddy@localhost:5432/studybuddy_tes
 Run the Sprint 3 final insight verification runbook.
 
 ```bash
-./docs/sprint-runbook/sprint-3/sprint-3-day-5.sh
+make sprint-3-day-5
 ```
 
 ## Environment Settings
@@ -167,15 +183,16 @@ The main project documentation is:
 
 The canonical implementation outline is the central implementation source of
 truth. The AI/NLP contract records the deterministic Sprint 3 insight behaviour.
-The README keeps the current runtime shape and verification path front and
-center.
+The `Makefile` keeps local setup, review, and CI-style verification commands
+consistent. The README keeps the current runtime shape and verification path
+front and center.
 
 ## Verification Baseline
 
 The current Sprint 3 insights verification command is:
 
 ```bash
-docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest apps/insights -q
+make test-insights
 ```
 
 This command proves the feature contract at the test level: model persistence,
@@ -186,7 +203,7 @@ visibility, and view-level route behaviour are covered by `apps/insights/tests`.
 The full local suite should also pass:
 
 ```bash
-docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest -q
+make test
 ```
 
 ## Core Routes
