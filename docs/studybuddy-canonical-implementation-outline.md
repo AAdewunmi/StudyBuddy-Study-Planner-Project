@@ -45,26 +45,27 @@ Canonical supporting documents:
 - `docs/design-system.md` for UI and template styling rules
 - `docs/ai-nlp-contract.md` for deterministic insight behaviour and MVP scope
 - `RUNBOOK.md` for operational commands and handoff checks
+- `Makefile` for repeatable local, review, and CI-style command aliases
 
 ## Current Verification Baseline
 
 Run the targeted Sprint 3 insight verification:
 
 ```bash
-docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest apps/insights -q
+make test-insights
 ```
 
 Run the full Docker-backed test suite:
 
 ```bash
-docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest -q
+make test
 ```
 
 Run Django configuration checks:
 
 ```bash
-docker compose exec -T web python manage.py check --settings=config.settings.local
-docker compose exec -T web python manage.py makemigrations --check --dry-run --settings=config.settings.local
+make check
+make check-migrations
 ```
 
 ## Sprint 3: Deterministic AI/NLP Study Insights
