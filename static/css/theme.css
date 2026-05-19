@@ -662,6 +662,16 @@ p {
     border-top: 1px solid var(--color-line);
 }
 
+.session-notes-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-lg);
+}
+
+.session-note-card {
+    width: 100%;
+}
+
 .note-edit-panel {
     display: grid;
     gap: var(--space-md);

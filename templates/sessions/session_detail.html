@@ -117,9 +117,9 @@
         </div>
 
         {% if notes %}
-          <div class="card-grid">
+          <div class="session-notes-grid">
             {% for note in notes %}
-              <article class="card-ui">
+              <article class="card-ui session-note-card">
                 <div class="mock-panel-title">
                   <span>Added {{ note.created_at }}</span>
                   <span>{{ note.word_count }} words</span>
