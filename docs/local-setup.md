@@ -15,6 +15,15 @@ virtual environment to run the app.
 Manual local setup is not the supported path because the current setup has
 Docker provide Python and PostgreSQL.
 
+## Clean Clone
+
+Clone the repository and enter the project root before running setup commands.
+
+```bash
+git clone https://github.com/AAdewunmi/StudyBuddy-Study-Planner-Project.git
+cd StudyBuddy-Study-Planner-Project
+```
+
 ## Environment File
 
 Create a local `.env` file from the example.

@@ -24,6 +24,25 @@ explainable NLP output.
 StudyBuddy is not a learning management system, classroom administration
 platform, course marketplace, or general-purpose chatbot.
 
+Repository: <https://github.com/AAdewunmi/StudyBuddy-Study-Planner-Project>
+
+## Product Summary
+
+StudyBuddy is designed as an early SaaS product rather than a toy tutorial app.
+The MVP focuses on a clear authenticated user workflow:
+
+1. Register and log in.
+2. Land on a personal dashboard.
+3. Create study sessions.
+4. Add notes to sessions.
+5. Generate deterministic AI/NLP insights from notes.
+6. Review dashboard metrics, session history, notes, and recent insights.
+
+The AI/NLP capability is intentionally lightweight and explainable. It uses
+deterministic text normalisation, keyword extraction, extractive summaries,
+source text hashing, rule-based confidence scoring, and plain-English
+explanations.
+
 ## Current Sprint Status
 
 Sprint 3 adds the AI/NLP study insights feature.
@@ -75,6 +94,10 @@ The detailed product and technical contract lives in
 - Selector helpers for user-scoped session and note queries.
 - Service helpers for dashboard aggregate metrics.
 - A data-backed dashboard that renders prepared metrics and recent activity.
+- GitHub Actions CI for checks, migrations, linting, formatting, Docker image
+  build, tests, coverage XML generation, and Codecov upload.
+- Production settings and a Docker image path for deployment-style runtime
+  checks.
 - Strict custom design-system templates using `static/css/theme.css`, not
   Bootstrap visual classes.
 
@@ -94,14 +117,17 @@ The detailed product and technical contract lives in
 
 ## Quick Start
 
-Create the local environment file, start the Docker-backed stack, apply
-migrations, then open the app.
+From a clean clone, create the local environment file, build and start the
+Docker-backed stack, apply migrations, then run the verification suite.
 
 ```bash
+git clone https://github.com/AAdewunmi/StudyBuddy-Study-Planner-Project.git
+cd StudyBuddy-Study-Planner-Project
 cp .env.example .env
 make build
 make up
 make migrate
+make test
 ```
 
 The app runs at:
