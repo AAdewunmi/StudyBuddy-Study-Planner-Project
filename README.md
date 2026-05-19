@@ -117,14 +117,17 @@ The detailed product and technical contract lives in
 
 ## Quick Start
 
-Create the local environment file, start the Docker-backed stack, apply
-migrations, then open the app.
+From a clean clone, create the local environment file, build and start the
+Docker-backed stack, apply migrations, then run the verification suite.
 
 ```bash
+git clone https://github.com/AAdewunmi/StudyBuddy-Study-Planner-Project.git
+cd StudyBuddy-Study-Planner-Project
 cp .env.example .env
 make build
 make up
 make migrate
+make test
 ```
 
 The app runs at:
