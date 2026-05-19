@@ -1,3 +1,4 @@
+# Build metadata and tool configuration for StudyBuddy.
 [build-system]
 requires = ["setuptools>=69", "wheel"]
 build-backend = "setuptools.build_meta"

@@ -23,6 +23,7 @@ class LegacyNoteCollection:
     """Minimal note collection that simulates an older note schema."""
 
     def __init__(self) -> None:
+        """Create legacy note objects with only content fields."""
         self.notes = [
             type("LegacyNote", (), {"content": "  First note.  "})(),
             type("LegacyNote", (), {"content": ""})(),
@@ -80,6 +81,7 @@ def test_get_session_note_text_falls_back_for_legacy_note_queries(monkeypatch) -
 
             @staticmethod
             def filter(*, session: object) -> LegacyNoteCollection:
+                """Return the legacy collection for the supplied session."""
                 assert session == legacy_session
                 return note_collection
 

@@ -1,3 +1,4 @@
+# Continuous integration workflow for StudyBuddy.
 name: CI
 
 on:
