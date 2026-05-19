@@ -131,7 +131,7 @@ CustomUser * -> * Role
 `CustomUser` owns study sessions. `StudySession` owns notes. `Role` supports
 role-aware behavior independently of the study session workflow.
 
-## Sprint 2 Outline
+## Canonical Implementation Outline
 
-The canonical Sprint 2 implementation outline is
-`docs/studybuddy-sprint-2-canonical-implementation-outline.md`.
+The central canonical implementation outline is
+`docs/studybuddy-canonical-implementation-outline.md`.

@@ -1,9 +1,9 @@
 # StudyBuddy Runbook
 
 This runbook describes the current operational workflow for
-StudyBuddy-Django-App. It reflects the project after Sprint 2: authenticated
-users can manage study sessions, capture notes, and view personal dashboard
-metrics from stored data.
+StudyBuddy-Django-App. It reflects the current MVP: authenticated users can
+manage study sessions, capture notes, view personal dashboard metrics from
+stored data, and generate deterministic AI/NLP insights from their notes.
 
 ## Current Status
 
@@ -12,6 +12,7 @@ StudyBuddy is a Docker-backed Django SaaS MVP with:
 - email-first custom users and authentication under `/users/`;
 - role helpers exposed through `user.studybuddy_roles`;
 - owner-scoped study sessions and notes under `/sessions/`;
+- deterministic owner-scoped insights under `/insights/`;
 - a data-backed authenticated dashboard under `/dashboard/`;
 - user-scoped selectors in `apps/sessions/selectors.py`;
 - aggregate session metrics in `apps/sessions/services.py`;
@@ -19,10 +20,10 @@ StudyBuddy is a Docker-backed Django SaaS MVP with:
 - custom template styling in `static/css/theme.css`;
 - PostgreSQL-backed local, test, and production settings modules.
 
-The canonical Sprint 2 implementation outline is:
+The canonical implementation outline is:
 
 ```text
-docs/studybuddy-sprint-2-canonical-implementation-outline.md
+docs/studybuddy-canonical-implementation-outline.md
 ```
 
 ## Requirements
@@ -222,8 +223,8 @@ The dashboard template should render:
 - `docs/domain-model.md`: users, roles, sessions, notes, selectors, services.
 - `docs/design-system.md`: template and CSS design-system contract.
 - `docs/local-setup.md`: Docker-backed local setup.
-- `docs/studybuddy-sprint-2-canonical-implementation-outline.md`: Sprint 2
-  implementation outline.
+- `docs/studybuddy-canonical-implementation-outline.md`: central canonical
+  implementation outline for StudyBuddy.
 - `docs/sprint-runbook/sprint-2/sprint-2-day-5.sh`: complete Sprint 2
   dashboard/session verification script.
 

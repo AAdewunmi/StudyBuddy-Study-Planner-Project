@@ -1,6 +1,125 @@
-# studybuddy-sprint-2-canonical-implementation-outline
+# StudyBuddy Canonical Implementation Outline
 
-Selected sprint: Sprint 2 - Core StudyBuddy workflow.
+This is the central canonical implementation file for StudyBuddy. It is the
+one place to record the project's implemented product shape, app boundaries,
+MVP scope, sprint checkpoints, verification commands, and architectural
+decisions that future work should preserve.
+
+Use this document as the implementation source of truth before changing models,
+views, selectors, services, templates, URLs, tests, or user-facing product
+behaviour. Supporting documents can go deeper on specific areas, but they
+should point back here rather than becoming competing canonical sources.
+
+## Canonical Project Baseline
+
+StudyBuddy is a production-minded Django SaaS MVP for study productivity.
+
+The current implementation includes:
+
+- email-first authentication and profile flows under `/users/`
+- role-aware access foundations through `apps.roles`
+- owner-scoped study sessions and notes under `/sessions/`
+- a data-backed authenticated dashboard under `/dashboard/`
+- deterministic AI/NLP study insights under `/insights/`
+- PostgreSQL-backed local, test, and production settings
+- project-owned template styling in `static/css/theme.css`
+- selectors for ownership-sensitive reads
+- services for business logic and template-ready context
+- pytest and factory_boy coverage for persistence, access, workflows, and NLP
+
+Canonical implementation boundaries:
+
+- users can only access their own sessions, notes, dashboard data, and insights
+- business logic belongs in services/selectors, not templates
+- templates use the project design system, not Bootstrap visual classes
+- deterministic insight generation does not use an LLM, external AI API, or
+  background worker
+- confidence scores are quality signals, not probabilities or factual
+  correctness claims
+
+Canonical supporting documents:
+
+- `README.md` for project overview, setup, routes, and top-level verification
+- `docs/architecture.md` for app boundaries and architectural conventions
+- `docs/domain-model.md` for domain entities and relationships
+- `docs/design-system.md` for UI and template styling rules
+- `docs/ai-nlp-contract.md` for deterministic insight behaviour and MVP scope
+- `RUNBOOK.md` for operational commands and handoff checks
+
+## Current Verification Baseline
+
+Run the targeted Sprint 3 insight verification:
+
+```bash
+docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest apps/insights -q
+```
+
+Run the full Docker-backed test suite:
+
+```bash
+docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest -q
+```
+
+Run Django configuration checks:
+
+```bash
+docker compose exec -T web python manage.py check --settings=config.settings.local
+docker compose exec -T web python manage.py makemigrations --check --dry-run --settings=config.settings.local
+```
+
+## Sprint 3: Deterministic AI/NLP Study Insights
+
+Sprint 3 adds deterministic study insights generated from notes attached to a
+single user-owned study session.
+
+Business objective: help users review their own study material with an
+explainable, testable summary, keyword list, confidence score, and explanation.
+
+Engineering objective: add persisted `StudyInsight` records, deterministic NLP
+helpers, owner-scoped generation and retrieval, and dashboard/session-detail UI.
+
+Key deliverables:
+
+- `apps/insights/models.py`
+- `apps/insights/services.py`
+- `apps/insights/selectors.py`
+- `apps/insights/views.py`
+- `apps/insights/urls.py`
+- `apps/insights/nlp/text_processing.py`
+- `apps/insights/nlp/keyword_extraction.py`
+- `apps/insights/nlp/summarisation.py`
+- `apps/insights/nlp/confidence.py`
+- `apps/insights/nlp/explanations.py`
+- `templates/insights/insight_list.html`
+- `templates/sessions/session_detail.html`
+- `docs/ai-nlp-contract.md`
+
+Implementation notes:
+
+- `StudyInsight` stores `session`, `summary`, `keywords`, `confidence`,
+  `explanation`, `source_hash`, `created_at`, and `updated_at`.
+- Insight ownership is inherited through `StudyInsight.session.owner`.
+- The uniqueness contract is one insight per `session` and `source_hash`.
+- Source hashes are SHA-256 digests of normalised note text.
+- Keyword ranking is deterministic term frequency with alphabetical
+  tie-breaking.
+- Summaries are extractive and use sentences from the user's notes.
+- Re-generating an insight for unchanged notes reuses the existing row.
+- Cross-user access is blocked through session-owner filtering.
+
+Verification:
+
+```bash
+pytest apps/insights -q
+```
+
+Expected current receipt:
+
+```text
+69 passed
+```
+
+## Sprint 2: Core StudyBuddy Workflow
 
 Sprint 2 turns StudyBuddy from an authenticated shell into a usable study
 workflow. The sprint introduces study sessions, owner-scoped CRUD behavior,

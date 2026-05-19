@@ -163,11 +163,12 @@ The main project documentation is:
 - [Design system](docs/design-system.md)
 - [AI/NLP contract](docs/ai-nlp-contract.md)
 - [Operational runbook](RUNBOOK.md)
-- [Sprint 2 canonical implementation outline](docs/studybuddy-sprint-2-canonical-implementation-outline.md)
+- [Canonical implementation outline](docs/studybuddy-canonical-implementation-outline.md)
 
-The completed Sprint 2 outline records implementation history. The AI/NLP
-contract records the deterministic Sprint 3 insight behaviour. The README keeps
-the current runtime shape and verification path front and center.
+The canonical implementation outline is the central implementation source of
+truth. The AI/NLP contract records the deterministic Sprint 3 insight behaviour.
+The README keeps the current runtime shape and verification path front and
+center.
 
 ## Verification Baseline
 

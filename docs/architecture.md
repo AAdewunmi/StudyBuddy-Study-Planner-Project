@@ -1,9 +1,9 @@
 # StudyBuddy Architecture
 
 StudyBuddy-Django-App is structured as a modular Django SaaS MVP. The current
-project includes the Sprint 1 authentication foundation and the completed
-Sprint 2 core study workflow described in
-`docs/studybuddy-sprint-2-canonical-implementation-outline.md`.
+project includes the Sprint 1 authentication foundation, Sprint 2 core study
+workflow, and Sprint 3 deterministic AI/NLP insight workflow described in
+`docs/studybuddy-canonical-implementation-outline.md`.
 
 The architecture uses Django templates with project-owned CSS in
 `static/css/theme.css`, Django models for domain persistence, PostgreSQL for the
@@ -21,6 +21,7 @@ StudyBuddy keeps a conservative Django shape:
 - Role-aware access foundation.
 - Owner-scoped study sessions and notes.
 - Data-backed dashboard metrics.
+- Deterministic owner-scoped study insights.
 - Business logic kept out of templates.
 - Tests that verify user, access, persistence, and reporting behavior.
 
