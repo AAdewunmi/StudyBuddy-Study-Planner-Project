@@ -36,6 +36,29 @@ Users can now:
 - view summaries, keywords, confidence scores, and explanations
 - revisit generated insights from a dedicated dashboard
 
+## Sprint 3 Feature Contract
+
+The AI/NLP insight feature analyses notes attached to one user-owned study
+session. It stores a reusable `StudyInsight` containing an extractive summary,
+ranked keywords, a confidence score, an explanation, and a SHA-256 source hash
+derived from normalised note text.
+
+The feature is deterministic by design. If the same session notes are analysed
+again without changes, StudyBuddy reuses the existing insight for that
+`session` and `source_hash` instead of creating a duplicate row.
+
+The MVP boundary is intentionally narrow:
+
+- no large language model or external AI API
+- no background worker
+- no uploaded-file analysis
+- no cross-user or cross-account analysis
+- no semantic embeddings, topic clustering, or recommendation engine
+- no claim that confidence is a probability or factual correctness score
+
+The detailed product and technical contract lives in
+[docs/ai-nlp-contract.md](docs/ai-nlp-contract.md).
+
 ## Current Capabilities
 
 - `StudySession` and `StudyNote` domain models.
@@ -153,6 +176,11 @@ The current Sprint 3 insights verification command is:
 ```bash
 docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest apps/insights -q
 ```
+
+This command proves the feature contract at the test level: model persistence,
+source hashing, keyword extraction, extractive summarisation, confidence
+scoring, explanation text, idempotent generation, owner-only access, dashboard
+visibility, and view-level route behaviour are covered by `apps/insights/tests`.
 
 The full local suite should also pass:
 

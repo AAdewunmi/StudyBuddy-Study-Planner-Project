@@ -48,6 +48,41 @@ session detail page or the insights dashboard.
 If the source notes have not changed, the application reuses the existing
 insight instead of creating a duplicate row.
 
+## Feature Proof
+
+The Sprint 3 feature is considered documented when this contract answers three
+questions clearly:
+
+- what the feature does
+- how the implementation can be verified
+- where the MVP boundary sits
+
+What the feature does:
+
+- combines note content for a single user-owned study session
+- normalises the source note text
+- creates a SHA-256 source hash from that normalised text
+- extracts ranked keywords using deterministic term frequency
+- builds an extractive summary from the user's own source sentences
+- assigns a rule-based confidence score and label
+- explains the deterministic process in user-facing language
+- stores or reuses a `StudyInsight` record
+
+How to verify it:
+
+- run `pytest apps/insights -q` for the targeted insight test suite
+- run `python manage.py check` for Django configuration checks
+- run `python manage.py makemigrations --check --dry-run` to confirm the model
+  contract does not require new migrations
+
+Where the MVP boundary sits:
+
+- the system is deterministic text processing, not generative AI
+- the input scope is one session's notes
+- permissions are owner-only through `session.owner`
+- confidence is a quality heuristic, not a probability
+- unsupported capabilities are listed in Known Limitations
+
 ## Deterministic Contract
 
 For the same source note text, the pipeline must produce the same:
