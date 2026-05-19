@@ -1,3 +1,4 @@
+# Docker-backed local development stack for StudyBuddy.
 services:
   web:
     build: .

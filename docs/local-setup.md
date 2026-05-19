@@ -71,22 +71,22 @@ docker compose exec -T web python manage.py check --settings=config.settings.tes
 
 ```bash
 docker compose exec -T web python manage.py migrate --noinput --settings=config.settings.local
-docker compose exec -T web python manage.py makemigrations study_sessions --check --dry-run --settings=config.settings.local
+docker compose exec -T web python manage.py makemigrations --check --dry-run --settings=config.settings.local
 ```
 
 Expected output for an already-initialized local database:
 
 ```text
 Operations to perform:
-  Apply all migrations: admin, auth, contenttypes, roles, sessions, study_sessions, users
+  Apply all migrations: admin, auth, contenttypes, insights, roles, sessions, study_sessions, users
 Running migrations:
   No migrations to apply.
-No changes detected in app 'study_sessions'
+No changes detected
 ```
 
 On a fresh PostgreSQL volume, `migrate` should apply Django and StudyBuddy
-migrations and exit successfully. After that, the `makemigrations
-study_sessions --check --dry-run` command should still report no changes.
+migrations and exit successfully. After that, the `makemigrations --check
+--dry-run` command should still report no changes.
 
 ## Run Formatting And Linting
 
@@ -105,16 +105,22 @@ Run the full test suite with isolated test settings.
 docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest -q
 ```
 
-Run the Sprint 2 dashboard and sessions suite.
+Run the current Sprint 3 insights suite.
 
 ```bash
-docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest apps/dashboard/tests apps/sessions/tests -q
+docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest apps/insights -q
 ```
 
 Expected current receipt:
 
 ```text
-64 passed
+69 passed
+```
+
+The full local suite should also pass:
+
+```text
+188 passed
 ```
 
 Run tests with coverage, matching CI.
@@ -133,16 +139,22 @@ TEST_DATABASE_URL=postgres://studybuddy:studybuddy@localhost:5432/studybuddy_tes
 
 ## Run Sprint Verification Runbooks
 
+The current Sprint 3 final verification is:
+
+```bash
+./docs/sprint-runbook/sprint-3/sprint-3-day-5.sh
+```
+
 The completed Sprint 2 dashboard/session verification is:
 
 ```bash
 ./docs/sprint-runbook/sprint-2/sprint-2-day-5.sh
 ```
 
-The canonical Sprint 2 implementation outline is:
+The canonical implementation outline is:
 
 ```text
-docs/studybuddy-sprint-2-canonical-implementation-outline.md
+docs/studybuddy-canonical-implementation-outline.md
 ```
 
 ## Stop The Stack

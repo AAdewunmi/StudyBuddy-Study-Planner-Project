@@ -1,9 +1,9 @@
 # StudyBuddy Runbook
 
 This runbook describes the current operational workflow for
-StudyBuddy-Django-App. It reflects the project after Sprint 2: authenticated
-users can manage study sessions, capture notes, and view personal dashboard
-metrics from stored data.
+StudyBuddy-Django-App. It reflects the current MVP: authenticated users can
+manage study sessions, capture notes, view personal dashboard metrics from
+stored data, and generate deterministic AI/NLP insights from their notes.
 
 ## Current Status
 
@@ -12,6 +12,7 @@ StudyBuddy is a Docker-backed Django SaaS MVP with:
 - email-first custom users and authentication under `/users/`;
 - role helpers exposed through `user.studybuddy_roles`;
 - owner-scoped study sessions and notes under `/sessions/`;
+- deterministic owner-scoped insights under `/insights/`;
 - a data-backed authenticated dashboard under `/dashboard/`;
 - user-scoped selectors in `apps/sessions/selectors.py`;
 - aggregate session metrics in `apps/sessions/services.py`;
@@ -19,10 +20,10 @@ StudyBuddy is a Docker-backed Django SaaS MVP with:
 - custom template styling in `static/css/theme.css`;
 - PostgreSQL-backed local, test, and production settings modules.
 
-The canonical Sprint 2 implementation outline is:
+The canonical implementation outline is:
 
 ```text
-docs/studybuddy-sprint-2-canonical-implementation-outline.md
+docs/studybuddy-canonical-implementation-outline.md
 ```
 
 ## Requirements
@@ -79,7 +80,7 @@ docker compose exec -T web python manage.py migrate --noinput --settings=config.
 Confirm model migrations are clean:
 
 ```bash
-docker compose exec -T web python manage.py makemigrations study_sessions --check --dry-run --settings=config.settings.local
+docker compose exec -T web python manage.py makemigrations --check --dry-run --settings=config.settings.local
 ```
 
 Stop the stack:
@@ -116,38 +117,39 @@ docker compose exec -T web python -m ruff check . --fix
 
 ## Focused Verification
 
-Run the current dashboard and sessions suite:
+Run the current Sprint 3 final verification runbook:
 
 ```bash
-docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest apps/dashboard/tests apps/sessions/tests -q
-```
-
-Expected current receipt:
-
-```text
-64 passed
-```
-
-Run the full Sprint 2 Day 5 verification runbook:
-
-```bash
-./docs/sprint-runbook/sprint-2/sprint-2-day-5.sh
+./docs/sprint-runbook/sprint-3/sprint-3-day-5.sh
 ```
 
 That script verifies:
 
-- repository root and required Sprint 2 files;
+- repository root and required Sprint 3 files;
 - Docker/PostgreSQL startup;
 - Django system checks and migrations;
-- dashboard URL and template loading;
-- session selectors and user-scoped ownership behavior;
-- session metrics service calculations;
-- dashboard context service output;
+- insights dashboard imports, URL registration, and navigation;
+- owner-scoped insight selector behavior;
 - anonymous dashboard redirects;
-- dashboard empty and populated states;
-- template aggregate boundaries;
-- design-system template purity;
-- dashboard and sessions tests.
+- empty, populated, cross-user, and paginated insights dashboard states;
+- README, AI/NLP contract, and canonical implementation documentation;
+- Black, Ruff, targeted insights dashboard tests, all insights tests, and the
+  full regression suite.
+
+Expected current receipts:
+
+```text
+Sprint 3 Day 5 insights dashboard tests: 4 passed
+apps/insights tests: 69 passed
+full project test suite: 188 passed
+```
+
+Run the dashboard and sessions focused suite when changing Sprint 2 workflow
+code:
+
+```bash
+docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest apps/dashboard/tests apps/sessions/tests -q
+```
 
 ## Core Routes
 
@@ -166,6 +168,8 @@ Current URL names and paths:
 - `sessions:add_note` -> `/sessions/<pk>/notes/new/`
 - `sessions:update_note` -> `/sessions/<pk>/notes/<note_pk>/edit/`
 - `sessions:delete_note` -> `/sessions/<pk>/notes/<note_pk>/delete/`
+- `insights:list` -> `/insights/`
+- `insights:generate` -> `/insights/sessions/<session_id>/generate/`
 
 ## Settings Modules
 
@@ -199,7 +203,9 @@ Keep these boundaries intact:
 
 - Views should not duplicate ownership-sensitive filtering.
 - Use `apps/sessions/selectors.py` for user-scoped session and note queries.
+- Use `apps/insights/selectors.py` for user-scoped insight queries.
 - Use `apps/sessions/services.py` for session aggregate metrics.
+- Use `apps/insights/services.py` for deterministic insight generation.
 - Use `apps/dashboard/services.py` for dashboard context composition.
 - Templates should render prepared values only.
 - Templates should not calculate counts, sums, filters, or ownership rules.
@@ -214,6 +220,13 @@ The dashboard template should render:
 - `metrics.note_count`
 - `recent_activity`
 
+The insights workflow should render:
+
+- latest session insight on the session detail page;
+- owner-scoped insight list at `/insights/`;
+- extractive summary, ranked keywords, confidence score, and explanation;
+- useful empty state for users with no insights.
+
 ## Documentation Map
 
 - `README.md`: project overview, quick start, verification, routes, structure.
@@ -222,10 +235,12 @@ The dashboard template should render:
 - `docs/domain-model.md`: users, roles, sessions, notes, selectors, services.
 - `docs/design-system.md`: template and CSS design-system contract.
 - `docs/local-setup.md`: Docker-backed local setup.
-- `docs/studybuddy-sprint-2-canonical-implementation-outline.md`: Sprint 2
-  implementation outline.
+- `docs/studybuddy-canonical-implementation-outline.md`: central canonical
+  implementation outline for StudyBuddy.
 - `docs/sprint-runbook/sprint-2/sprint-2-day-5.sh`: complete Sprint 2
   dashboard/session verification script.
+- `docs/sprint-runbook/sprint-3/sprint-3-day-5.sh`: complete Sprint 3
+  insights dashboard verification script.
 
 ## Troubleshooting
 
@@ -241,7 +256,14 @@ If code changes do not appear in the running app, rebuild the web container:
 docker compose up -d --build
 ```
 
-If migration checks fail, make sure the StudyBuddy sessions app label is used:
+For full-project migration checks, use:
+
+```bash
+docker compose exec -T web python manage.py makemigrations --check --dry-run --settings=config.settings.local
+```
+
+If you are intentionally checking only session model changes, make sure the
+StudyBuddy sessions app label is used:
 
 ```bash
 docker compose exec -T web python manage.py makemigrations study_sessions --check --dry-run --settings=config.settings.local
@@ -270,6 +292,5 @@ study_sessions migrations are clean.
 Black check passes.
 Ruff check passes.
 Full pytest suite passes.
-Dashboard/session focused suite passes.
-Sprint 2 Day 5 runbook passes when full workflow verification is required.
+Sprint 3 Day 5 runbook passes when full workflow verification is required.
 ```

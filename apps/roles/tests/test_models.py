@@ -85,6 +85,7 @@ def test_role_required_allows_users_with_required_role():
 
     @role_required("learner")
     def protected_view(request):
+        """Return a successful response when role access is granted."""
         return HttpResponse("allowed")
 
     response = protected_view(request)

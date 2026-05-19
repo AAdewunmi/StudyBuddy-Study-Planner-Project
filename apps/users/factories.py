@@ -14,6 +14,8 @@ class CustomUserFactory(factory.django.DjangoModelFactory):
     """Create realistic custom users for tests."""
 
     class Meta:
+        """Factory metadata for CustomUser records."""
+
         model = CustomUser
         django_get_or_create = ("email",)
         skip_postgeneration_save = True

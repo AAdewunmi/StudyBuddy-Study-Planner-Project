@@ -11,10 +11,14 @@ class RoleFactory(factory.django.DjangoModelFactory):
     """Create realistic role records for tests."""
 
     class Meta:
+        """Factory metadata for Role records."""
+
         model = Role
         django_get_or_create = ("slug",)
 
     class Params:
+        """Named role traits used by tests."""
+
         student = factory.Trait(
             slug="student",
             display_name="Student",

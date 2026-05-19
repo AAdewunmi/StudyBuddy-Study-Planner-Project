@@ -3,7 +3,8 @@
 StudyBuddy uses an email-first authentication foundation with protected product
 surfaces. Sprint 1 established signup, login, logout, profile, dashboard
 routing, and role helpers. Sprint 2 now uses that foundation for owner-scoped
-study sessions, notes, and data-backed dashboard metrics.
+study sessions, notes, and data-backed dashboard metrics. Sprint 3 extends the
+same owner-scoped access model to deterministic AI/NLP insights.
 
 ## User Model
 
@@ -48,6 +49,11 @@ The protected dashboard route is:
 - `dashboard:index` -> `/dashboard/`
 
 Study workflow routes live under `/sessions/`.
+
+Insight routes live under `/insights/`:
+
+- `insights:list` -> `/insights/`
+- `insights:generate` -> `/insights/sessions/<session_id>/generate/`
 
 ## Signup Flow
 
@@ -124,6 +130,22 @@ Study notes inherit ownership through their parent session. Note create, update,
 and delete paths resolve the parent session through the authenticated user before
 reading or writing notes.
 
+## Insight Access
+
+All insight views require authentication.
+
+Study insights inherit ownership through their parent session. A user can only
+generate insights for sessions they own, and can only view insights attached to
+their own sessions.
+
+Insight generation resolves the source `StudySession` with `owner=request.user`
+before calling the service layer. Insight list and latest-insight selectors
+filter through `session__owner` so another user's generated insight is excluded
+at query level.
+
+Anonymous users are redirected to the login page before viewing the insights
+dashboard or generating an insight.
+
 ## Dashboard Access
 
 The dashboard is a protected, data-backed product surface.
@@ -161,4 +183,8 @@ database-backed workflow tests. Tests verify:
 - anonymous dashboard redirects;
 - owner-scoped session list, detail, and update behavior;
 - note create, update, and delete ownership behavior;
-- dashboard metrics scoped to the current user.
+- dashboard metrics scoped to the current user;
+- owner-only insight generation;
+- insight dashboard authentication;
+- insight dashboard owner-only visibility;
+- cross-user insight exclusion through selectors and views.

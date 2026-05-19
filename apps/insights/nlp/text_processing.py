@@ -221,6 +221,7 @@ def _source_text_blocks(text: str) -> list[str]:
     current_paragraph: list[str] = []
 
     def append_current_paragraph() -> None:
+        """Flush the accumulated paragraph into the block list."""
         if current_paragraph:
             blocks.append(" ".join(current_paragraph))
             current_paragraph.clear()

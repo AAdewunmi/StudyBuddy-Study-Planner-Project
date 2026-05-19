@@ -1,3 +1,4 @@
+{# Session detail page with notes, note editing, and latest generated insight. #}
 {% extends "base.html" %}
 
 {% block title %}{{ study_session.title }} | StudyBuddy{% endblock %}
@@ -117,9 +118,9 @@
         </div>
 
         {% if notes %}
-          <div class="card-grid">
+          <div class="session-notes-grid">
             {% for note in notes %}
-              <article class="card-ui">
+              <article class="card-ui session-note-card">
                 <div class="mock-panel-title">
                   <span>Added {{ note.created_at }}</span>
                   <span>{{ note.word_count }} words</span>

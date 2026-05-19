@@ -17,6 +17,7 @@ pytestmark = pytest.mark.django_db
 
 
 def _session_form_data(**overrides):
+    """Return valid session form data with optional field overrides."""
     data = {
         "title": "Read Django docs",
         "subject": "Django",

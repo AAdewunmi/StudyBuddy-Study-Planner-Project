@@ -8,7 +8,7 @@ determinism, explainability, and testability matter more than model complexity.
 
 The system does not use a large language model, external API, background
 worker, or opaque prediction service. It uses deterministic text processing so
-the same source notes produce the same insight outputs.
+the same source notes produce the same insight.
 
 ## Current Project Status
 
@@ -31,8 +31,8 @@ The current project includes:
 
 ## Product Behaviour
 
-A signed-in user should be able to open one of their own study sessions and
-generate an insight from the notes attached to that session.
+A signed-in user can open one of their own study sessions and generate an
+insight from the notes attached to that session.
 
 The generated insight contains:
 
@@ -43,8 +43,45 @@ The generated insight contains:
 - a source hash representing the normalised note text
 
 The insight is stored in the database and can be viewed again later from the
-session detail workflow. If the source notes have not changed, the application
-should reuse the existing insight instead of creating a duplicate row.
+session detail page or the insights dashboard.
+
+If the source notes have not changed, the application reuses the existing
+insight instead of creating a duplicate row.
+
+## Feature Proof
+
+The Sprint 3 feature is considered documented when this contract answers three
+questions clearly:
+
+- what the feature does
+- how the implementation can be verified
+- where the MVP boundary sits
+
+What the feature does:
+
+- combines note content for a single user-owned study session
+- normalises the source note text
+- creates a SHA-256 source hash from that normalised text
+- extracts ranked keywords using deterministic term frequency
+- builds an extractive summary from the user's own source sentences
+- assigns a rule-based confidence score and label
+- explains the deterministic process in user-facing language
+- stores or reuses a `StudyInsight` record
+
+How to verify it:
+
+- run `pytest apps/insights -q` for the targeted insight test suite
+- run `python manage.py check` for Django configuration checks
+- run `python manage.py makemigrations --check --dry-run` to confirm the model
+  contract does not require new migrations
+
+Where the MVP boundary sits:
+
+- the system is deterministic text processing, not generative AI
+- the input scope is one session's notes
+- permissions are owner-only through `session.owner`
+- confidence is a quality heuristic, not a probability
+- unsupported capabilities are listed in Known Limitations
 
 ## Deterministic Contract
 
@@ -62,7 +99,7 @@ allows the application to detect whether notes have changed since the last
 generated insight.
 
 If a user generates an insight twice without changing the notes, StudyBuddy
-should reuse the existing insight instead of creating a duplicate row.
+reuses the existing insight instead of creating a duplicate row.
 
 ## Input Scope
 
@@ -149,7 +186,7 @@ result as smarter or more authoritative than it is.
 
 Study insights are stored in `StudyInsight`.
 
-Current fields:
+Required fields in the current project:
 
 - `session`
 - `summary`
@@ -160,6 +197,7 @@ Current fields:
 - `created_at`
 - `updated_at`
 
+The product contract requires insight ownership. In the current implementation,
 `StudyInsight` does not store a separate `owner` field. Ownership is inherited
 through `StudyInsight.session.owner`, matching the existing session and note
 ownership model.
@@ -171,6 +209,7 @@ Uniqueness rule:
 Ownership rule:
 
 - insight ownership is resolved through the parent session
+- insight owner must match the session owner by construction
 - any generation service or view must ensure the session belongs to the
   requesting user before creating or returning an insight
 
@@ -186,12 +225,12 @@ digests before creating a `StudyInsight`.
 
 ## Permission Rules
 
-A user should only generate insights for their own sessions.
+A user can only generate insights for their own sessions.
 
-A user should only view insights attached to their own sessions.
+A user can only view insights attached to their own sessions.
 
-Cross-user access should be blocked at query level in selectors and views by
-filtering through `session__owner`.
+Cross-user access is blocked at query level in selectors and views by filtering
+through `session__owner`.
 
 ## Testing Contract
 
@@ -227,6 +266,7 @@ Current limitations:
 - no LLM integration
 - no semantic embeddings
 - no topic clustering
+- no cross-session insight history beyond the owner-scoped insights dashboard
 - no background processing
 - no evaluation dataset for summary quality
 - no personalised recommendations
