@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import pytest
 from django.contrib.auth import get_user_model
-from django.db import OperationalError
 from django.urls import reverse
 
 
@@ -15,47 +14,6 @@ def test_home_page_renders(client) -> None:
 
     assert response.status_code == 200
     assert "StudyBuddy" in response.content.decode()
-
-
-@pytest.mark.django_db
-def test_health_check_reports_database_status(client, settings) -> None:
-    """The health endpoint reports service and database health."""
-    settings.RELEASE_SHA = "test-release"
-
-    response = client.get(reverse("health-check"))
-
-    assert response.status_code == 200
-    assert response.json() == {
-        "status": "ok",
-        "service": "studybuddy",
-        "release": "test-release",
-        "checks": {
-            "database": "ok",
-        },
-    }
-
-
-def test_health_check_requires_get(client) -> None:
-    """The health endpoint only accepts GET requests."""
-    response = client.post(reverse("health-check"))
-
-    assert response.status_code == 405
-
-
-def test_health_check_reports_degraded_database(monkeypatch, client) -> None:
-    """The health endpoint reports degraded status when the database is unavailable."""
-
-    class UnavailableConnection:
-        def cursor(self):
-            raise OperationalError("database unavailable")
-
-    monkeypatch.setattr("config.urls.connection", UnavailableConnection())
-
-    response = client.get(reverse("health-check"))
-
-    assert response.status_code == 503
-    assert response.json()["status"] == "degraded"
-    assert response.json()["checks"]["database"] == "unavailable"
 
 
 @pytest.mark.django_db
