@@ -36,11 +36,9 @@ CSRF_TRUSTED_ORIGINS = env.list("DJANGO_CSRF_TRUSTED_ORIGINS", default=[])
 
 DATABASE_URL = required_env("DATABASE_URL")
 DATABASES = {
-    "default": env.db_url(
-        "DATABASE_URL",
-        conn_max_age=600,
-    ),
+    "default": env.db("DATABASE_URL"),
 }
+DATABASES["default"]["CONN_MAX_AGE"] = 600
 
 if env.bool("DATABASE_SSL_REQUIRE", default=True):
     DATABASES["default"].setdefault("OPTIONS", {})
