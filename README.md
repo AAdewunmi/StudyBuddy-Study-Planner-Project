@@ -26,6 +26,8 @@ platform, course marketplace, or general-purpose chatbot.
 
 Repository: <https://github.com/AAdewunmi/StudyBuddy-Study-Planner-Project>
 
+Live MVP URL: <https://studybuddy-django-app.onrender.com>
+
 ## Product Summary
 
 StudyBuddy is designed as an early SaaS product rather than a toy tutorial app.
@@ -98,6 +100,7 @@ The detailed product and technical contract lives in
   build, tests, coverage XML generation, and Codecov upload.
 - Production settings and a Docker image path for deployment-style runtime
   checks.
+- Health check endpoint at `/health/` for deployment and monitoring checks.
 - Strict custom design-system templates using `static/css/theme.css`, not
   Bootstrap visual classes.
 
@@ -204,6 +207,7 @@ The main project documentation is:
 - [Domain model](docs/domain-model.md)
 - [Design system](docs/design-system.md)
 - [AI/NLP contract](docs/ai-nlp-contract.md)
+- [Deployment](docs/deployment.md)
 - [Operational runbook](RUNBOOK.md)
 - [Canonical implementation outline](docs/studybuddy-canonical-implementation-outline.md)
 
@@ -249,6 +253,7 @@ make test
 - `sessions:delete_note` -> `/sessions/<pk>/notes/<note_pk>/delete/`
 - `insights:list` -> `/insights/`
 - `insights:generate` -> `/insights/sessions/<session_id>/generate/`
+- `health-check` -> `/health/`
 
 ## Repository Structure
 
