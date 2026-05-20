@@ -105,7 +105,8 @@ make format-check
 make lint
 ```
 
-`ruff` is the current import-order gate used by the project checks.
+`ruff` is the primary lint command used by the local Makefile. Hosted CI also
+runs `isort` directly with `python -m isort . --check-only`.
 
 ## Run Tests
 
