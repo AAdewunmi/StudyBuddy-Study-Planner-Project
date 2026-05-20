@@ -20,8 +20,8 @@
 #   TEST_DATABASE_URL=postgres://studybuddy:studybuddy@db:5432/studybuddy_test ./docs/sprint-runbook/sprint-4/sprint-4-day-1.sh
 #
 # Notes:
-#   The current project does not define a /health/ endpoint. This runbook
-#   verifies the served MVP home page at / instead.
+#   This runbook verifies both the served MVP home page at / and the deployment
+#   health endpoint at /health/.
 
 set -euo pipefail
 
@@ -169,6 +169,13 @@ home_status="$(capture curl -fsS -o /dev/null -w "%{http_code}" http://localhost
 printf "Home page HTTP status: %s\n" "$home_status"
 require_contains "$home_status" "200" "home page HTTP status"
 
+print_step "Confirm the health endpoint responds over HTTP"
+health_response="$(capture curl -fsS http://localhost:8000/health/)"
+printf '%s\n' "$health_response"
+require_contains "$health_response" '"status": "ok"' "health endpoint status"
+require_contains "$health_response" '"service": "studybuddy"' "health endpoint service"
+require_contains "$health_response" '"database": "ok"' "health endpoint database check"
+
 print_step "Review web logs for startup errors"
 web_logs="$(capture docker compose logs --tail=80 web)"
 printf '%s\n' "$web_logs"
@@ -197,6 +204,7 @@ Ruff lint check passes.
 Targeted insights tests pass: 69 passed.
 Full project suite passes: 188 passed.
 Local MVP home page returns HTTP 200.
+Health endpoint returns ok service and database checks.
 Web logs contain no traceback.
 Database logs show PostgreSQL readiness.
 Sprint 4 Day 1 Docker workflow verification complete.
