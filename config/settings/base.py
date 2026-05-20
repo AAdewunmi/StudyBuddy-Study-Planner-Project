@@ -1,14 +1,15 @@
 """Base Django settings for the StudyBuddy SaaS MVP.
 
-The base settings module contains configuration shared by local, CI, and
-production environments. Environment-specific settings should live in
-``config.settings.local``, ``config.settings.test``, or
-``config.settings.production``.
+The base settings contain behaviour shared across local development, CI, and
+production. Environment-specific modules should override only the settings that
+genuinely differ by runtime.
 """
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
+from typing import Iterable
 
 import environ
 
@@ -24,9 +25,32 @@ env_file = BASE_DIR / ".env"
 if env_file.exists():
     environ.Env.read_env(env_file)
 
+
+def env_bool(name: str, default: bool = False) -> bool:
+    """Return a boolean value from an environment variable."""
+
+    value = os.environ.get(name)
+    if value is None:
+        return default
+
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def env_list(name: str, default: Iterable[str] | None = None) -> list[str]:
+    """Return a comma-separated environment variable as a cleaned list."""
+
+    raw_value = os.environ.get(name)
+    if raw_value is None:
+        return list(default or [])
+
+    return [item.strip() for item in raw_value.split(",") if item.strip()]
+
+
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 DEBUG = env("DJANGO_DEBUG")
 ALLOWED_HOSTS = env("DJANGO_ALLOWED_HOSTS")
+CSRF_TRUSTED_ORIGINS = env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
+RELEASE_SHA = os.environ.get("RELEASE_SHA", "local")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -92,6 +116,8 @@ else:
         }
     }
 
+DATABASES["default"]["CONN_MAX_AGE"] = env.int("DATABASE_CONN_MAX_AGE", default=60)
+
 AUTH_USER_MODEL = "users.CustomUser"
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -132,3 +158,37 @@ LOGIN_REDIRECT_URL = "dashboard:index"
 LOGOUT_REDIRECT_URL = "home"
 
 MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
+
+DJANGO_LOG_LEVEL = os.environ.get("DJANGO_LOG_LEVEL", "INFO")
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "standard": {
+            "format": "%(levelname)s %(asctime)s %(name)s %(message)s",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "standard",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": DJANGO_LOG_LEVEL,
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": DJANGO_LOG_LEVEL,
+            "propagate": False,
+        },
+        "apps": {
+            "handlers": ["console"],
+            "level": DJANGO_LOG_LEVEL,
+            "propagate": False,
+        },
+    },
+}
