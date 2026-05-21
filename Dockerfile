@@ -18,6 +18,12 @@ RUN pip install --no-cache-dir --upgrade pip \
 
 COPY . .
 
+RUN DJANGO_SECRET_KEY=build-time-static-collection-only \
+    DJANGO_ALLOWED_HOSTS=localhost \
+    DATABASE_URL=postgres://studybuddy:studybuddy@localhost:5432/studybuddy \
+    DATABASE_SSL_REQUIRE=False \
+    python manage.py collectstatic --noinput --settings=config.settings.production
+
 RUN mkdir -p /app/staticfiles \
     && chown -R django:django /app
 

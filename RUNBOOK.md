@@ -18,7 +18,8 @@ StudyBuddy is a Docker-backed Django SaaS MVP with:
 - aggregate session metrics in `apps/sessions/services.py`;
 - dashboard context composition in `apps/dashboard/services.py`;
 - custom template styling in `static/css/theme.css`;
-- PostgreSQL-backed local, test, and production settings modules.
+- PostgreSQL-backed local, test, and production settings modules;
+- Render Blueprint deployment in `render.yaml`.
 
 The canonical implementation outline is:
 
@@ -184,6 +185,12 @@ StudyBuddy uses explicit settings modules:
 Docker Compose runs with `config.settings.local`. Tests should run with
 `config.settings.test`.
 
+Render production deployment is defined in `render.yaml`. The Blueprint creates
+the Docker web service, managed PostgreSQL database, `/health/` check, and
+pre-deploy migration command. It stores non-secret runtime values in the
+Blueprint, prompts for `DJANGO_SECRET_KEY`, and derives `DATABASE_URL` from the
+managed database.
+
 Production requires at least:
 
 - `DJANGO_SETTINGS_MODULE=config.settings.production`
@@ -193,11 +200,12 @@ Production requires at least:
 
 Production also supports:
 
+- `DATABASE_SSL_REQUIRE`
 - `DJANGO_SECURE_SSL_REDIRECT`
 - `DJANGO_SECURE_HSTS_SECONDS`
-- `DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS`
-- `DJANGO_SECURE_HSTS_PRELOAD`
 - `DJANGO_CSRF_TRUSTED_ORIGINS`
+- `DJANGO_LOG_LEVEL`
+- `RELEASE_SHA`
 
 ## Architecture Rules
 

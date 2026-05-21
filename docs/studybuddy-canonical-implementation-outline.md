@@ -22,6 +22,7 @@ The current implementation includes:
 - a data-backed authenticated dashboard under `/dashboard/`
 - deterministic AI/NLP study insights under `/insights/`
 - PostgreSQL-backed local, test, and production settings
+- Render Blueprint deployment through `render.yaml`
 - project-owned template styling in `static/css/theme.css`
 - selectors for ownership-sensitive reads
 - services for business logic and template-ready context
@@ -44,6 +45,8 @@ Canonical supporting documents:
 - `docs/domain-model.md` for domain entities and relationships
 - `docs/design-system.md` for UI and template styling rules
 - `docs/ai-nlp-contract.md` for deterministic insight behaviour and MVP scope
+- `docs/deployment.md` for Render, Docker, health check, and production
+  runtime configuration
 - `RUNBOOK.md` for operational commands and handoff checks
 - `Makefile` for repeatable local, review, and CI-style command aliases
 

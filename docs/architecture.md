@@ -93,7 +93,10 @@ Settings are split by runtime responsibility:
   configuration.
 
 Docker Compose uses `config.settings.local`. Tests and CI use
-`config.settings.test`.
+`config.settings.test`. Render production infrastructure is defined in
+`render.yaml`, which creates the Docker web service, managed PostgreSQL
+database, health check, migration command, and non-secret production
+environment variables.
 
 ## URL Boundaries
 

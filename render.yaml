@@ -1,0 +1,45 @@
+# Render Blueprint for the StudyBuddy production runtime.
+#
+# Secrets are intentionally not hardcoded here. Render prompts for
+# DJANGO_SECRET_KEY during Blueprint creation because it uses sync: false.
+
+services:
+  - type: web
+    name: studybuddy-django-app
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /health/
+    preDeployCommand: python manage.py migrate --noinput
+    autoDeployTrigger: checksPass
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.production
+      - key: DJANGO_SECRET_KEY
+        sync: false
+      - key: DJANGO_ALLOWED_HOSTS
+        value: studybuddy-django-app.onrender.com
+      - key: DJANGO_CSRF_TRUSTED_ORIGINS
+        value: https://studybuddy-django-app.onrender.com
+      - key: DATABASE_URL
+        fromDatabase:
+          name: studybuddy-postgres
+          property: connectionString
+      - key: DATABASE_SSL_REQUIRE
+        value: "true"
+      - key: DJANGO_SECURE_SSL_REDIRECT
+        value: "true"
+      - key: DJANGO_SECURE_HSTS_SECONDS
+        value: "31536000"
+      - key: DJANGO_LOG_LEVEL
+        value: INFO
+      - key: RELEASE_SHA
+        value: render-blueprint
+
+databases:
+  - name: studybuddy-postgres
+    databaseName: studybuddy
+    user: studybuddy
+    plan: free
+    postgresMajorVersion: "16"
