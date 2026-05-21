@@ -17,6 +17,14 @@ def test_home_page_renders(client) -> None:
 
 
 @pytest.mark.django_db
+def test_legacy_accounts_namespace_is_not_mounted(client) -> None:
+    """Account workflows are exposed only under the users URL namespace."""
+    response = client.get("/accounts/login/")
+
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db
 @pytest.mark.parametrize(
     "url_name",
     [

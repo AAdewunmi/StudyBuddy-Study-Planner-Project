@@ -40,7 +40,6 @@ urlpatterns = [
     path("", TemplateView.as_view(template_name="home.html"), name="home"),
     path("admin/", admin.site.urls),
     path("health/", health_check, name="health-check"),
-    path("accounts/", include(("apps.users.urls", "users"), namespace="accounts")),
     path("users/", include("apps.users.urls")),
     path("dashboard/", include("apps.dashboard.urls")),
     path("sessions/", include("apps.sessions.urls")),
