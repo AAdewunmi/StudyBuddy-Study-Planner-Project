@@ -317,3 +317,23 @@ StudyBuddy-Study-Planner-Project/
 CI generates `coverage.xml` with `pytest-cov` and uploads it to Codecov with
 the `CODECOV_TOKEN` GitHub Actions secret. The Codecov repository must be active
 in Codecov before uploads will be accepted.
+
+## Next Steps
+
+1. Fix or confirm the live Render service URL. The documented URL is
+   `https://studybuddy-django-app.onrender.com`; update the docs and
+   `render.yaml` host settings if Render generated a different hostname.
+2. Run the Sprint 4 release verification runbook against the live service:
+
+   ```bash
+   LIVE_URL="https://your-render-service.onrender.com" \
+     ./docs/sprint-runbook/sprint-4/sprint-4-day-4.sh
+   ```
+
+3. Complete the live browser smoke test: signup, login, dashboard, session
+   creation, note creation, insight generation, logout, and protected-page
+   redirects.
+4. Automate the post-deploy browser smoke path with Playwright or an equivalent
+   lightweight end-to-end check.
+5. Upgrade Render plans only after live MVP validation or when traffic, runtime,
+   or database retention needs exceed the free plan limits.
