@@ -131,7 +131,7 @@ Expected current receipt:
 The full local suite should also pass:
 
 ```text
-188 passed
+202 passed
 ```
 
 Run tests with coverage, matching CI.

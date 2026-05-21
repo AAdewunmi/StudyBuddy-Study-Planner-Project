@@ -144,7 +144,7 @@ Expected current receipts:
 ```text
 Sprint 3 Day 5 insights dashboard tests: 4 passed
 apps/insights tests: 69 passed
-full project test suite: 188 passed
+full project test suite: 202 passed
 ```
 
 Run the dashboard and sessions focused suite when changing Sprint 2 workflow

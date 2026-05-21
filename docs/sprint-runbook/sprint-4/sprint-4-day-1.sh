@@ -162,7 +162,7 @@ require_contains "$insights_output" "69 passed" "current insights test receipt"
 print_step "Run full project test suite through Makefile"
 full_test_output="$(capture make test)"
 printf '%s\n' "$full_test_output"
-require_contains "$full_test_output" "188 passed" "current full test receipt"
+require_contains "$full_test_output" "202 passed" "current full test receipt"
 
 print_step "Confirm the local MVP responds over HTTP"
 home_status="$(capture curl -fsS -o /dev/null -w "%{http_code}" http://localhost:8000/)"
@@ -202,7 +202,7 @@ Migration drift check reports no changes.
 Black formatting check passes.
 Ruff lint check passes.
 Targeted insights tests pass: 69 passed.
-Full project suite passes: 188 passed.
+Full project suite passes: 202 passed.
 Local MVP home page returns HTTP 200.
 Health endpoint returns ok service and database checks.
 Web logs contain no traceback.
