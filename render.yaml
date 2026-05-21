@@ -34,8 +34,6 @@ services:
         value: "31536000"
       - key: DJANGO_LOG_LEVEL
         value: INFO
-      - key: RELEASE_SHA
-        value: render-blueprint
 
 databases:
   - name: studybuddy-postgres

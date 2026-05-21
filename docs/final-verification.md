@@ -206,7 +206,7 @@ Expected response:
 {
   "status": "ok",
   "service": "studybuddy",
-  "release": "render-blueprint",
+  "release": "<deployed commit SHA>",
   "checks": {
     "database": "ok"
   }
@@ -249,7 +249,6 @@ DATABASE_SSL_REQUIRE=true
 DJANGO_SECURE_SSL_REDIRECT=true
 DJANGO_SECURE_HSTS_SECONDS=31536000
 DJANGO_LOG_LEVEL=INFO
-RELEASE_SHA=render-blueprint
 ```
 
 Secrets and generated values are not committed:
@@ -257,6 +256,7 @@ Secrets and generated values are not committed:
 ```text
 DJANGO_SECRET_KEY=<prompted by Render>
 DATABASE_URL=<generated from studybuddy-postgres>
+RENDER_GIT_COMMIT=<provided by Render for the deployed commit>
 ```
 
 ## Final Result
