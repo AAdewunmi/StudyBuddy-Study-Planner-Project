@@ -285,6 +285,18 @@ def test_production_settings_reject_conflicting_email_security_flags() -> None:
     )
 
 
+def test_production_settings_require_integer_email_port() -> None:
+    """SMTP port values must be integers."""
+    result = run_settings_snippet(
+        "import config.settings.production",
+        production_env(DJANGO_EMAIL_PORT="not-a-port"),
+        check=False,
+    )
+
+    assert result.returncode != 0
+    assert "DJANGO_EMAIL_PORT must be an integer." in result.stderr
+
+
 def test_production_settings_require_database_ssl_by_default() -> None:
     """Production database connections require SSL unless explicitly disabled."""
     result = run_settings_snippet(
