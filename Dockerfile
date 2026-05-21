@@ -22,6 +22,8 @@ RUN DJANGO_SECRET_KEY=build-time-static-collection-only \
     DJANGO_ALLOWED_HOSTS=localhost \
     DATABASE_URL=postgres://studybuddy:studybuddy@localhost:5432/studybuddy \
     DATABASE_SSL_REQUIRE=False \
+    DJANGO_DEFAULT_FROM_EMAIL=build@example.com \
+    DJANGO_EMAIL_HOST=localhost \
     python manage.py collectstatic --noinput --settings=config.settings.production
 
 RUN mkdir -p /app/staticfiles \

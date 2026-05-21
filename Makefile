@@ -4,6 +4,11 @@ LOCAL_SETTINGS_MODULE ?= config.settings.local
 TEST_SETTINGS_MODULE ?= config.settings.test
 TEST_DATABASE_URL ?= postgres://studybuddy:studybuddy@db:5432/studybuddy_test
 CI_IMAGE ?= studybuddy-ci
+PRODUCTION_CHECK_ENV := env
+PRODUCTION_CHECK_ENV += DJANGO_SECRET_KEY=local-deploy-check-only-long-random-looking-secret-1234567890
+PRODUCTION_CHECK_ENV += DATABASE_SSL_REQUIRE=False
+PRODUCTION_CHECK_ENV += DJANGO_DEFAULT_FROM_EMAIL=local-deploy-check@example.com
+PRODUCTION_CHECK_ENV += DJANGO_EMAIL_HOST=localhost
 
 COMPOSE := docker compose
 WEB_EXEC := $(COMPOSE) exec -T web
@@ -46,10 +51,10 @@ check:
 	$(WEB_EXEC) python manage.py check --settings=$(LOCAL_SETTINGS_MODULE)
 
 deploy-check:
-	$(WEB_EXEC) python manage.py check --deploy --settings=config.settings.production
+	$(WEB_EXEC) $(PRODUCTION_CHECK_ENV) python manage.py check --deploy --settings=config.settings.production
 
 collectstatic:
-	$(WEB_EXEC) python manage.py collectstatic --noinput --settings=config.settings.production
+	$(WEB_EXEC) $(PRODUCTION_CHECK_ENV) python manage.py collectstatic --noinput --settings=config.settings.production
 
 shell:
 	$(WEB_EXEC) python manage.py shell --settings=$(LOCAL_SETTINGS_MODULE)

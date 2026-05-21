@@ -142,7 +142,8 @@ The Render Blueprint defines:
 - pre-deploy migration command
 - non-secret production environment variables
 - `DATABASE_URL` from the managed database connection string
-- `DJANGO_SECRET_KEY` as `sync: false` for Render secret injection
+- `DJANGO_SECRET_KEY` and email provider settings as `sync: false` for Render
+  secret injection
 
 The Docker image collects static assets during build. Verify the image path:
 
@@ -159,6 +160,8 @@ docker compose exec -T web env \
   DATABASE_URL=postgres://studybuddy:studybuddy@db:5432/studybuddy_local \
   DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:8000,http://127.0.0.1:8000 \
   DATABASE_SSL_REQUIRE=False \
+  DJANGO_DEFAULT_FROM_EMAIL=local-deploy-check@example.com \
+  DJANGO_EMAIL_HOST=localhost \
   python manage.py check --deploy --settings=config.settings.production
 ```
 
@@ -177,6 +180,8 @@ docker compose exec -T web env \
   DATABASE_URL=postgres://studybuddy:studybuddy@db:5432/studybuddy_local \
   DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:8000,http://127.0.0.1:8000 \
   DATABASE_SSL_REQUIRE=False \
+  DJANGO_DEFAULT_FROM_EMAIL=local-deploy-check@example.com \
+  DJANGO_EMAIL_HOST=localhost \
   python manage.py collectstatic --noinput --settings=config.settings.production
 ```
 
@@ -239,6 +244,8 @@ DJANGO_SETTINGS_MODULE=config.settings.production
 DJANGO_SECRET_KEY
 DJANGO_ALLOWED_HOSTS
 DATABASE_URL
+DJANGO_DEFAULT_FROM_EMAIL
+DJANGO_EMAIL_HOST
 ```
 
 Render Blueprint-managed values include:
@@ -251,6 +258,11 @@ DATABASE_SSL_REQUIRE=true
 DJANGO_SECURE_SSL_REDIRECT=true
 DJANGO_SECURE_HSTS_SECONDS=31536000
 DJANGO_LOG_LEVEL=INFO
+DJANGO_EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+DJANGO_EMAIL_PORT=587
+DJANGO_EMAIL_USE_TLS=true
+DJANGO_EMAIL_USE_SSL=false
+DJANGO_EMAIL_TIMEOUT=10
 ```
 
 Secrets and generated values are not committed:
@@ -258,6 +270,11 @@ Secrets and generated values are not committed:
 ```text
 DJANGO_SECRET_KEY=<prompted by Render>
 DATABASE_URL=<generated from studybuddy-postgres>
+DJANGO_EMAIL_HOST=<provided by the email provider>
+DJANGO_EMAIL_HOST_USER=<provided by the email provider>
+DJANGO_EMAIL_HOST_PASSWORD=<provided by the email provider>
+DJANGO_DEFAULT_FROM_EMAIL=<verified sender address>
+DJANGO_SERVER_EMAIL=<optional server error sender address>
 RENDER_GIT_COMMIT=<provided by Render for the deployed commit>
 ```
 

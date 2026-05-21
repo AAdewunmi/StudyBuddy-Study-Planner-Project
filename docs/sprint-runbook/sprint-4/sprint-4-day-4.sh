@@ -25,6 +25,8 @@ PROD_ENV=(
   "DATABASE_SSL_REQUIRE=False"
   "DJANGO_SECURE_SSL_REDIRECT=True"
   "DJANGO_SECURE_HSTS_SECONDS=31536000"
+  "DJANGO_DEFAULT_FROM_EMAIL=local-deploy-check@example.com"
+  "DJANGO_EMAIL_HOST=localhost"
   "RELEASE_SHA=sprint-4-day-4-local"
 )
 
@@ -145,6 +147,8 @@ assert_output_contains "$deployment_docs" "DJANGO_SECRET_KEY" "secret key"
 assert_output_contains "$deployment_docs" "DJANGO_ALLOWED_HOSTS" "allowed hosts"
 assert_output_contains "$deployment_docs" "DJANGO_CSRF_TRUSTED_ORIGINS" "CSRF origins"
 assert_output_contains "$deployment_docs" "DATABASE_URL" "database URL"
+assert_output_contains "$deployment_docs" "DJANGO_DEFAULT_FROM_EMAIL" "default sender email"
+assert_output_contains "$deployment_docs" "DJANGO_EMAIL_HOST" "SMTP host"
 assert_output_contains "$deployment_docs" "RENDER_GIT_COMMIT" "Render commit release metadata"
 assert_output_contains "$deployment_docs" "collectstatic" "static collection"
 assert_output_contains "$deployment_docs" "migrate" "migration command"
@@ -186,6 +190,9 @@ assert_output_contains "$production_settings" "DJANGO_SECRET_KEY" "production se
 assert_output_contains "$production_settings" "DJANGO_ALLOWED_HOSTS" "production allowed hosts"
 assert_output_contains "$production_settings" "DJANGO_CSRF_TRUSTED_ORIGINS" "production CSRF origins"
 assert_output_contains "$production_settings" "required_env(\"DATABASE_URL\")" "required database URL"
+assert_output_contains "$production_settings" "DJANGO_DEFAULT_FROM_EMAIL" "production default sender"
+assert_output_contains "$production_settings" "DJANGO_EMAIL_HOST" "production SMTP host"
+assert_output_contains "$production_settings" "django.core.mail.backends.smtp.EmailBackend" "production SMTP email backend"
 assert_output_contains "$production_settings" "SECURE_SSL_REDIRECT" "SSL redirect"
 assert_output_contains "$production_settings" "SESSION_COOKIE_SECURE" "secure session cookie"
 assert_output_contains "$production_settings" "CSRF_COOKIE_SECURE" "secure CSRF cookie"
@@ -214,6 +221,8 @@ assert_output_contains "$env_example" "DJANGO_DEBUG=false" "production debug exa
 assert_output_contains "$env_example" "DJANGO_ALLOWED_HOSTS" "allowed hosts example"
 assert_output_contains "$env_example" "DJANGO_CSRF_TRUSTED_ORIGINS" "CSRF origins example"
 assert_output_contains "$env_example" "DATABASE_URL" "database URL example"
+assert_output_contains "$env_example" "DJANGO_DEFAULT_FROM_EMAIL" "default sender example"
+assert_output_contains "$env_example" "DJANGO_EMAIL_HOST" "SMTP host example"
 assert_output_contains "$env_example" "RENDER_GIT_COMMIT" "Render release metadata example"
 
 if printf '%s\n' "$env_example" | grep -Eiq 'password=[^[:space:]]{12,}|secret=[^[:space:]]{20,}|sk-[A-Za-z0-9]'; then

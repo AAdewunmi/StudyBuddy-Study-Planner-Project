@@ -54,6 +54,8 @@ docker compose exec -T web env \
   DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:8000,http://127.0.0.1:8000 \
   DATABASE_URL=postgres://studybuddy:studybuddy@db:5432/studybuddy_local \
   DATABASE_SSL_REQUIRE=False \
+  DJANGO_DEFAULT_FROM_EMAIL=local-deploy-check@example.com \
+  DJANGO_EMAIL_HOST=localhost \
   python manage.py check --deploy --settings=config.settings.production
 ```
 
@@ -110,7 +112,8 @@ LIVE_URL="https://your-render-service.onrender.com" \
   health check path, Docker runtime, pre-deploy migrations, and non-secret
   runtime variables.
 - Render injects `DJANGO_SECRET_KEY`, provides `DATABASE_URL` from managed
-  PostgreSQL, and exposes `RENDER_GIT_COMMIT` for release traceability.
+  PostgreSQL, injects email provider settings, and exposes `RENDER_GIT_COMMIT`
+  for release traceability.
 
 ## Live Render Acceptance
 

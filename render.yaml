@@ -1,7 +1,8 @@
 # Render Blueprint for the StudyBuddy production runtime.
 #
 # Secrets are intentionally not hardcoded here. Render prompts for
-# DJANGO_SECRET_KEY during Blueprint creation because it uses sync: false.
+# DJANGO_SECRET_KEY and email provider credentials during Blueprint creation
+# because they use sync: false.
 
 services:
   - type: web
@@ -34,6 +35,26 @@ services:
         value: "31536000"
       - key: DJANGO_LOG_LEVEL
         value: INFO
+      - key: DJANGO_EMAIL_BACKEND
+        value: django.core.mail.backends.smtp.EmailBackend
+      - key: DJANGO_EMAIL_HOST
+        sync: false
+      - key: DJANGO_EMAIL_PORT
+        value: "587"
+      - key: DJANGO_EMAIL_HOST_USER
+        sync: false
+      - key: DJANGO_EMAIL_HOST_PASSWORD
+        sync: false
+      - key: DJANGO_EMAIL_USE_TLS
+        value: "true"
+      - key: DJANGO_EMAIL_USE_SSL
+        value: "false"
+      - key: DJANGO_EMAIL_TIMEOUT
+        value: "10"
+      - key: DJANGO_DEFAULT_FROM_EMAIL
+        sync: false
+      - key: DJANGO_SERVER_EMAIL
+        sync: false
 
 databases:
   - name: studybuddy-postgres

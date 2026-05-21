@@ -28,6 +28,8 @@ PROD_ENV=(
   "DATABASE_SSL_REQUIRE=False"
   "DJANGO_SECURE_SSL_REDIRECT=True"
   "DJANGO_SECURE_HSTS_SECONDS=31536000"
+  "DJANGO_DEFAULT_FROM_EMAIL=local-deploy-check@example.com"
+  "DJANGO_EMAIL_HOST=localhost"
   "RELEASE_SHA=sprint-4-day-3-local"
 )
 
@@ -143,6 +145,9 @@ assert_output_contains "$production_settings" "DJANGO_ALLOWED_HOSTS" "environmen
 assert_output_contains "$production_settings" "DJANGO_CSRF_TRUSTED_ORIGINS" "environment CSRF origins"
 assert_output_contains "$production_settings" "DATABASE_URL" "environment database URL"
 assert_output_contains "$production_settings" "DATABASE_SSL_REQUIRE" "database SSL switch"
+assert_output_contains "$production_settings" "DJANGO_DEFAULT_FROM_EMAIL" "environment default sender"
+assert_output_contains "$production_settings" "DJANGO_EMAIL_HOST" "environment SMTP host"
+assert_output_contains "$production_settings" "django.core.mail.backends.smtp.EmailBackend" "SMTP email backend"
 assert_output_contains "$production_settings" "CompressedManifestStaticFilesStorage" "manifest static storage"
 assert_output_contains "$production_settings" "SECURE_PROXY_SSL_HEADER" "proxy SSL header"
 assert_output_contains "$production_settings" "SECURE_SSL_REDIRECT" "SSL redirect setting"
@@ -182,6 +187,8 @@ assert_output_contains "$deployment_docs" "Deployment" "deployment documentation
 assert_output_contains "$deployment_docs" "Render" "Render documentation"
 assert_output_contains "$deployment_docs" "DJANGO_SETTINGS_MODULE=config.settings.production" "production settings documentation"
 assert_output_contains "$deployment_docs" "DATABASE_URL" "database URL documentation"
+assert_output_contains "$deployment_docs" "DJANGO_DEFAULT_FROM_EMAIL" "default sender documentation"
+assert_output_contains "$deployment_docs" "DJANGO_EMAIL_HOST" "SMTP host documentation"
 assert_output_contains "$deployment_docs" "collectstatic" "static collection documentation"
 assert_output_contains "$deployment_docs" "gunicorn" "Gunicorn documentation"
 assert_output_contains "$deployment_docs" "/health/" "health check documentation"

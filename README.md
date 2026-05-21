@@ -212,8 +212,9 @@ commands use `config.settings.test`.
 Production deployment is defined in `render.yaml`. The Blueprint creates the
 Render Docker web service, managed PostgreSQL database, `/health/` check,
 pre-deploy migration command, and non-secret production environment variables.
-Render prompts for `DJANGO_SECRET_KEY` and derives `DATABASE_URL` from the
-managed database instead of storing secret values in the repository.
+Render prompts for `DJANGO_SECRET_KEY` and email provider values, then derives
+`DATABASE_URL` from the managed database instead of storing secret values in the
+repository.
 The `/health/` release field uses `RENDER_GIT_COMMIT` on Render unless an
 explicit `RELEASE_SHA` override is provided.
 
