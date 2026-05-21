@@ -19,6 +19,50 @@ Repository:
 https://github.com/AAdewunmi/StudyBuddy-Study-Planner-Project
 ```
 
+## Why Render
+
+Render is appropriate for the StudyBuddy SaaS MVP because it gives the project a
+low-operations production path without requiring custom cloud infrastructure.
+The application already has a Docker runtime, PostgreSQL persistence, strict
+environment-driven production settings, and a deployment health endpoint. Render
+matches that shape with Docker web services, managed PostgreSQL, Blueprint as
+code, health checks, and environment variable and secret injection.
+
+For an MVP, this keeps the deployment surface small: the repository defines the
+application runtime and production contract, while Render handles the platform
+work needed to host it. That lets the project validate the product workflow,
+data model, and operational checks before introducing more complex cloud
+infrastructure.
+
+## Platform Boundary
+
+The app and repository own:
+
+- Django application code and tests
+- `Dockerfile`
+- `render.yaml`
+- database migrations
+- static collection and WhiteNoise static file configuration
+- `/health/` endpoint behavior
+- production settings and runtime contract
+
+Render owns:
+
+- web service hosting
+- routing traffic to the container `PORT`
+- TLS termination and certificate management
+- deploy orchestration
+- managed PostgreSQL lifecycle
+- environment variable and secret injection
+- health check execution
+
+The app intentionally does not own:
+
+- manual server provisioning
+- PostgreSQL host operating-system management
+- TLS certificate provisioning
+- load balancer setup
+
 ## Runtime Shape
 
 The production container is defined by:

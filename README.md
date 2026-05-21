@@ -205,6 +205,13 @@ pre-deploy migration command, and non-secret production environment variables.
 Render prompts for `DJANGO_SECRET_KEY` and derives `DATABASE_URL` from the
 managed database instead of storing secret values in the repository.
 
+Render is used because it fits the MVP boundary: the repo owns the Django app,
+Docker image, Blueprint, migrations, static files, health endpoint, and runtime
+contract; Render owns hosting, TLS, routing to `PORT`, deploy orchestration,
+managed PostgreSQL, secret injection, and health check execution. The detailed
+deployment rationale and platform boundary are documented in
+[docs/deployment.md](docs/deployment.md).
+
 ## Architecture Notes
 
 The main project documentation is:
