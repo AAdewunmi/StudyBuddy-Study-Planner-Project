@@ -81,7 +81,7 @@ docker compose exec -T web env \
 Current passing receipt:
 
 ```text
-202 passed
+[number] passed
 Coverage XML written to file coverage.xml
 ```
 
@@ -266,7 +266,7 @@ The MVP is verification-ready when:
 - `make ci` passes locally
 - hosted GitHub Actions CI passes
 - Docker image build succeeds
-- coverage command reports `202 passed`
+- coverage command reports all tests passing
 - `coverage.xml` is generated
 - production deployment check passes
 - health check tests pass
