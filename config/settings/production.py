@@ -11,8 +11,8 @@ import os
 
 from django.core.exceptions import ImproperlyConfigured
 
-from config.settings.base import *  # noqa: F403
-from config.settings.base import BASE_DIR, env
+from .base import *  # noqa: F403
+from .base import BASE_DIR, env, env_bool, env_list
 
 
 def required_env(name: str) -> str:
@@ -28,19 +28,18 @@ DEBUG = False
 
 SECRET_KEY = required_env("DJANGO_SECRET_KEY")
 
-ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=[])
+ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS")
 if not ALLOWED_HOSTS:
     raise ImproperlyConfigured("DJANGO_ALLOWED_HOSTS must be set in production.")
 
-CSRF_TRUSTED_ORIGINS = env.list("DJANGO_CSRF_TRUSTED_ORIGINS", default=[])
+CSRF_TRUSTED_ORIGINS = env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
 
-DATABASE_URL = required_env("DATABASE_URL")
 DATABASES = {
     "default": env.db("DATABASE_URL"),
 }
 DATABASES["default"]["CONN_MAX_AGE"] = 600
 
-if env.bool("DATABASE_SSL_REQUIRE", default=True):
+if env_bool("DATABASE_SSL_REQUIRE", default=True):
     DATABASES["default"].setdefault("OPTIONS", {})
     DATABASES["default"]["OPTIONS"]["sslmode"] = "require"
 
@@ -56,11 +55,11 @@ STORAGES = {
 }
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-SECURE_SSL_REDIRECT = env.bool("DJANGO_SECURE_SSL_REDIRECT", default=True)
+SECURE_SSL_REDIRECT = env_bool("DJANGO_SECURE_SSL_REDIRECT", default=True)
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
-SECURE_HSTS_SECONDS = env.int("DJANGO_SECURE_HSTS_SECONDS", default=31536000)
+SECURE_HSTS_SECONDS = int(os.environ.get("DJANGO_SECURE_HSTS_SECONDS", "31536000"))
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
@@ -75,30 +74,12 @@ CONN_MAX_AGE = 600
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-DJANGO_LOG_LEVEL = os.environ.get("DJANGO_LOG_LEVEL", "INFO")
-
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-        },
-    },
-    "root": {
-        "handlers": ["console"],
-        "level": DJANGO_LOG_LEVEL,
-    },
-    "loggers": {
-        "django": {
-            "handlers": ["console"],
-            "level": DJANGO_LOG_LEVEL,
-            "propagate": False,
-        },
-        "apps": {
-            "handlers": ["console"],
-            "level": DJANGO_LOG_LEVEL,
-            "propagate": False,
-        },
-    },
-}
+LOGGING["root"]["level"] = os.environ.get("DJANGO_LOG_LEVEL", "INFO")  # noqa: F405
+LOGGING["loggers"]["django"]["level"] = os.environ.get(  # noqa: F405
+    "DJANGO_LOG_LEVEL",
+    "INFO",
+)
+LOGGING["loggers"]["apps"]["level"] = os.environ.get(  # noqa: F405
+    "DJANGO_LOG_LEVEL",
+    "INFO",
+)
