@@ -3,12 +3,13 @@
 LOCAL_SETTINGS_MODULE ?= config.settings.local
 TEST_SETTINGS_MODULE ?= config.settings.test
 TEST_DATABASE_URL ?= postgres://studybuddy:studybuddy@db:5432/studybuddy_test
+CI_IMAGE ?= studybuddy-ci
 
 COMPOSE := docker compose
 WEB_EXEC := $(COMPOSE) exec -T web
 TEST_ENV := env DJANGO_SETTINGS_MODULE=$(TEST_SETTINGS_MODULE) TEST_DATABASE_URL=$(TEST_DATABASE_URL)
 
-.PHONY: build up down restart logs migrate makemigrations check-migrations test test-insights check deploy-check collectstatic shell superuser lint format format-check ci sprint-3-day-5
+.PHONY: build up down restart logs migrate makemigrations check-migrations test test-insights check deploy-check collectstatic shell superuser lint isort format format-check ci sprint-3-day-5
 
 build:
 	$(COMPOSE) build
@@ -59,6 +60,9 @@ superuser:
 lint:
 	$(WEB_EXEC) python -m ruff check .
 
+isort:
+	$(WEB_EXEC) python -m isort . --check-only
+
 format:
 	$(WEB_EXEC) python -m black .
 
@@ -66,12 +70,14 @@ format-check:
 	$(WEB_EXEC) python -m black . --check
 
 ci:
-	$(WEB_EXEC) python -m black . --check
-	$(WEB_EXEC) python -m ruff check .
 	$(WEB_EXEC) python manage.py check --settings=$(LOCAL_SETTINGS_MODULE)
 	$(WEB_EXEC) python manage.py makemigrations --check --dry-run --settings=$(LOCAL_SETTINGS_MODULE)
 	$(WEB_EXEC) python manage.py migrate --noinput --settings=$(LOCAL_SETTINGS_MODULE)
-	$(WEB_EXEC) $(TEST_ENV) pytest -q
+	$(WEB_EXEC) python -m ruff check .
+	$(WEB_EXEC) python -m black . --check
+	$(WEB_EXEC) python -m isort . --check-only
+	docker build -t $(CI_IMAGE) .
+	$(WEB_EXEC) $(TEST_ENV) pytest --cov=apps --cov=config --cov-report=xml -q
 
 sprint-3-day-5:
 	./docs/sprint-runbook/sprint-3/sprint-3-day-5.sh

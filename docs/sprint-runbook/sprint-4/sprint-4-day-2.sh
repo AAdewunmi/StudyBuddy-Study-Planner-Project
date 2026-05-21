@@ -181,7 +181,9 @@ assert_output_contains "$make_ci_plan" "python manage.py makemigrations --check 
 assert_output_contains "$make_ci_plan" "python manage.py migrate --noinput --settings=config.settings.local" "Makefile migrate command"
 assert_output_contains "$make_ci_plan" "DJANGO_SETTINGS_MODULE=config.settings.test" "Makefile test settings"
 assert_output_contains "$make_ci_plan" "TEST_DATABASE_URL=postgres://studybuddy:studybuddy@db:5432/studybuddy_test" "Makefile test database URL"
-assert_output_contains "$make_ci_plan" "pytest -q" "Makefile pytest command"
+assert_output_contains "$make_ci_plan" "pytest --cov=apps --cov=config --cov-report=xml -q" "Makefile pytest coverage command"
+assert_output_contains "$make_ci_plan" "python -m isort . --check-only" "Makefile isort command"
+assert_output_contains "$make_ci_plan" "docker build -t" "Makefile Docker build command"
 
 print_step "Build and start Docker/PostgreSQL stack for local CI verification"
 

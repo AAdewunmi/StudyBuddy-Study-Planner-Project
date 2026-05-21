@@ -52,7 +52,7 @@ http://localhost:8000
 
 ## Local Verification
 
-Run the local CI-style gate:
+Run the local GitHub Actions-style gate:
 
 ```bash
 make ci
@@ -61,15 +61,17 @@ make ci
 The `make ci` target runs:
 
 ```bash
-python -m black . --check
-python -m ruff check .
 python manage.py check --settings=config.settings.local
 python manage.py makemigrations --check --dry-run --settings=config.settings.local
 python manage.py migrate --noinput --settings=config.settings.local
-pytest -q
+python -m ruff check .
+python -m black . --check
+python -m isort . --check-only
+docker build -t studybuddy-ci .
+pytest --cov=apps --cov=config --cov-report=xml -q
 ```
 
-Run the hosted-CI-shaped coverage command inside Docker Compose:
+To rerun only the hosted-CI-shaped coverage command inside Docker Compose:
 
 ```bash
 docker compose exec -T web env \
