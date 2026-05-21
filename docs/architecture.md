@@ -1,9 +1,9 @@
 # StudyBuddy Architecture
 
 StudyBuddy-Django-App is structured as a modular Django SaaS MVP. The current
-project includes the Sprint 1 authentication foundation, Sprint 2 core study
-workflow, and Sprint 3 deterministic AI/NLP insight workflow described in
-`docs/studybuddy-canonical-implementation-outline.md`.
+project includes the authentication foundation, core study workflow,
+deterministic AI/NLP insight workflow, and Sprint 4 deployment verification
+path described in `docs/studybuddy-canonical-implementation-outline.md`.
 
 The architecture uses Django templates with project-owned CSS in
 `static/css/theme.css`, Django models for domain persistence, PostgreSQL for the
@@ -171,18 +171,17 @@ Bootstrap visual utility classes for layout, cards, buttons, alerts, or metrics.
 
 ## Verification Boundary
 
-The current Sprint 3 final verification runbook is:
+The current release verification runbook is:
 
 ```bash
-./docs/sprint-runbook/sprint-3/sprint-3-day-5.sh
+./docs/sprint-runbook/sprint-4/sprint-4-day-4.sh
 ```
 
 Expected current receipt:
 
 ```text
-Sprint 3 Day 5 verification complete.
-apps/insights tests: 69 passed
-full project test suite: 202 passed
+Sprint 4 Day 4 Render deployment and release verification complete.
+Full project test suite passes.
 ```
 
 Run the dashboard and sessions focused suite when changing Sprint 2 workflow
