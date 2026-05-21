@@ -50,6 +50,10 @@ explanations.
 The MVP now includes the Sprint 3 deterministic AI/NLP study insights feature
 and the Sprint 4 deployment verification path.
 
+Current verification tag: `v0.1.0-mvp`. See
+[docs/final-verification.md](docs/final-verification.md) for the evidence
+checklist.
+
 Users can now:
 
 - create study sessions
