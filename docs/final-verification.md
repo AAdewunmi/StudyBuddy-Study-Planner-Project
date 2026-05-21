@@ -180,6 +180,54 @@ docker compose exec -T web env \
 
 The receipt should mention copied, unmodified, or post-processed static files.
 
+## Post-Deploy Verification
+
+After Render finishes deploying the Blueprint, verify the live product rather
+than only the local build.
+
+Check the public home page:
+
+```bash
+curl -fsS https://studybuddy-django-app.onrender.com/ >/tmp/studybuddy-home.html
+```
+
+Expected result: the command exits successfully and returns the StudyBuddy home
+page HTML.
+
+Check the live health endpoint:
+
+```bash
+curl -fsS https://studybuddy-django-app.onrender.com/health/
+```
+
+Expected response:
+
+```json
+{
+  "status": "ok",
+  "service": "studybuddy",
+  "release": "render-blueprint",
+  "checks": {
+    "database": "ok"
+  }
+}
+```
+
+Run a browser smoke test against the live URL:
+
+1. Open `https://studybuddy-django-app.onrender.com/`.
+2. Sign up with a test email address.
+3. Confirm the app redirects to the authenticated dashboard.
+4. Create a study session.
+5. Add a note to the study session.
+6. Generate an insight for the session.
+7. Confirm the insight appears on the session detail page and insights list.
+8. Log out.
+9. Confirm protected pages redirect anonymous users to login.
+
+The deployed product is release-verified only when the live health endpoint
+reports `database: ok` and the browser smoke test passes against Render.
+
 ## Runtime Contract
 
 Production requires:
@@ -223,3 +271,5 @@ The MVP is verification-ready when:
 - production deployment check passes
 - health check tests pass
 - Render Blueprint is applied with secrets injected by Render
+- live Render `/health/` returns `status: ok` and `database: ok`
+- live browser smoke test passes

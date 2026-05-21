@@ -225,6 +225,11 @@ front and center.
 
 ## Verification Baseline
 
+The release verification checklist lives in
+[docs/final-verification.md](docs/final-verification.md). It covers local
+checks, hosted CI, Render deployment checks, live `/health/`, and a browser
+smoke test against the deployed product.
+
 The current Sprint 3 insights verification command is:
 
 ```bash
