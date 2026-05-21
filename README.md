@@ -103,6 +103,7 @@ The detailed product and technical contract lives in
 - A data-backed dashboard that renders prepared metrics and recent activity.
 - GitHub Actions CI for checks, migrations, linting, formatting, Docker image
   build, tests, coverage XML generation, and Codecov upload.
+- Dependabot automation for Python dependency and GitHub Actions update PRs.
 - Production settings, a Docker image path, and a Render Blueprint for
   deployment-style runtime checks.
 - Health check endpoint at `/health/` for deployment and monitoring checks.
@@ -324,6 +325,13 @@ StudyBuddy-Study-Planner-Project/
 CI generates `coverage.xml` with `pytest-cov` and uploads it to Codecov with
 the `CODECOV_TOKEN` GitHub Actions secret. The Codecov repository must be active
 in Codecov before uploads will be accepted.
+
+## Dependency Updates
+
+Dependabot is configured in `.github/dependabot.yml` to open weekly PRs for
+Python dependencies from `requirements.txt` and GitHub Actions versions. Those
+PRs run through the same CI, Docker build, coverage, and Codecov checks as other
+pull requests.
 
 ## Next Steps
 
