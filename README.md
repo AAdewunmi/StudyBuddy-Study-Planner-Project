@@ -159,7 +159,7 @@ make format-check       # Run Black in check mode
 make lint               # Run Ruff checks
 make test-insights      # Run the Sprint 3 insights test suite
 make test               # Run the full pytest suite
-make ci                 # Run the local CI-style verification chain
+make ci                 # Run the local GitHub Actions-style verification chain
 make sprint-3-day-5     # Run the Sprint 3 final verification runbook
 ./docs/sprint-runbook/sprint-4/sprint-4-day-4.sh  # Run release verification
 ```
@@ -170,9 +170,11 @@ The equivalent raw Docker commands are:
 docker compose exec -T web python manage.py check --settings=config.settings.local
 docker compose exec -T web python manage.py makemigrations --check --dry-run --settings=config.settings.local
 docker compose exec -T web python manage.py migrate --noinput --settings=config.settings.local
-docker compose exec -T web python -m black . --check
 docker compose exec -T web python -m ruff check .
-docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test TEST_DATABASE_URL=postgres://studybuddy:studybuddy@db:5432/studybuddy_test pytest -q
+docker compose exec -T web python -m black . --check
+docker compose exec -T web python -m isort . --check-only
+docker build -t studybuddy-ci .
+docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test TEST_DATABASE_URL=postgres://studybuddy:studybuddy@db:5432/studybuddy_test pytest --cov=apps --cov=config --cov-report=xml -q
 ```
 
 Host-side pytest also uses PostgreSQL. When running from a local Python
@@ -210,8 +212,9 @@ commands use `config.settings.test`.
 Production deployment is defined in `render.yaml`. The Blueprint creates the
 Render Docker web service, managed PostgreSQL database, `/health/` check,
 pre-deploy migration command, and non-secret production environment variables.
-Render prompts for `DJANGO_SECRET_KEY` and derives `DATABASE_URL` from the
-managed database instead of storing secret values in the repository.
+Render prompts for `DJANGO_SECRET_KEY` and email provider values, then derives
+`DATABASE_URL` from the managed database instead of storing secret values in the
+repository.
 The `/health/` release field uses `RENDER_GIT_COMMIT` on Render unless an
 explicit `RELEASE_SHA` override is provided.
 

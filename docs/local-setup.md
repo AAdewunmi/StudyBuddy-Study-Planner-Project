@@ -103,10 +103,11 @@ migrations and exit successfully. After that, the `makemigrations --check
 ```bash
 make format-check
 make lint
+make isort
 ```
 
-`ruff` is the primary lint command used by the local Makefile. Hosted CI also
-runs `isort` directly with `python -m isort . --check-only`.
+`make ci` runs Ruff, Black, and isort before building the Docker image and
+running the coverage-producing test command.
 
 ## Run Tests
 
@@ -128,16 +129,17 @@ Expected current receipt:
 69 passed
 ```
 
-The full local suite should also pass:
+The full local suite should also pass. The exact count may change as coverage
+grows:
 
 ```text
-202 passed
+[number] passed
 ```
 
 Run tests with coverage, matching CI.
 
 ```bash
-docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest --cov=apps --cov=config --cov-report=xml -q
+docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test TEST_DATABASE_URL=postgres://studybuddy:studybuddy@db:5432/studybuddy_test pytest --cov=apps --cov=config --cov-report=xml -q
 ```
 
 If you run pytest from a host-side Python environment instead of inside the

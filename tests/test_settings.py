@@ -47,6 +47,13 @@ def production_env(**overrides: str) -> dict[str, str]:
         "DJANGO_ALLOWED_HOSTS": "example.com,www.example.com",
         "DJANGO_CSRF_TRUSTED_ORIGINS": "https://example.com",
         "DATABASE_URL": "postgres://studybuddy:studybuddy@db:5432/studybuddy_local",
+        "DJANGO_EMAIL_BACKEND": "django.core.mail.backends.smtp.EmailBackend",
+        "DJANGO_DEFAULT_FROM_EMAIL": "StudyBuddy <noreply@example.com>",
+        "DJANGO_EMAIL_HOST": "smtp.example.com",
+        "DJANGO_EMAIL_PORT": "587",
+        "DJANGO_EMAIL_USE_TLS": "true",
+        "DJANGO_EMAIL_USE_SSL": "false",
+        "DJANGO_EMAIL_TIMEOUT": "10",
     }
     env.update(overrides)
     return env
@@ -182,7 +189,11 @@ def test_production_settings_import_with_required_environment() -> None:
             "print(settings.DEBUG); "
             "print(settings.ALLOWED_HOSTS); "
             "print(settings.DATABASES['default']['CONN_MAX_AGE']); "
-            "print(settings.SECURE_SSL_REDIRECT)"
+            "print(settings.SECURE_SSL_REDIRECT); "
+            "print(settings.EMAIL_BACKEND); "
+            "print(settings.EMAIL_HOST); "
+            "print(settings.EMAIL_PORT); "
+            "print(settings.DEFAULT_FROM_EMAIL)"
         ),
         production_env(),
     )
@@ -192,6 +203,10 @@ def test_production_settings_import_with_required_environment() -> None:
         "['example.com', 'www.example.com']",
         "600",
         "True",
+        "django.core.mail.backends.smtp.EmailBackend",
+        "smtp.example.com",
+        "587",
+        "StudyBuddy <noreply@example.com>",
     ]
 
 
@@ -229,6 +244,57 @@ def test_production_settings_require_database_url() -> None:
 
     assert result.returncode != 0
     assert "DATABASE_URL must be set in production." in result.stderr
+
+
+def test_production_settings_require_default_from_email() -> None:
+    """Production settings fail fast without a sender address."""
+    result = run_settings_snippet(
+        "import config.settings.production",
+        production_env(DJANGO_DEFAULT_FROM_EMAIL=""),
+        check=False,
+    )
+
+    assert result.returncode != 0
+    assert "DJANGO_DEFAULT_FROM_EMAIL must be set in production." in result.stderr
+
+
+def test_production_settings_require_smtp_host_by_default() -> None:
+    """Production SMTP email requires an explicit provider host."""
+    result = run_settings_snippet(
+        "import config.settings.production",
+        production_env(DJANGO_EMAIL_HOST=""),
+        check=False,
+    )
+
+    assert result.returncode != 0
+    assert "DJANGO_EMAIL_HOST must be set in production." in result.stderr
+
+
+def test_production_settings_reject_conflicting_email_security_flags() -> None:
+    """SMTP email cannot use TLS and SSL modes at the same time."""
+    result = run_settings_snippet(
+        "import config.settings.production",
+        production_env(DJANGO_EMAIL_USE_TLS="true", DJANGO_EMAIL_USE_SSL="true"),
+        check=False,
+    )
+
+    assert result.returncode != 0
+    assert (
+        "DJANGO_EMAIL_USE_TLS and DJANGO_EMAIL_USE_SSL cannot both be true."
+        in result.stderr
+    )
+
+
+def test_production_settings_require_integer_email_port() -> None:
+    """SMTP port values must be integers."""
+    result = run_settings_snippet(
+        "import config.settings.production",
+        production_env(DJANGO_EMAIL_PORT="not-a-port"),
+        check=False,
+    )
+
+    assert result.returncode != 0
+    assert "DJANGO_EMAIL_PORT must be an integer." in result.stderr
 
 
 def test_production_settings_require_database_ssl_by_default() -> None:

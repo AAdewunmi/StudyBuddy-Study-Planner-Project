@@ -75,25 +75,28 @@ For local Docker-backed verification, use:
 make ci
 ```
 
-The local `make ci` target runs inside the `web` container and currently checks:
+The local `make ci` target runs the same project gates as hosted CI, using the
+Docker Compose `web` container for Django and Python commands:
 
 ```bash
-python -m black . --check
-python -m ruff check .
 python manage.py check --settings=config.settings.local
 python manage.py makemigrations --check --dry-run --settings=config.settings.local
 python manage.py migrate --noinput --settings=config.settings.local
-env DJANGO_SETTINGS_MODULE=config.settings.test TEST_DATABASE_URL=postgres://studybuddy:studybuddy@db:5432/studybuddy_test pytest -q
+python -m ruff check .
+python -m black . --check
+python -m isort . --check-only
+docker build -t studybuddy-ci .
+env DJANGO_SETTINGS_MODULE=config.settings.test TEST_DATABASE_URL=postgres://studybuddy:studybuddy@db:5432/studybuddy_test pytest --cov=apps --cov=config --cov-report=xml -q
 ```
 
-This is intentionally a local CI-style verification chain, not an exact copy of
-GitHub Actions. Hosted CI additionally checks isort directly, builds the Docker
-image, runs pytest with coverage XML output, and uploads coverage to Codecov.
+The local target does not upload coverage to Codecov. That upload remains a
+hosted GitHub Actions responsibility because it depends on the `CODECOV_TOKEN`
+secret.
 
-To run the hosted test command shape locally from Docker Compose:
+To run only the hosted test command shape locally from Docker Compose:
 
 ```bash
-docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest --cov=apps --cov=config --cov-report=xml -q
+docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test TEST_DATABASE_URL=postgres://studybuddy:studybuddy@db:5432/studybuddy_test pytest --cov=apps --cov=config --cov-report=xml -q
 ```
 
 If running pytest from a host-side Python environment instead of inside the
@@ -106,8 +109,7 @@ TEST_DATABASE_URL=postgres://studybuddy:studybuddy@localhost:5432/studybuddy_tes
 
 ## Import Ordering
 
-Ruff is the primary lint command used by the Makefile, and hosted CI also runs
-isort directly:
+Ruff and isort are both part of the local `make ci` target and hosted CI:
 
 ```bash
 python -m ruff check .

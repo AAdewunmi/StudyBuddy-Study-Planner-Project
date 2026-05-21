@@ -1,8 +1,8 @@
 """Production settings for the StudyBuddy SaaS MVP.
 
 Production settings are intentionally environment-driven. Secrets, database
-credentials, hostnames, CSRF origins, and release metadata must be provided by
-the deployment platform.
+credentials, hostnames, CSRF origins, email provider settings, and release
+metadata must be provided by the deployment platform.
 """
 
 from __future__ import annotations
@@ -22,6 +22,16 @@ def required_env(name: str) -> str:
     if not value:
         raise ImproperlyConfigured(f"{name} must be set in production.")
     return value
+
+
+def env_int(name: str, default: int) -> int:
+    """Return an integer environment variable or raise a clear error."""
+
+    value = os.environ.get(name, str(default))
+    try:
+        return int(value)
+    except ValueError as exc:
+        raise ImproperlyConfigured(f"{name} must be an integer.") from exc
 
 
 DEBUG = False
@@ -73,7 +83,24 @@ CSRF_COOKIE_HTTPONLY = False
 
 CONN_MAX_AGE = 600
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+SMTP_EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = os.environ.get("DJANGO_EMAIL_BACKEND", SMTP_EMAIL_BACKEND)
+DEFAULT_FROM_EMAIL = required_env("DJANGO_DEFAULT_FROM_EMAIL")
+SERVER_EMAIL = os.environ.get("DJANGO_SERVER_EMAIL", DEFAULT_FROM_EMAIL)
+
+if EMAIL_BACKEND == SMTP_EMAIL_BACKEND:
+    EMAIL_HOST = required_env("DJANGO_EMAIL_HOST")
+    EMAIL_PORT = env_int("DJANGO_EMAIL_PORT", 587)
+    EMAIL_HOST_USER = os.environ.get("DJANGO_EMAIL_HOST_USER", "")
+    EMAIL_HOST_PASSWORD = os.environ.get("DJANGO_EMAIL_HOST_PASSWORD", "")
+    EMAIL_USE_TLS = env_bool("DJANGO_EMAIL_USE_TLS", default=True)
+    EMAIL_USE_SSL = env_bool("DJANGO_EMAIL_USE_SSL", default=False)
+    EMAIL_TIMEOUT = env_int("DJANGO_EMAIL_TIMEOUT", 10)
+
+    if EMAIL_USE_TLS and EMAIL_USE_SSL:
+        raise ImproperlyConfigured(
+            "DJANGO_EMAIL_USE_TLS and DJANGO_EMAIL_USE_SSL cannot both be true."
+        )
 
 LOGGING["root"]["level"] = os.environ.get("DJANGO_LOG_LEVEL", "INFO")  # noqa: F405
 LOGGING["loggers"]["django"]["level"] = os.environ.get(  # noqa: F405
