@@ -34,6 +34,7 @@ if not ALLOWED_HOSTS:
 
 CSRF_TRUSTED_ORIGINS = env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
 
+DATABASE_URL = required_env("DATABASE_URL")
 DATABASES = {
     "default": env.db("DATABASE_URL"),
 }
