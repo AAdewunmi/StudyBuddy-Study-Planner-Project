@@ -1,16 +1,14 @@
-# StudyBuddy Canonical Implementation Outline
+# StudyBuddy Historical Implementation Outline
 
-This is the central canonical implementation file for StudyBuddy. It is the
-one place to record the project's implemented product shape, app boundaries,
-MVP scope, sprint checkpoints, verification commands, and architectural
-decisions that future work should preserve.
+This file preserves StudyBuddy's sprint-era implementation planning, app
+boundaries, MVP scope, checkpoints, verification commands, and architectural
+decisions.
 
-Use this document as the implementation source of truth before changing models,
-views, selectors, services, templates, URLs, tests, or user-facing product
-behaviour. Supporting documents can go deeper on specific areas, but they
-should point back here rather than becoming competing canonical sources.
+For current behavior and release evidence, use `README.md`,
+`docs/architecture.md`, `docs/deployment.md`, and `docs/final-verification.md`.
+This outline is historical context and should not override the current docs.
 
-## Canonical Project Baseline
+## Project Baseline
 
 StudyBuddy is a production-minded Django SaaS MVP for study productivity.
 

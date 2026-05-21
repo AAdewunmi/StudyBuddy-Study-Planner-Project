@@ -2,8 +2,9 @@
 
 StudyBuddy-Django-App is structured as a modular Django SaaS MVP. The current
 project includes the authentication foundation, core study workflow,
-deterministic AI/NLP insight workflow, and Sprint 4 deployment verification
-path described in `docs/studybuddy-canonical-implementation-outline.md`.
+deterministic AI/NLP insight workflow, and deployment verification path. Current
+release proof lives in `docs/final-verification.md`; historical sprint-era
+planning remains in `docs/studybuddy-canonical-implementation-outline.md`.
 
 The architecture uses Django templates with project-owned CSS in
 `static/css/theme.css`, Django models for domain persistence, PostgreSQL for the
@@ -180,12 +181,11 @@ The current release verification runbook is:
 Expected current receipt:
 
 ```text
-Sprint 4 Day 4 Render deployment and release verification complete.
+Render deployment and release verification complete.
 Full project test suite passes.
 ```
 
-Run the dashboard and sessions focused suite when changing Sprint 2 workflow
-code:
+Run the dashboard and sessions focused suite when changing study workflow code:
 
 ```bash
 docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest apps/dashboard/tests apps/sessions/tests -q

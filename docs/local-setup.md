@@ -117,7 +117,7 @@ Run the full test suite with isolated test settings.
 make test
 ```
 
-Run the current Sprint 3 insights suite.
+Run the current insights suite.
 
 ```bash
 make test-insights
@@ -150,21 +150,22 @@ Compose.
 TEST_DATABASE_URL=postgres://studybuddy:studybuddy@localhost:5432/studybuddy_test python3 -m pytest --cov=apps --cov=config --cov-report=term-missing -q
 ```
 
-## Run Sprint Verification Runbooks
+## Run Verification Runbooks
 
-The current Sprint 3 final verification is:
+The current release verification is:
 
 ```bash
-make sprint-3-day-5
+./docs/sprint-runbook/sprint-4/sprint-4-day-4.sh
 ```
 
-The completed Sprint 2 dashboard/session verification is:
+Historical sprint runbooks remain available under `docs/sprint-runbook/` for
+traceability. For example, the completed dashboard/session verification is:
 
 ```bash
 ./docs/sprint-runbook/sprint-2/sprint-2-day-5.sh
 ```
 
-The canonical implementation outline is:
+Historical sprint-era planning context is preserved in:
 
 ```text
 docs/studybuddy-canonical-implementation-outline.md

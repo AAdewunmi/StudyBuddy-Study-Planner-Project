@@ -1,9 +1,8 @@
 # StudyBuddy Domain Model
 
-StudyBuddy is centered on authenticated, user-owned study activity. Sprint 1
-established the account, role, dashboard, and authentication foundation. Sprint
-2 extended that foundation with study sessions, notes, selectors, services, and
-dashboard metrics. Sprint 3 adds deterministic AI/NLP insights generated from a
+StudyBuddy is centered on authenticated, user-owned study activity. The current
+domain model includes accounts, roles, study sessions, notes, selectors,
+services, dashboard metrics, and deterministic AI/NLP insights generated from a
 user's own session notes.
 
 ## Current Foundation
@@ -176,7 +175,8 @@ CustomUser * -> * Role
 `StudyInsight` ownership is inherited through the parent session. `Role`
 supports role-aware behavior independently of the study session workflow.
 
-## Canonical Implementation Outline
+## Historical Implementation Outline
 
-The central canonical implementation outline is
-`docs/studybuddy-canonical-implementation-outline.md`.
+Sprint-era planning context is preserved in
+`docs/studybuddy-canonical-implementation-outline.md`. The current domain model
+described above is the active reference for product behavior.

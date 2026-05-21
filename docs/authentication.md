@@ -1,10 +1,9 @@
 # Authentication And Access Control
 
 StudyBuddy uses an email-first authentication foundation with protected product
-surfaces. Sprint 1 established signup, login, logout, profile, dashboard
-routing, and role helpers. Sprint 2 now uses that foundation for owner-scoped
-study sessions, notes, and data-backed dashboard metrics. Sprint 3 extends the
-same owner-scoped access model to deterministic AI/NLP insights.
+surfaces. Signup, login, logout, profile, dashboard routing, role helpers,
+study sessions, notes, dashboard metrics, and deterministic AI/NLP insights all
+share the same owner-scoped access model.
 
 ## User Model
 

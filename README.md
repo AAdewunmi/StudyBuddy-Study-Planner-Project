@@ -47,8 +47,8 @@ explanations.
 
 ## Current Release Status
 
-The MVP now includes the Sprint 3 deterministic AI/NLP study insights feature
-and the Sprint 4 deployment verification path.
+The MVP now includes deterministic AI/NLP study insights and a deployment
+verification path.
 
 Current verification tag: `v0.1.0-mvp`. See
 [docs/final-verification.md](docs/final-verification.md) for the evidence
@@ -62,7 +62,7 @@ Users can now:
 - view summaries, keywords, confidence scores, and explanations
 - revisit generated insights from a dedicated dashboard
 
-## Sprint 3 Feature Contract
+## AI/NLP Insight Contract
 
 The AI/NLP insight feature analyses notes attached to one user-owned study
 session. It stores a reusable `StudyInsight` containing an extractive summary,
@@ -162,10 +162,10 @@ make check-migrations   # Confirm migrations are clean
 make migrate            # Apply local PostgreSQL migrations
 make format-check       # Run Black in check mode
 make lint               # Run Ruff checks
-make test-insights      # Run the Sprint 3 insights test suite
+make test-insights      # Run the insights test suite
 make test               # Run the full pytest suite
 make ci                 # Run the local GitHub Actions-style verification chain
-make sprint-3-day-5     # Run the Sprint 3 final verification runbook
+make sprint-3-day-5     # Run the historical insights verification runbook
 ./docs/sprint-runbook/sprint-4/sprint-4-day-4.sh  # Run release verification
 ```
 
@@ -190,13 +190,13 @@ port:
 TEST_DATABASE_URL=postgres://studybuddy:studybuddy@localhost:5432/studybuddy_test python3 -m pytest --cov=apps --cov=config --cov-report=term-missing -q
 ```
 
-Run the Sprint 3 final insight verification runbook.
+Run the historical insight verification runbook.
 
 ```bash
 make sprint-3-day-5
 ```
 
-Run the current Sprint 4 release verification runbook.
+Run the current release verification runbook.
 
 ```bash
 ./docs/sprint-runbook/sprint-4/sprint-4-day-4.sh
@@ -240,13 +240,14 @@ The main project documentation is:
 - [AI/NLP contract](docs/ai-nlp-contract.md)
 - [Deployment](docs/deployment.md)
 - [Operational runbook](RUNBOOK.md)
-- [Canonical implementation outline](docs/studybuddy-canonical-implementation-outline.md)
+- [Historical implementation outline](docs/studybuddy-canonical-implementation-outline.md)
 
-The canonical implementation outline is the central implementation source of
-truth. The AI/NLP contract records the deterministic insight behaviour. The
-`Makefile` keeps local setup, review, and CI-style verification commands
-consistent. The README keeps the current runtime shape and verification path
-front and center.
+The architecture, deployment, and final verification docs are the current
+sources of truth. The historical implementation outline preserves sprint-era
+planning context. The AI/NLP contract records the deterministic insight
+behaviour. The `Makefile` keeps local setup, review, and CI-style verification
+commands consistent. The README keeps the current runtime shape and verification
+path front and center.
 
 ## Verification Baseline
 
@@ -338,7 +339,7 @@ pull requests.
 1. Fix or confirm the live Render service URL. The documented URL is
    `https://studybuddy-django-app.onrender.com`; update the docs and
    `render.yaml` host settings if Render generated a different hostname.
-2. Run the Sprint 4 release verification runbook against the live service:
+2. Run the release verification runbook against the live service:
 
    ```bash
    LIVE_URL="https://your-render-service.onrender.com" \
