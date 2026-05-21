@@ -70,10 +70,10 @@ What the feature does:
 
 How to verify it:
 
-- run `pytest apps/insights -q` for the targeted insight test suite
-- run `python manage.py check` for Django configuration checks
-- run `python manage.py makemigrations --check --dry-run` to confirm the model
-  contract does not require new migrations
+- run `make test-insights` for the Docker-backed targeted insight test suite
+- run `make check` for Docker-backed Django configuration checks
+- run `make check-migrations` to confirm the model contract does not require
+  new migrations
 
 Where the MVP boundary sits:
 
@@ -281,12 +281,12 @@ deterministic, cheap to run, easy to test, and honest in the UI.
 Run targeted insight tests:
 
 ```bash
-pytest apps/insights -q
+make test-insights
 ```
 
 Run project checks:
 
 ```bash
-python manage.py check
-python manage.py makemigrations --check --dry-run
+make check
+make check-migrations
 ```

@@ -45,9 +45,10 @@ deterministic text normalisation, keyword extraction, extractive summaries,
 source text hashing, rule-based confidence scoring, and plain-English
 explanations.
 
-## Current Sprint Status
+## Current Release Status
 
-Sprint 3 adds the AI/NLP study insights feature.
+The MVP now includes the Sprint 3 deterministic AI/NLP study insights feature
+and the Sprint 4 deployment verification path.
 
 Users can now:
 
@@ -160,6 +161,7 @@ make test-insights      # Run the Sprint 3 insights test suite
 make test               # Run the full pytest suite
 make ci                 # Run the local CI-style verification chain
 make sprint-3-day-5     # Run the Sprint 3 final verification runbook
+./docs/sprint-runbook/sprint-4/sprint-4-day-4.sh  # Run release verification
 ```
 
 The equivalent raw Docker commands are:
@@ -185,6 +187,12 @@ Run the Sprint 3 final insight verification runbook.
 
 ```bash
 make sprint-3-day-5
+```
+
+Run the current Sprint 4 release verification runbook.
+
+```bash
+./docs/sprint-runbook/sprint-4/sprint-4-day-4.sh
 ```
 
 ## Environment Settings
@@ -227,8 +235,8 @@ The main project documentation is:
 - [Canonical implementation outline](docs/studybuddy-canonical-implementation-outline.md)
 
 The canonical implementation outline is the central implementation source of
-truth. The AI/NLP contract records the deterministic Sprint 3 insight behaviour.
-The `Makefile` keeps local setup, review, and CI-style verification commands
+truth. The AI/NLP contract records the deterministic insight behaviour. The
+`Makefile` keeps local setup, review, and CI-style verification commands
 consistent. The README keeps the current runtime shape and verification path
 front and center.
 
@@ -239,7 +247,7 @@ The release verification checklist lives in
 checks, hosted CI, Render deployment checks, live `/health/`, and a browser
 smoke test against the deployed product.
 
-The current Sprint 3 insights verification command is:
+The current targeted insights verification command is:
 
 ```bash
 make test-insights
@@ -309,3 +317,23 @@ StudyBuddy-Study-Planner-Project/
 CI generates `coverage.xml` with `pytest-cov` and uploads it to Codecov with
 the `CODECOV_TOKEN` GitHub Actions secret. The Codecov repository must be active
 in Codecov before uploads will be accepted.
+
+## Next Steps
+
+1. Fix or confirm the live Render service URL. The documented URL is
+   `https://studybuddy-django-app.onrender.com`; update the docs and
+   `render.yaml` host settings if Render generated a different hostname.
+2. Run the Sprint 4 release verification runbook against the live service:
+
+   ```bash
+   LIVE_URL="https://your-render-service.onrender.com" \
+     ./docs/sprint-runbook/sprint-4/sprint-4-day-4.sh
+   ```
+
+3. Complete the live browser smoke test: signup, login, dashboard, session
+   creation, note creation, insight generation, logout, and protected-page
+   redirects.
+4. Automate the post-deploy browser smoke path with Playwright or an equivalent
+   lightweight end-to-end check.
+5. Upgrade Render plans only after live MVP validation or when traffic, runtime,
+   or database retention needs exceed the free plan limits.
