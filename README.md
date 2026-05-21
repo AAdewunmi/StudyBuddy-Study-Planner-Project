@@ -98,8 +98,8 @@ The detailed product and technical contract lives in
 - A data-backed dashboard that renders prepared metrics and recent activity.
 - GitHub Actions CI for checks, migrations, linting, formatting, Docker image
   build, tests, coverage XML generation, and Codecov upload.
-- Production settings and a Docker image path for deployment-style runtime
-  checks.
+- Production settings, a Docker image path, and a Render Blueprint for
+  deployment-style runtime checks.
 - Health check endpoint at `/health/` for deployment and monitoring checks.
 - Strict custom design-system templates using `static/css/theme.css`, not
   Bootstrap visual classes.
@@ -199,6 +199,12 @@ StudyBuddy isolates environment behavior with explicit settings modules:
 Docker Compose runs the app with `config.settings.local`. CI and local test
 commands use `config.settings.test`.
 
+Production deployment is defined in `render.yaml`. The Blueprint creates the
+Render Docker web service, managed PostgreSQL database, `/health/` check,
+pre-deploy migration command, and non-secret production environment variables.
+Render prompts for `DJANGO_SECRET_KEY` and derives `DATABASE_URL` from the
+managed database instead of storing secret values in the repository.
+
 ## Architecture Notes
 
 The main project documentation is:
@@ -276,6 +282,7 @@ StudyBuddy-Study-Planner-Project/
     tests/               Cross-app pytest coverage.
     Dockerfile           Container image definition.
     docker-compose.yml   Local PostgreSQL-backed development stack.
+    render.yaml          Render Blueprint for the production web service and database.
     manage.py            Django management command entrypoint.
     pyproject.toml       Project metadata and tool configuration.
     pytest.ini           Pytest and Django test configuration.
