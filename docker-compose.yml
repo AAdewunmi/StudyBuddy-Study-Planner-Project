@@ -7,9 +7,11 @@ services:
              python manage.py runserver 0.0.0.0:8000"
     environment:
       DJANGO_SETTINGS_MODULE: config.settings.local
-      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-change-me-in-local-development}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-local-development-only-long-random-looking-secret-1234567890}
       DJANGO_DEBUG: ${DJANGO_DEBUG:-True}
       DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1,0.0.0.0}
+      DJANGO_DEFAULT_FROM_EMAIL: ${DJANGO_DEFAULT_FROM_EMAIL:-local-deploy-check@example.com}
+      DJANGO_EMAIL_HOST: ${DJANGO_EMAIL_HOST:-localhost}
       DATABASE_URL: postgres://${POSTGRES_USER:-studybuddy}:${POSTGRES_PASSWORD:-studybuddy}@db:5432/${POSTGRES_DB:-studybuddy_local}
     ports:
       - "8000:8000"
