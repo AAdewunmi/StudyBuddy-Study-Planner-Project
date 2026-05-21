@@ -50,7 +50,10 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 DEBUG = env("DJANGO_DEBUG")
 ALLOWED_HOSTS = env("DJANGO_ALLOWED_HOSTS")
 CSRF_TRUSTED_ORIGINS = env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
-RELEASE_SHA = os.environ.get("RELEASE_SHA", "local")
+RELEASE_SHA = os.environ.get("RELEASE_SHA") or os.environ.get(
+    "RENDER_GIT_COMMIT",
+    "local",
+)
 
 INSTALLED_APPS = [
     "django.contrib.admin",

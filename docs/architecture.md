@@ -182,7 +182,7 @@ Expected current receipt:
 ```text
 Sprint 3 Day 5 verification complete.
 apps/insights tests: 69 passed
-full project test suite: 188 passed
+full project test suite: 202 passed
 ```
 
 Run the dashboard and sessions focused suite when changing Sprint 2 workflow

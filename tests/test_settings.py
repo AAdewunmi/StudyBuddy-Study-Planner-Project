@@ -164,6 +164,16 @@ def test_base_settings_expose_release_sha_from_environment() -> None:
     assert result.stdout.strip() == "abc123"
 
 
+def test_base_settings_use_render_git_commit_as_release_sha() -> None:
+    """Render commit metadata identifies the deployed revision."""
+    result = run_settings_snippet(
+        "import config.settings.base as settings; print(settings.RELEASE_SHA)",
+        {"RELEASE_SHA": "", "RENDER_GIT_COMMIT": "render-commit-abc123"},
+    )
+
+    assert result.stdout.strip() == "render-commit-abc123"
+
+
 def test_production_settings_import_with_required_environment() -> None:
     """Production settings import when the deployment environment is complete."""
     result = run_settings_snippet(
