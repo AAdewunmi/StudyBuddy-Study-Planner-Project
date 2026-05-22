@@ -50,8 +50,8 @@ insight instead of creating a duplicate row.
 
 ## Feature Proof
 
-The Sprint 3 feature is considered documented when this contract answers three
-questions clearly:
+The AI/NLP insight feature is considered documented when this contract answers
+three questions clearly:
 
 - what the feature does
 - how the implementation can be verified
@@ -103,8 +103,7 @@ reuses the existing insight instead of creating a duplicate row.
 
 ## Input Scope
 
-The Sprint 3 implementation analyses note content attached to a single study
-session.
+The implementation analyses note content attached to a single study session.
 
 It does not analyse:
 
@@ -273,7 +272,7 @@ Current limitations:
 - no support for uploaded files
 - no multilingual NLP tuning
 
-These limitations are acceptable for the Sprint 3 MVP because the feature is
+These limitations are acceptable for the MVP because the feature is
 deterministic, cheap to run, easy to test, and honest in the UI.
 
 ## Verification Commands

@@ -5,8 +5,10 @@ from __future__ import annotations
 import pytest
 from django.urls import reverse
 
+from apps.insights.factories import StudyInsightFactory
 from apps.roles.factories import RoleFactory
 from apps.sessions.factories import StudySessionFactory
+from apps.sessions.models import StudySession
 from apps.users.factories import CustomUserFactory
 
 
@@ -62,3 +64,31 @@ def test_dashboard_uses_user_scoped_service_context(client):
     assert response.context["metrics"].total_sessions == 1
     assert response.context["metrics"].total_minutes == 60
     assert len(response.context["recent_activity"]) == 1
+
+
+@pytest.mark.django_db
+def test_dashboard_renders_admin_operational_dashboard(client):
+    """Admin-role users see platform-wide operational metrics."""
+    admin_user = CustomUserFactory(email="admin.view@example.com")
+    admin_role = RoleFactory(admin=True)
+    admin_user.studybuddy_roles.add(admin_role)
+    session = StudySessionFactory(
+        status=StudySession.Status.IN_PROGRESS,
+        duration_minutes=45,
+    )
+    StudyInsightFactory(session=session, confidence=88)
+    client.force_login(admin_user)
+
+    response = client.get(reverse("dashboard:index"))
+
+    content = response.content.decode()
+    assert response.status_code == 200
+    assert response.context["dashboard_variant"] == "admin"
+    assert "Platform operations" in content
+    assert "Platform" in content
+    assert "Accounts" in content
+    assert "Study Activity" in content
+    assert "User roles" in content
+    assert "Insight health" in content
+    assert "Open Django Admin" in content
+    assert "Django Admin" in content

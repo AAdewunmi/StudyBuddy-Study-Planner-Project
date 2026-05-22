@@ -2,8 +2,9 @@
 
 StudyBuddy-Django-App is structured as a modular Django SaaS MVP. The current
 project includes the authentication foundation, core study workflow,
-deterministic AI/NLP insight workflow, and Sprint 4 deployment verification
-path described in `docs/studybuddy-canonical-implementation-outline.md`.
+deterministic AI/NLP insight workflow, and deployment verification path. Current
+release proof lives in `docs/final-verification.md`; archived implementation
+planning remains in `docs/studybuddy-canonical-implementation-outline.md`.
 
 The architecture uses Django templates with project-owned CSS in
 `static/css/theme.css`, Django models for domain persistence, PostgreSQL for the
@@ -20,8 +21,9 @@ StudyBuddy keeps a conservative Django shape:
 - Email-first custom user model.
 - Role-aware access foundation.
 - Owner-scoped study sessions and notes.
-- Data-backed dashboard metrics.
+- Data-backed personal and admin dashboard metrics.
 - Deterministic owner-scoped study insights.
+- Custom production error pages.
 - Business logic kept out of templates.
 - Tests that verify user, access, persistence, and reporting behavior.
 
@@ -51,6 +53,7 @@ StudyBuddy-Study-Planner-Project/
             urls.py
             tests/
         roles/
+            context_processors.py
             models.py
             permissions.py
             tests/
@@ -63,6 +66,7 @@ StudyBuddy-Study-Planner-Project/
             urls.py
             tests/
         insights/
+            metrics.py
             models.py
             selectors.py
             services.py
@@ -78,7 +82,13 @@ StudyBuddy-Study-Planner-Project/
             tests/
 
     templates/
+        400.html
+        403.html
+        404.html
+        500.html
     static/css/theme.css
+    scripts/
+        release-verify.sh
     docs/
 ```
 
@@ -104,7 +114,7 @@ Current user-facing routes are:
 
 - `/` for the public home page.
 - `/users/` for signup, login, logout, and profile routes.
-- `/dashboard/` for the authenticated personal dashboard.
+- `/dashboard/` for authenticated personal and product-admin dashboards.
 - `/sessions/` for study session list, create, detail, update, and note routes.
 - `/insights/` for the authenticated insights dashboard.
 - `/insights/sessions/<session_id>/generate/` for owner-only insight
@@ -138,7 +148,10 @@ StudyBuddy keeps ownership and aggregate logic out of templates:
 
 - `apps/sessions/selectors.py` owns user-scoped session and note queries.
 - `apps/sessions/services.py` calculates session-level aggregate metrics.
-- `apps/dashboard/services.py` composes dashboard context for views.
+- `apps/insights/metrics.py` calculates insight dashboard summary metrics.
+- `apps/dashboard/services.py` composes personal and admin dashboard context
+  for views.
+- `apps/roles/context_processors.py` exposes role flags for shared navigation.
 - `apps/dashboard/views.py` passes prepared context into the template.
 - `templates/dashboard/index.html` only renders prepared values and links.
 - `apps/insights/selectors.py` owns user-scoped insight queries.
@@ -154,7 +167,10 @@ Dashboard aggregates include:
 - completed session count;
 - total study minutes;
 - note count;
-- recent user-owned sessions.
+- recent user-owned sessions;
+- study streaks, monthly totals, subject counts, and note coverage;
+- admin platform totals for users, roles, sessions, notes, insights, and
+  deployment visibility.
 
 Templates must not calculate counts, sums, filters, or ownership rules.
 
@@ -168,24 +184,25 @@ Templates extend `templates/base.html` and use shared classes from
 
 The active design system is custom to StudyBuddy. Templates should not depend on
 Bootstrap visual utility classes for layout, cards, buttons, alerts, or metrics.
+Custom error templates live at `templates/400.html`, `templates/403.html`,
+`templates/404.html`, and `templates/500.html`.
 
 ## Verification Boundary
 
-The current release verification runbook is:
+The current release verification command is:
 
 ```bash
-./docs/sprint-runbook/sprint-4/sprint-4-day-4.sh
+make release-verify
 ```
 
 Expected current receipt:
 
 ```text
-Sprint 4 Day 4 Render deployment and release verification complete.
+Render deployment and release verification complete.
 Full project test suite passes.
 ```
 
-Run the dashboard and sessions focused suite when changing Sprint 2 workflow
-code:
+Run the dashboard and sessions focused suite when changing study workflow code:
 
 ```bash
 docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest apps/dashboard/tests apps/sessions/tests -q

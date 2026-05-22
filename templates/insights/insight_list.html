@@ -21,8 +21,64 @@
       </header>
 
       <section class="section-tight">
+        <div class="card-grid card-grid-2">
+          <article class="card-ui">
+            <div class="mock-panel-title">
+              <span>Generated insights</span>
+              <span>{{ insight_metrics.total_insights }}</span>
+            </div>
+            <p class="text-muted-ui">Reusable deterministic insights generated from your own study notes.</p>
+            <div class="mock-pill-row">
+              <span class="mock-pill">{{ insight_metrics.sessions_with_insights }} sessions with insights</span>
+              <span class="mock-pill">{{ insight_metrics.sessions_without_insights }} without insights</span>
+            </div>
+          </article>
+
+          <article class="card-ui">
+            <div class="mock-panel-title">
+              <span>Average confidence</span>
+              <span>{{ insight_metrics.average_confidence }}%</span>
+            </div>
+            <p class="text-muted-ui">Mean confidence across generated insights. This is a rule-based quality signal, not a factual accuracy score.</p>
+          </article>
+
+          <article class="card-ui">
+            <div class="mock-panel-title">
+              <span>Top keywords</span>
+              <span>{{ insight_metrics.top_keywords|length }}</span>
+            </div>
+            {% if insight_metrics.top_keywords %}
+              <div class="mock-pill-row">
+                {% for keyword in insight_metrics.top_keywords %}
+                  <span class="mock-pill">{{ keyword.label }} &middot; {{ keyword.count }}</span>
+                {% endfor %}
+              </div>
+            {% else %}
+              <p class="text-muted-ui">Keywords appear here once insights are generated.</p>
+            {% endif %}
+          </article>
+
+          <article class="card-ui">
+            <div class="mock-panel-title">
+              <span>Recently analysed</span>
+              <span>{{ insight_metrics.recent_insights|length }}</span>
+            </div>
+            {% if insight_metrics.recent_insights %}
+              <div class="mock-pill-row">
+                {% for insight in insight_metrics.recent_insights %}
+                  <a class="mock-pill" href="{% url 'sessions:detail' insight.session.pk %}">{{ insight.session.title }}</a>
+                {% endfor %}
+              </div>
+            {% else %}
+              <p class="text-muted-ui">Generate an insight to populate recent analysis.</p>
+            {% endif %}
+          </article>
+        </div>
+      </section>
+
+      <section class="section-tight">
         {% if insights %}
-          <div class="card-grid">
+          <div class="card-grid full-width-card-grid">
             {% for insight in insights %}
               <article class="card-ui">
                 <div class="mock-panel-title">

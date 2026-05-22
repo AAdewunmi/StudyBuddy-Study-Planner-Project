@@ -18,8 +18,63 @@
       </header>
 
       <section class="section-tight">
+        <div class="card-grid card-grid-2">
+          <article class="card-ui">
+            <div class="mock-panel-title">
+              <span>Status</span>
+              <span>{{ session_metrics.total_sessions }} total</span>
+            </div>
+            <div class="mock-pill-row">
+              {% for status in session_metrics.status_counts %}
+                <span class="mock-pill">{{ status.label }} &middot; {{ status.count }}</span>
+              {% endfor %}
+            </div>
+          </article>
+
+          <article class="card-ui">
+            <div class="mock-panel-title">
+              <span>Study time</span>
+              <span>{{ session_metrics.total_minutes }} minutes</span>
+            </div>
+            <p class="text-muted-ui">{{ session_metrics.average_session_minutes }} minute average across recorded sessions.</p>
+            <div class="mock-pill-row">
+              <span class="mock-pill">{{ session_metrics.monthly_minutes }} minutes this month</span>
+              <span class="mock-pill">{{ session_metrics.study_day_count }} study days</span>
+            </div>
+          </article>
+
+          <article class="card-ui">
+            <div class="mock-panel-title">
+              <span>Subjects</span>
+              <span>{{ session_metrics.subject_counts|length }} active</span>
+            </div>
+            {% if session_metrics.subject_counts %}
+              <div class="mock-pill-row">
+                {% for subject in session_metrics.subject_counts %}
+                  <span class="mock-pill">{{ subject.label }} &middot; {{ subject.count }}</span>
+                {% endfor %}
+              </div>
+            {% else %}
+              <p class="text-muted-ui">Subjects appear here once sessions exist.</p>
+            {% endif %}
+          </article>
+
+          <article class="card-ui">
+            <div class="mock-panel-title">
+              <span>Notes coverage</span>
+              <span>{{ session_metrics.note_count }} notes</span>
+            </div>
+            <div class="mock-pill-row">
+              <span class="mock-pill">{{ session_metrics.sessions_with_notes }} sessions with notes</span>
+              <span class="mock-pill">{{ session_metrics.sessions_without_notes }} without notes</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-tight">
         {% if sessions %}
-          <div class="card-grid">
+          <div class="card-grid full-width-card-grid">
             {% for session in sessions %}
               <article class="card-ui">
                 <div class="mock-panel-title">

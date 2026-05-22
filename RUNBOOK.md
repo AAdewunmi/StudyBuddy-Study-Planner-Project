@@ -11,17 +11,21 @@ StudyBuddy is a Docker-backed Django SaaS MVP with:
 
 - email-first custom users and authentication under `/users/`;
 - role helpers exposed through `user.studybuddy_roles`;
+- role-aware navigation context for product admin and regular user surfaces;
 - owner-scoped study sessions and notes under `/sessions/`;
 - deterministic owner-scoped insights under `/insights/`;
-- a data-backed authenticated dashboard under `/dashboard/`;
+- data-backed authenticated dashboards under `/dashboard/`, including personal
+  study metrics for regular users and operational platform metrics for admins;
 - user-scoped selectors in `apps/sessions/selectors.py`;
 - aggregate session metrics in `apps/sessions/services.py`;
+- aggregate insight metrics in `apps/insights/metrics.py`;
 - dashboard context composition in `apps/dashboard/services.py`;
+- custom HTTP 400, 403, 404, and 500 templates under `templates/`;
 - custom template styling in `static/css/theme.css`;
 - PostgreSQL-backed local, test, and production settings modules;
 - Render Blueprint deployment in `render.yaml`.
 
-The canonical implementation outline is:
+Archived planning notes are preserved in:
 
 ```text
 docs/studybuddy-canonical-implementation-outline.md
@@ -120,38 +124,37 @@ docker compose exec -T web python -m ruff check . --fix
 
 ## Focused Verification
 
-Run the current Sprint 3 final verification runbook:
+Run the current release verification workflow:
 
 ```bash
-make sprint-3-day-5
+make release-verify
 ```
 
 That script verifies:
 
-- repository root and required Sprint 3 files;
 - Docker/PostgreSQL startup;
 - Django system checks and migrations;
-- insights dashboard imports, URL registration, and navigation;
-- owner-scoped insight selector behavior;
-- anonymous dashboard redirects;
-- empty, populated, cross-user, and paginated insights dashboard states;
-- README, AI/NLP contract, and canonical implementation documentation;
-- Black, Ruff, targeted insights dashboard tests, all insights tests, and the
-  full regression suite.
+- local and production settings checks;
+- static collection and Docker image readiness;
+- full regression suite and coverage-producing CI path;
+- Render runtime contract and `/health/` verification;
+- live product smoke checks when a Render URL is available.
 
 Expected current receipts:
 
 ```text
-Sprint 3 Day 5 insights dashboard tests: 4 passed
-apps/insights tests: 69 passed
-full project test suite: 202 passed
+Production deployment check passes.
+Production static collection succeeds.
+Full project test suite passes.
+Live Render /health/ returns HTTP 200.
+Release verification script reaches its final receipt.
 ```
 
-Run the dashboard and sessions focused suite when changing Sprint 2 workflow
-code:
+Run focused product-area suites for narrower changes:
 
 ```bash
 docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest apps/dashboard/tests apps/sessions/tests -q
+docker compose exec -T web env DJANGO_SETTINGS_MODULE=config.settings.test pytest apps/insights/tests -q
 ```
 
 ## Core Routes
@@ -173,6 +176,9 @@ Current URL names and paths:
 - `sessions:delete_note` -> `/sessions/<pk>/notes/<note_pk>/delete/`
 - `insights:list` -> `/insights/`
 - `insights:generate` -> `/insights/sessions/<session_id>/generate/`
+- `health-check` -> `/health/`
+- custom production error templates -> `400.html`, `403.html`, `404.html`,
+  `500.html`
 
 ## Settings Modules
 
@@ -188,8 +194,8 @@ Docker Compose runs with `config.settings.local`. Tests should run with
 Render production deployment is defined in `render.yaml`. The Blueprint creates
 the Docker web service, managed PostgreSQL database, `/health/` check, and
 pre-deploy migration command. It stores non-secret runtime values in the
-Blueprint, prompts for `DJANGO_SECRET_KEY`, and derives `DATABASE_URL` from the
-managed database.
+Blueprint, prompts for `DJANGO_SECRET_KEY` and email provider values, and
+derives `DATABASE_URL` from the managed database.
 
 Production requires at least:
 
@@ -197,6 +203,8 @@ Production requires at least:
 - `DJANGO_SECRET_KEY`
 - `DJANGO_ALLOWED_HOSTS`
 - `DATABASE_URL`
+- `DJANGO_DEFAULT_FROM_EMAIL`
+- `DJANGO_EMAIL_HOST`
 
 Production also supports:
 
@@ -205,6 +213,14 @@ Production also supports:
 - `DJANGO_SECURE_HSTS_SECONDS`
 - `DJANGO_CSRF_TRUSTED_ORIGINS`
 - `DJANGO_LOG_LEVEL`
+- `DJANGO_EMAIL_BACKEND`
+- `DJANGO_EMAIL_PORT`
+- `DJANGO_EMAIL_HOST_USER`
+- `DJANGO_EMAIL_HOST_PASSWORD`
+- `DJANGO_EMAIL_USE_TLS`
+- `DJANGO_EMAIL_USE_SSL`
+- `DJANGO_EMAIL_TIMEOUT`
+- `DJANGO_SERVER_EMAIL`
 - `RELEASE_SHA`
 
 ## Architecture Rules
@@ -216,6 +232,7 @@ Keep these boundaries intact:
 - Use `apps/insights/selectors.py` for user-scoped insight queries.
 - Use `apps/sessions/services.py` for session aggregate metrics.
 - Use `apps/insights/services.py` for deterministic insight generation.
+- Use `apps/insights/metrics.py` for insight dashboard summary metrics.
 - Use `apps/dashboard/services.py` for dashboard context composition.
 - Templates should render prepared values only.
 - Templates should not calculate counts, sums, filters, or ownership rules.
@@ -228,12 +245,19 @@ The dashboard template should render:
 - `metrics.completed_sessions`
 - `metrics.total_minutes`
 - `metrics.note_count`
+- `metrics.current_streak_days`
+- `metrics.monthly_sessions`
+- `metrics.monthly_minutes`
+- `metrics.subject_counts`
 - `recent_activity`
+- `dashboard_variant`
+- `platform_metrics` for admin dashboards
 
 The insights workflow should render:
 
 - latest session insight on the session detail page;
 - owner-scoped insight list at `/insights/`;
+- insight count, average confidence, top keywords, and recent insight metrics;
 - extractive summary, ranked keywords, confidence score, and explanation;
 - useful empty state for users with no insights.
 
@@ -245,14 +269,12 @@ The insights workflow should render:
 - `docs/domain-model.md`: users, roles, sessions, notes, selectors, services.
 - `docs/design-system.md`: template and CSS design-system contract.
 - `docs/local-setup.md`: Docker-backed local setup.
-- `Makefile`: repeatable aliases for local setup, checks, tests, and Sprint
+- `Makefile`: repeatable aliases for local setup, checks, tests, and release
   verification.
-- `docs/studybuddy-canonical-implementation-outline.md`: central canonical
-  implementation outline for StudyBuddy.
-- `docs/sprint-runbook/sprint-2/sprint-2-day-5.sh`: complete Sprint 2
-  dashboard/session verification script.
-- `docs/sprint-runbook/sprint-3/sprint-3-day-5.sh`: complete Sprint 3
-  insights dashboard verification script.
+- `docs/studybuddy-canonical-implementation-outline.md`: archived
+  implementation planning outline for StudyBuddy.
+- `scripts/release-verify.sh`: neutral wrapper for the release verification
+  workflow.
 
 ## Troubleshooting
 
@@ -304,5 +326,5 @@ study_sessions migrations are clean.
 Black check passes.
 Ruff check passes.
 Full pytest suite passes.
-Sprint 3 Day 5 runbook passes when full workflow verification is required.
+Release verification workflow passes when full workflow verification is required.
 ```

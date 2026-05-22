@@ -39,6 +39,24 @@ python -m pytest --cov=apps --cov=config --cov-report=xml -q
 After pytest completes, CI uploads `coverage.xml` to Codecov with
 `codecov/codecov-action`.
 
+## Dependency Update Automation
+
+Dependabot is configured in:
+
+```text
+.github/dependabot.yml
+```
+
+It opens weekly pull requests for:
+
+- Python dependencies declared from the repository root
+- GitHub Actions used by `.github/workflows/ci.yml`
+
+Python updates are grouped into runtime and development dependency PRs. GitHub
+Actions updates are grouped into one actions PR. Dependency PRs use the
+`chore(deps)` commit prefix and must pass the same hosted CI and Codecov checks
+as normal pull requests before merge.
+
 ## CI Environment
 
 The GitHub Actions job sets these important environment values:

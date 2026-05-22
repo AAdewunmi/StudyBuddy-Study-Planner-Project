@@ -14,7 +14,7 @@ COMPOSE := docker compose
 WEB_EXEC := $(COMPOSE) exec -T web
 TEST_ENV := env DJANGO_SETTINGS_MODULE=$(TEST_SETTINGS_MODULE) TEST_DATABASE_URL=$(TEST_DATABASE_URL)
 
-.PHONY: build up down restart logs migrate makemigrations check-migrations test test-insights check deploy-check collectstatic shell superuser lint isort format format-check ci sprint-3-day-5
+.PHONY: build up down restart logs migrate makemigrations check-migrations test test-insights check deploy-check collectstatic shell superuser lint isort format format-check ci release-verify
 
 build:
 	$(COMPOSE) build
@@ -84,5 +84,5 @@ ci:
 	docker build -t $(CI_IMAGE) .
 	$(WEB_EXEC) $(TEST_ENV) pytest --cov=apps --cov=config --cov-report=xml -q
 
-sprint-3-day-5:
-	./docs/sprint-runbook/sprint-3/sprint-3-day-5.sh
+release-verify:
+	./scripts/release-verify.sh
