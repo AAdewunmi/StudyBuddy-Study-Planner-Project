@@ -18,6 +18,7 @@ from apps.sessions.selectors import (
     get_session_for_user_or_404,
     get_sessions_for_user,
 )
+from apps.sessions.services import build_session_metrics_for_user
 
 
 def session_detail_context(
@@ -64,6 +65,7 @@ class StudySessionListView(LoginRequiredMixin, ListView):
         """Expose both legacy and explicit context names."""
         context = super().get_context_data(**kwargs)
         context["study_sessions"] = context["sessions"]
+        context["session_metrics"] = build_session_metrics_for_user(self.request.user)
         return context
 
 

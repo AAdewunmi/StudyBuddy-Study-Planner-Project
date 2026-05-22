@@ -47,6 +47,67 @@
 
       <section class="section-tight">
         <div class="section-header">
+          <span class="eyebrow">Overview</span>
+          <h2 class="section-title">Study rhythm and progress</h2>
+        </div>
+
+        <div class="card-grid card-grid-2">
+          <article class="card-ui">
+            <div class="mock-panel-title">
+              <span>Streaks</span>
+              <span>{{ metrics.current_streak_days }} days</span>
+            </div>
+            <p class="text-muted-ui">Current streak based on consecutive study dates ending with your latest session.</p>
+            <div class="mock-pill-row">
+              <span class="mock-pill">{{ metrics.study_day_count }} study days</span>
+              <span class="mock-pill">{{ metrics.average_session_minutes }} min average</span>
+            </div>
+          </article>
+
+          <article class="card-ui">
+            <div class="mock-panel-title">
+              <span>Progress this month</span>
+              <span>{{ metrics.monthly_minutes }} minutes</span>
+            </div>
+            <p class="text-muted-ui">Activity recorded from the start of the current month.</p>
+            <div class="mock-pill-row">
+              <span class="mock-pill">{{ metrics.monthly_sessions }} sessions</span>
+              <span class="mock-pill">{{ metrics.monthly_completed_sessions }} completed</span>
+            </div>
+          </article>
+
+          <article class="card-ui">
+            <div class="mock-panel-title">
+              <span>Courses</span>
+              <span>{{ metrics.subject_counts|length }} active</span>
+            </div>
+            {% if metrics.subject_counts %}
+              <div class="mock-pill-row">
+                {% for subject in metrics.subject_counts %}
+                  <span class="mock-pill">{{ subject.label }} &middot; {{ subject.count }}</span>
+                {% endfor %}
+              </div>
+            {% else %}
+              <p class="text-muted-ui">Create sessions to build a subject breakdown.</p>
+            {% endif %}
+          </article>
+
+          <article class="card-ui">
+            <div class="mock-panel-title">
+              <span>Activities</span>
+              <span>{{ metrics.sessions_with_notes }} with notes</span>
+            </div>
+            <p class="text-muted-ui">A quick view of note coverage across your study sessions.</p>
+            <div class="mock-pill-row">
+              <span class="mock-pill">{{ metrics.note_count }} notes</span>
+              <span class="mock-pill">{{ metrics.sessions_without_notes }} sessions without notes</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-tight">
+        <div class="section-header">
           <span class="eyebrow">Recent activity</span>
           <h2 class="section-title">Latest study sessions</h2>
         </div>

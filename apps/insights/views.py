@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from django.views.generic import ListView
 
+from apps.insights.metrics import build_insight_metrics_for_user
 from apps.insights.models import StudyInsight
 from apps.insights.selectors import get_user_insights
 from apps.insights.services import generate_insight_for_session
@@ -25,6 +26,12 @@ class InsightListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         """Return insights scoped to the authenticated user."""
         return get_user_insights(self.request.user)
+
+    def get_context_data(self, **kwargs):
+        """Add user-scoped insight metrics to the dashboard."""
+        context = super().get_context_data(**kwargs)
+        context["insight_metrics"] = build_insight_metrics_for_user(self.request.user)
+        return context
 
 
 class GenerateInsightView(LoginRequiredMixin, View):
