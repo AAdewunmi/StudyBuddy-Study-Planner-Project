@@ -336,20 +336,38 @@ pull requests.
 
 ## Next Steps
 
-1. Fix or confirm the live Render service URL. The documented URL is
+1. Shape the tutor dashboard carefully. If tutors do not currently have
+   assigned students, cohorts, or teaching groups in the data model, the tutor
+   dashboard cannot honestly show student-wide analytics yet.
+
+   Without new backend/domain work, a tutor dashboard can show:
+
+   - tutor account activity
+   - the tutor's own study, session, and insight metrics
+   - role-aware dashboard styling
+
+   It cannot show:
+
+   - student progress
+   - at-risk students
+   - class activity
+   - tutor-managed courses
+
+   Those views require a model connecting tutors to students or sessions.
+2. Fix or confirm the live Render service URL. The documented URL is
    `https://studybuddy-django-app.onrender.com`; update the docs and
    `render.yaml` host settings if Render generated a different hostname.
-2. Run the release verification runbook against the live service:
+3. Run the release verification runbook against the live service:
 
    ```bash
    LIVE_URL="https://your-render-service.onrender.com" \
      ./docs/sprint-runbook/sprint-4/sprint-4-day-4.sh
    ```
 
-3. Complete the live browser smoke test: signup, login, dashboard, session
+4. Complete the live browser smoke test: signup, login, dashboard, session
    creation, note creation, insight generation, logout, and protected-page
    redirects.
-4. Automate the post-deploy browser smoke path with Playwright or an equivalent
+5. Automate the post-deploy browser smoke path with Playwright or an equivalent
    lightweight end-to-end check.
-5. Upgrade Render plans only after live MVP validation or when traffic, runtime,
+6. Upgrade Render plans only after live MVP validation or when traffic, runtime,
    or database retention needs exceed the free plan limits.
