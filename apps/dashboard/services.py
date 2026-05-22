@@ -74,9 +74,7 @@ def build_dashboard_context(user: Any) -> dict[str, Any]:
 
     return {
         "dashboard_variant": "admin" if is_admin_dashboard else "user",
-        "platform_metrics": (
-            build_platform_metrics() if is_admin_dashboard else None
-        ),
+        "platform_metrics": (build_platform_metrics() if is_admin_dashboard else None),
         "metrics": metrics,
         "recent_activity": metrics.recent_sessions,
         "roles": user.studybuddy_roles.order_by("display_name"),
@@ -95,7 +93,9 @@ def build_platform_metrics() -> PlatformMetrics:
 
     return PlatformMetrics(
         total_users=users.count(),
-        total_students=users.filter(studybuddy_roles__slug="student").distinct().count(),
+        total_students=users.filter(studybuddy_roles__slug="student")
+        .distinct()
+        .count(),
         total_tutors=users.filter(studybuddy_roles__slug="tutor").distinct().count(),
         total_admins=users.filter(studybuddy_roles__slug="admin").distinct().count(),
         users_without_roles=users.filter(studybuddy_roles__isnull=True).count(),
