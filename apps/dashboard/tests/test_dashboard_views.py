@@ -85,6 +85,10 @@ def test_dashboard_renders_admin_operational_dashboard(client):
     assert response.status_code == 200
     assert response.context["dashboard_variant"] == "admin"
     assert "Platform operations" in content
+    assert "Platform" in content
+    assert "Accounts" in content
+    assert "Study Activity" in content
     assert "User roles" in content
     assert "Insight health" in content
     assert "Open Django Admin" in content
+    assert "Django Admin" in content
