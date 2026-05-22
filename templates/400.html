@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Request problem | StudyBuddy{% endblock %}
+
+{% block content %}
+  <div class="container-ui">
+    <div class="page-stack">
+      <header class="page-header">
+        <div>
+          <span class="eyebrow">Bad request</span>
+          <h1 class="page-title">Request could not be processed</h1>
+          <p class="page-subtitle">
+            StudyBuddy could not understand this request. Check the link or
+            return to a known page.
+          </p>
+        </div>
+      </header>
+
+      <section class="section-tight">
+        <div class="quote-card">
+          <span class="eyebrow">Next step</span>
+          <h2 class="section-title">Return to StudyBuddy.</h2>
+          <p>The page is available, but this request was not valid.</p>
+          <div class="card-actions">
+            {% if request.user.is_authenticated %}
+              <a class="btn-ui btn-ui-blue" href="{% url 'dashboard:index' %}">Open Dashboard</a>
+            {% else %}
+              <a class="btn-ui btn-ui-blue" href="{% url 'home' %}">Go Home</a>
+            {% endif %}
+            <a class="btn-ui" href="{% url 'home' %}">Product Home</a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+{% endblock %}

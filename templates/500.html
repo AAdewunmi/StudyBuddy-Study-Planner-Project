@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Something went wrong | StudyBuddy{% endblock %}
+
+{% block content %}
+  <div class="container-ui">
+    <div class="page-stack">
+      <header class="page-header">
+        <div>
+          <span class="eyebrow">Server error</span>
+          <h1 class="page-title">Something went wrong</h1>
+          <p class="page-subtitle">
+            StudyBuddy could not complete this request. The issue may be
+            temporary.
+          </p>
+        </div>
+      </header>
+
+      <section class="section-tight">
+        <div class="quote-card">
+          <span class="eyebrow">Recovery</span>
+          <h2 class="section-title">Return to a stable page.</h2>
+          <p>Go back to the product home page and try your workflow again.</p>
+          <div class="card-actions">
+            <a class="btn-ui btn-ui-blue" href="{% url 'home' %}">Product Home</a>
+            <a class="btn-ui" href="{% url 'health-check' %}">Service Health</a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+{% endblock %}

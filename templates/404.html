@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Page not found | StudyBuddy{% endblock %}
+
+{% block content %}
+  <div class="container-ui">
+    <div class="page-stack">
+      <header class="page-header">
+        <div>
+          <span class="eyebrow">Page not found</span>
+          <h1 class="page-title">This page is not in StudyBuddy</h1>
+          <p class="page-subtitle">
+            The page may have moved, been deleted, or never existed.
+          </p>
+        </div>
+      </header>
+
+      <section class="section-tight">
+        <div class="quote-card">
+          <span class="eyebrow">Keep moving</span>
+          <h2 class="section-title">Go back to a working page.</h2>
+          <p>Use the dashboard if you are signed in, or return to the product home page.</p>
+          <div class="card-actions">
+            {% if request.user.is_authenticated %}
+              <a class="btn-ui btn-ui-blue" href="{% url 'dashboard:index' %}">Open Dashboard</a>
+            {% else %}
+              <a class="btn-ui btn-ui-blue" href="{% url 'home' %}">Go Home</a>
+            {% endif %}
+            <a class="btn-ui" href="{% url 'sessions:list' %}">Study Sessions</a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+{% endblock %}
