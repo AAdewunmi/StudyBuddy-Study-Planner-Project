@@ -5,6 +5,191 @@
 
 {% block content %}
   <div class="container-ui">
+    {% if dashboard_variant == "admin" %}
+      <div class="page-stack">
+        <header class="page-header">
+          <div>
+            <span class="eyebrow">Admin dashboard</span>
+            <h1 class="page-title">Platform operations</h1>
+            <p class="page-subtitle">
+              Operational visibility for product usage, account health,
+              generated insights, and deployment state.
+            </p>
+          </div>
+          <div class="card-actions">
+            <a class="btn-ui btn-ui-primary" href="/admin/">Open Django Admin</a>
+          </div>
+        </header>
+
+        <section class="section-tight">
+          <div class="card-grid card-grid-2">
+            <article class="card-ui">
+              <span class="metric-value">{{ platform_metrics.total_users }}</span>
+              <span class="metric-label">Users</span>
+              <div class="mock-pill-row">
+                <span class="mock-pill">{{ platform_metrics.total_students }} students</span>
+                <span class="mock-pill">{{ platform_metrics.total_tutors }} tutors</span>
+                <span class="mock-pill">{{ platform_metrics.total_admins }} admins</span>
+                <span class="mock-pill">{{ platform_metrics.users_without_roles }} without roles</span>
+              </div>
+            </article>
+
+            <article class="card-ui">
+              <span class="metric-value">{{ platform_metrics.total_sessions }}</span>
+              <span class="metric-label">Study sessions</span>
+              <div class="mock-pill-row">
+                <span class="mock-pill">{{ platform_metrics.completed_sessions }} completed</span>
+                <span class="mock-pill">{{ platform_metrics.in_progress_sessions }} in progress</span>
+                <span class="mock-pill">{{ platform_metrics.planned_sessions }} planned</span>
+              </div>
+            </article>
+
+            <article class="card-ui">
+              <span class="metric-value">{{ platform_metrics.total_study_minutes }}</span>
+              <span class="metric-label">Study minutes</span>
+              <div class="mock-pill-row">
+                <span class="mock-pill">{{ platform_metrics.total_notes }} notes</span>
+              </div>
+            </article>
+
+            <article class="card-ui">
+              <span class="metric-value">{{ platform_metrics.total_insights }}</span>
+              <span class="metric-label">Insights</span>
+              <div class="mock-pill-row">
+                <span class="mock-pill">{{ platform_metrics.average_confidence }}% avg confidence</span>
+                <span class="mock-pill">{{ platform_metrics.sessions_without_insights }} sessions without insights</span>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-tight">
+          <div class="card-grid card-grid-2">
+            <article class="card-ui">
+              <div class="mock-panel-title">
+                <span>User roles</span>
+                <span>{{ platform_metrics.users_without_roles }} unassigned</span>
+              </div>
+              {% if platform_metrics.role_distribution %}
+                <div class="mock-pill-row">
+                  {% for role in platform_metrics.role_distribution %}
+                    <span class="mock-pill">{{ role.label }} &middot; {{ role.count }}</span>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <p class="text-muted-ui">No product roles have been created yet.</p>
+              {% endif %}
+            </article>
+
+            <article class="card-ui">
+              <div class="mock-panel-title">
+                <span>Account health</span>
+                <span>{{ platform_metrics.health_status }}</span>
+              </div>
+              <div class="mock-pill-row">
+                <span class="mock-pill">{{ platform_metrics.staff_users }} staff</span>
+                <span class="mock-pill">{{ platform_metrics.superusers }} superusers</span>
+                <span class="mock-pill">{{ platform_metrics.inactive_users }} inactive</span>
+              </div>
+            </article>
+
+            <article class="card-ui">
+              <div class="mock-panel-title">
+                <span>Insight health</span>
+                <span>{{ platform_metrics.sessions_with_insights }} covered</span>
+              </div>
+              {% if platform_metrics.top_keywords %}
+                <div class="mock-pill-row">
+                  {% for keyword in platform_metrics.top_keywords %}
+                    <span class="mock-pill">{{ keyword.label }} &middot; {{ keyword.count }}</span>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <p class="text-muted-ui">Top keywords appear after insights are generated.</p>
+              {% endif %}
+            </article>
+
+            <article class="card-ui">
+              <div class="mock-panel-title">
+                <span>System visibility</span>
+                <span>{{ platform_metrics.environment_name }}</span>
+              </div>
+              <div class="mock-pill-row">
+                <span class="mock-pill">Release {{ platform_metrics.release_sha }}</span>
+                <span class="mock-pill">Last activity {{ platform_metrics.last_activity_at }}</span>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-tight">
+          <div class="section-header">
+            <span class="eyebrow">Recent platform activity</span>
+            <h2 class="section-title">Users, sessions, and insights</h2>
+          </div>
+
+          <div class="card-grid card-grid-2">
+            <article class="card-ui">
+              <h3 class="card-title-ui">Recent users</h3>
+              <div class="detail-list">
+                {% for user in platform_metrics.recent_users %}
+                  <div class="detail-row">
+                    <dt>{{ user.display_name }}</dt>
+                    <dd>{{ user.date_joined }}</dd>
+                  </div>
+                {% empty %}
+                  <p class="text-muted-ui">No users found.</p>
+                {% endfor %}
+              </div>
+            </article>
+
+            <article class="card-ui">
+              <h3 class="card-title-ui">Recent sessions</h3>
+              <div class="detail-list">
+                {% for session in platform_metrics.recent_sessions %}
+                  <div class="detail-row">
+                    <dt>{{ session.title }}</dt>
+                    <dd>{{ session.owner.display_name }}</dd>
+                  </div>
+                {% empty %}
+                  <p class="text-muted-ui">No sessions found.</p>
+                {% endfor %}
+              </div>
+            </article>
+
+            <article class="card-ui">
+              <h3 class="card-title-ui">Recent insights</h3>
+              <div class="detail-list">
+                {% for insight in platform_metrics.recent_insights %}
+                  <div class="detail-row">
+                    <dt>{{ insight.session.title }}</dt>
+                    <dd>{{ insight.confidence }}%</dd>
+                  </div>
+                {% empty %}
+                  <p class="text-muted-ui">No insights generated yet.</p>
+                {% endfor %}
+              </div>
+            </article>
+
+            <article class="card-ui">
+              <h3 class="card-title-ui">Object counts</h3>
+              <div class="detail-list">
+                {% for object_count in platform_metrics.object_counts %}
+                  <div class="detail-row">
+                    <dt>{{ object_count.label }}</dt>
+                    <dd>{{ object_count.count }}</dd>
+                  </div>
+                {% endfor %}
+              </div>
+              <div class="card-actions">
+                <a class="btn-ui" href="/admin/users/customuser/">Manage users</a>
+                <a class="btn-ui" href="/admin/roles/role/">Manage roles</a>
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
+    {% else %}
     <div class="page-stack">
       <header class="page-header">
         <div>
@@ -169,5 +354,6 @@
         </article>
       </section>
     </div>
+    {% endif %}
   </div>
 {% endblock %}
