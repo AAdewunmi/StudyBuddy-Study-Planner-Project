@@ -45,6 +45,22 @@ deterministic text normalisation, keyword extraction, extractive summaries,
 source text hashing, rule-based confidence scoring, and plain-English
 explanations.
 
+## Demo
+
+- ### StudyBuddy Product Landing Page
+
+
+<img width="800" height="376" alt="Image" src="https://github.com/user-attachments/assets/4a75df49-d7b2-414f-99a5-150c4b0c4d6c" />
+
+- ### Admin Platform Operations Dashboard
+
+<img width="800" height="376" alt="Image" src="https://github.com/user-attachments/assets/e6d2931a-978d-4010-8678-081a5fe2ae53" />
+
+- ### Student and Tutor Study Workspace
+
+<img width="800" height="376" alt="Image" src="https://github.com/user-attachments/assets/6de117e7-2d06-4458-9141-218414ab9bca" />
+
+
 ## Current Release Status
 
 The MVP now includes the Sprint 3 deterministic AI/NLP study insights feature
