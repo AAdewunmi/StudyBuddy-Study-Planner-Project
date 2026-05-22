@@ -68,14 +68,14 @@ System check identified no issues (0 silenced).
 For the full release verification checklist, run:
 
 ```bash
-./docs/sprint-runbook/sprint-4/sprint-4-day-4.sh
+make release-verify
 ```
 
 If the live Render hostname is different:
 
 ```bash
 LIVE_URL="https://your-render-service.onrender.com" \
-  ./docs/sprint-runbook/sprint-4/sprint-4-day-4.sh
+  make release-verify
 ```
 
 ## Product Walkthrough

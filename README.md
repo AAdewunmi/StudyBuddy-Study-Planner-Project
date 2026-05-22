@@ -10,16 +10,16 @@
 [![Tests](https://img.shields.io/badge/tests-pytest-brightgreen)](https://github.com/AAdewunmi/StudyBuddy-Study-Planner-Project/blob/main/pytest.ini)
 [![License](https://img.shields.io/github/license/AAdewunmi/StudyBuddy-Study-Planner-Project)](https://github.com/AAdewunmi/StudyBuddy-Study-Planner-Project/blob/main/LICENSE)
 
-StudyBuddy is a production-minded Django SaaS MVP for study productivity.
+StudyBuddy is a Django study-planning platform for structured study activity,
+note capture, progress tracking, and deterministic study insights.
 
 The product helps users register, manage study sessions, capture notes, review
 personal progress, and generate deterministic AI/NLP insights from their own
 study material.
 
-This build is intentionally shaped like a believable early SaaS product rather
-than a toy exercise. It uses clear app boundaries, PostgreSQL-backed
-persistence, tested domain behaviour, role-aware access foundations, and
-explainable NLP output.
+The application uses clear app boundaries, PostgreSQL-backed persistence,
+tested domain behaviour, role-aware access foundations, explainable NLP output,
+and deployment-oriented settings.
 
 StudyBuddy is not a learning management system, classroom administration
 platform, course marketplace, or general-purpose chatbot.
@@ -30,8 +30,7 @@ Live MVP URL: <https://studybuddy-django-app.onrender.com>
 
 ## Product Summary
 
-StudyBuddy is designed as an early SaaS product rather than a toy tutorial app.
-The MVP focuses on a clear authenticated user workflow:
+StudyBuddy focuses on a clear authenticated user workflow:
 
 1. Register and log in.
 2. Land on a personal dashboard.
@@ -91,6 +90,7 @@ The detailed product and technical contract lives in
 - `StudyInsight` persistence for deterministic note insights.
 - Email-first signup, login, logout, and profile flows.
 - Role-aware access helpers through `user.studybuddy_roles`.
+- Role-aware navigation context for product admin and regular user surfaces.
 - Owner-scoped session list, create, detail, and update workflows.
 - Note create, update, and delete workflows scoped through parent session
   ownership.
@@ -99,8 +99,11 @@ The detailed product and technical contract lives in
 - Idempotent insight generation for unchanged note text.
 - Insights dashboard scoped to the authenticated user.
 - Selector helpers for user-scoped session and note queries.
-- Service helpers for dashboard aggregate metrics.
-- A data-backed dashboard that renders prepared metrics and recent activity.
+- Service helpers for session, insight, user dashboard, and platform dashboard
+  aggregate metrics.
+- A data-backed dashboard that renders prepared personal metrics, recent
+  activity, role-aware admin operations metrics, and platform health summaries.
+- Custom production error pages for HTTP 400, 403, 404, and 500 responses.
 - GitHub Actions CI for checks, migrations, linting, formatting, Docker image
   build, tests, coverage XML generation, and Codecov upload.
 - Dependabot automation for Python dependency and GitHub Actions update PRs.
@@ -165,8 +168,7 @@ make lint               # Run Ruff checks
 make test-insights      # Run the insights test suite
 make test               # Run the full pytest suite
 make ci                 # Run the local GitHub Actions-style verification chain
-make sprint-3-day-5     # Run the historical insights verification runbook
-./docs/sprint-runbook/sprint-4/sprint-4-day-4.sh  # Run release verification
+make release-verify     # Run release verification
 ```
 
 The equivalent raw Docker commands are:
@@ -190,16 +192,10 @@ port:
 TEST_DATABASE_URL=postgres://studybuddy:studybuddy@localhost:5432/studybuddy_test python3 -m pytest --cov=apps --cov=config --cov-report=term-missing -q
 ```
 
-Run the historical insight verification runbook.
+Run the release verification script.
 
 ```bash
-make sprint-3-day-5
-```
-
-Run the current release verification runbook.
-
-```bash
-./docs/sprint-runbook/sprint-4/sprint-4-day-4.sh
+make release-verify
 ```
 
 ## Environment Settings
@@ -240,10 +236,10 @@ The main project documentation is:
 - [AI/NLP contract](docs/ai-nlp-contract.md)
 - [Deployment](docs/deployment.md)
 - [Operational runbook](RUNBOOK.md)
-- [Historical implementation outline](docs/studybuddy-canonical-implementation-outline.md)
+- [Archived implementation outline](docs/studybuddy-canonical-implementation-outline.md)
 
 The architecture, deployment, and final verification docs are the current
-sources of truth. The historical implementation outline preserves sprint-era
+sources of truth. The archived implementation outline preserves earlier
 planning context. The AI/NLP contract records the deterministic insight
 behaviour. The `Makefile` keeps local setup, review, and CI-style verification
 commands consistent. The README keeps the current runtime shape and verification
@@ -291,15 +287,16 @@ make test
 - `insights:list` -> `/insights/`
 - `insights:generate` -> `/insights/sessions/<session_id>/generate/`
 - `health-check` -> `/health/`
+- custom error templates -> `400.html`, `403.html`, `404.html`, `500.html`
 
 ## Repository Structure
 
 ```text
 StudyBuddy-Study-Planner-Project/
     apps/
-        dashboard/       Dashboard view, context service, and metrics tests.
-        insights/        Deterministic AI/NLP insights, selectors, and tests.
-        roles/           Role model and user-role relationships.
+        dashboard/       Personal/admin dashboard views, context services, and tests.
+        insights/        Deterministic AI/NLP insights, metrics, selectors, and tests.
+        roles/           Role model, user-role relationships, and nav context.
         sessions/        Study sessions, notes, selectors, services, and tests.
         users/           Custom user model, auth forms, profile, and user URLs.
     config/
@@ -309,11 +306,12 @@ StudyBuddy-Study-Planner-Project/
         wsgi.py          WSGI application entrypoint.
     docs/                Architecture, domain, design, setup, and runbooks.
     static/css/theme.css Project-owned design system styles.
-    templates/           Base, dashboard, insight, session, user, and public templates.
-    tests/               Cross-app pytest coverage.
+    templates/           Base, error, dashboard, insight, session, user, and public templates.
+    tests/               Cross-app pytest coverage, health checks, and error pages.
     Dockerfile           Container image definition.
     docker-compose.yml   Local PostgreSQL-backed development stack.
     render.yaml          Render Blueprint for the production web service and database.
+    scripts/             Project command wrappers, including release verification.
     manage.py            Django management command entrypoint.
     pyproject.toml       Project metadata and tool configuration.
     pytest.ini           Pytest and Django test configuration.
@@ -357,11 +355,10 @@ pull requests.
 2. Fix or confirm the live Render service URL. The documented URL is
    `https://studybuddy-django-app.onrender.com`; update the docs and
    `render.yaml` host settings if Render generated a different hostname.
-3. Run the release verification runbook against the live service:
+3. Run the release verification script against the live service:
 
    ```bash
-   LIVE_URL="https://your-render-service.onrender.com" \
-     ./docs/sprint-runbook/sprint-4/sprint-4-day-4.sh
+   LIVE_URL="https://your-render-service.onrender.com" make release-verify
    ```
 
 4. Complete the live browser smoke test: signup, login, dashboard, session

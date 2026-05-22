@@ -161,7 +161,7 @@ creates or reuses a `StudyInsight`.
 The project already uses Django's built-in `django.contrib.sessions` app for
 browser session storage. The StudyBuddy study workflow therefore uses the
 explicit model app label `study_sessions` to avoid colliding with Django's
-built-in `sessions` label if the app is installed in a later sprint.
+built-in `sessions` label.
 
 ## Relationship Summary
 
@@ -175,8 +175,8 @@ CustomUser * -> * Role
 `StudyInsight` ownership is inherited through the parent session. `Role`
 supports role-aware behavior independently of the study session workflow.
 
-## Historical Implementation Outline
+## Archived Implementation Outline
 
-Sprint-era planning context is preserved in
+Earlier planning context is preserved in
 `docs/studybuddy-canonical-implementation-outline.md`. The current domain model
 described above is the active reference for product behavior.

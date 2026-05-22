@@ -43,7 +43,7 @@ def get_session_note_text(session: object) -> str:
     try:
         notes = notes.order_by("created_at", "id")
     except FieldError:
-        # Older Sprint 2 builds may not include created_at on StudyNote.
+        # Older note records may not include created_at.
         notes = notes.order_by("id")
 
     content_values = []

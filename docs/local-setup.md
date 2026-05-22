@@ -150,22 +150,15 @@ Compose.
 TEST_DATABASE_URL=postgres://studybuddy:studybuddy@localhost:5432/studybuddy_test python3 -m pytest --cov=apps --cov=config --cov-report=term-missing -q
 ```
 
-## Run Verification Runbooks
+## Run Release Verification
 
 The current release verification is:
 
 ```bash
-./docs/sprint-runbook/sprint-4/sprint-4-day-4.sh
+make release-verify
 ```
 
-Historical sprint runbooks remain available under `docs/sprint-runbook/` for
-traceability. For example, the completed dashboard/session verification is:
-
-```bash
-./docs/sprint-runbook/sprint-2/sprint-2-day-5.sh
-```
-
-Historical sprint-era planning context is preserved in:
+Archived planning context is preserved in:
 
 ```text
 docs/studybuddy-canonical-implementation-outline.md

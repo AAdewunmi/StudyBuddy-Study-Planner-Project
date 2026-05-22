@@ -11,17 +11,21 @@ StudyBuddy is a Docker-backed Django SaaS MVP with:
 
 - email-first custom users and authentication under `/users/`;
 - role helpers exposed through `user.studybuddy_roles`;
+- role-aware navigation context for product admin and regular user surfaces;
 - owner-scoped study sessions and notes under `/sessions/`;
 - deterministic owner-scoped insights under `/insights/`;
-- a data-backed authenticated dashboard under `/dashboard/`;
+- data-backed authenticated dashboards under `/dashboard/`, including personal
+  study metrics for regular users and operational platform metrics for admins;
 - user-scoped selectors in `apps/sessions/selectors.py`;
 - aggregate session metrics in `apps/sessions/services.py`;
+- aggregate insight metrics in `apps/insights/metrics.py`;
 - dashboard context composition in `apps/dashboard/services.py`;
+- custom HTTP 400, 403, 404, and 500 templates under `templates/`;
 - custom template styling in `static/css/theme.css`;
 - PostgreSQL-backed local, test, and production settings modules;
 - Render Blueprint deployment in `render.yaml`.
 
-Historical sprint-era planning notes are preserved in:
+Archived planning notes are preserved in:
 
 ```text
 docs/studybuddy-canonical-implementation-outline.md
@@ -120,10 +124,10 @@ docker compose exec -T web python -m ruff check . --fix
 
 ## Focused Verification
 
-Run the current release verification runbook:
+Run the current release verification workflow:
 
 ```bash
-./docs/sprint-runbook/sprint-4/sprint-4-day-4.sh
+make release-verify
 ```
 
 That script verifies:
@@ -172,6 +176,9 @@ Current URL names and paths:
 - `sessions:delete_note` -> `/sessions/<pk>/notes/<note_pk>/delete/`
 - `insights:list` -> `/insights/`
 - `insights:generate` -> `/insights/sessions/<session_id>/generate/`
+- `health-check` -> `/health/`
+- custom production error templates -> `400.html`, `403.html`, `404.html`,
+  `500.html`
 
 ## Settings Modules
 
@@ -225,6 +232,7 @@ Keep these boundaries intact:
 - Use `apps/insights/selectors.py` for user-scoped insight queries.
 - Use `apps/sessions/services.py` for session aggregate metrics.
 - Use `apps/insights/services.py` for deterministic insight generation.
+- Use `apps/insights/metrics.py` for insight dashboard summary metrics.
 - Use `apps/dashboard/services.py` for dashboard context composition.
 - Templates should render prepared values only.
 - Templates should not calculate counts, sums, filters, or ownership rules.
@@ -237,12 +245,19 @@ The dashboard template should render:
 - `metrics.completed_sessions`
 - `metrics.total_minutes`
 - `metrics.note_count`
+- `metrics.current_streak_days`
+- `metrics.monthly_sessions`
+- `metrics.monthly_minutes`
+- `metrics.subject_counts`
 - `recent_activity`
+- `dashboard_variant`
+- `platform_metrics` for admin dashboards
 
 The insights workflow should render:
 
 - latest session insight on the session detail page;
 - owner-scoped insight list at `/insights/`;
+- insight count, average confidence, top keywords, and recent insight metrics;
 - extractive summary, ranked keywords, confidence score, and explanation;
 - useful empty state for users with no insights.
 
@@ -256,10 +271,10 @@ The insights workflow should render:
 - `docs/local-setup.md`: Docker-backed local setup.
 - `Makefile`: repeatable aliases for local setup, checks, tests, and release
   verification.
-- `docs/studybuddy-canonical-implementation-outline.md`: historical
-  sprint-era implementation outline for StudyBuddy.
-- `docs/sprint-runbook/`: historical sprint verification scripts and the
-  current release verification script.
+- `docs/studybuddy-canonical-implementation-outline.md`: archived
+  implementation planning outline for StudyBuddy.
+- `scripts/release-verify.sh`: neutral wrapper for the release verification
+  workflow.
 
 ## Troubleshooting
 
@@ -311,5 +326,5 @@ study_sessions migrations are clean.
 Black check passes.
 Ruff check passes.
 Full pytest suite passes.
-Release verification runbook passes when full workflow verification is required.
+Release verification workflow passes when full workflow verification is required.
 ```
